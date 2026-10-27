@@ -1,20 +1,50 @@
 # Agent Skills Index
 
-Place compatible skills in one directory per skill: `.agents/skills/<skill-name>/SKILL.md`.
+Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository currently contains 19 local skill guides.
 
-## Import checklist
-- [ ] Canonical upstream repository confirmed
-- [ ] Skill entry point and all referenced rule files accounted for
-- [ ] License and redistribution conditions checked
-- [ ] Prerequisites and agent compatibility documented
-- [ ] No secrets or unsafe install hooks
-- [ ] Minimal workflow or render tested
-- [ ] README status updated
+## Creative direction and design
+- `cinematic-motion-design`
+- `cinematic-storyboarding`
+- `kinetic-typography`
+- `logo-brand-animation`
+- `ai-visual-development`
+- `cinematography-shot-design`
 
-## Candidates to verify
-- Remotion official skills: https://github.com/remotion-dev/skills
-- GSAP animation resources: verify an authoritative, maintained agent-skill repository before importing
-- HyperFrames: verify its canonical repository, install requirements, and whether it provides a native Agent Skill
-- Motion design principles, kinetic typography, cinematography, 3D, infographics, and captions: add focused skills only when a trustworthy source or a clearly labeled original local skill is available.
+## Animation and scene construction
+- `remotion-video-production`
+- `gsap-motion`
+- `hyperframes-motion` (workflow guide; upstream integration not yet verified)
+- `threejs-webgl-motion`
+- `blender-3d-animation`
+- `svg-lottie-animation`
+- `animated-infographics`
 
-Do not mark a candidate as installed just because it is listed here.
+## Finishing and delivery
+- `audio-sound-design`
+- `color-grading-compositing`
+- `subtitles-accessibility`
+- `video-rendering-quality`
+- `motion-review`
+- `production-pipeline`
+
+## Official Remotion skill package
+
+Source: https://github.com/remotion-dev/skills  
+Install complete official package from a checkout with:
+
+```bash
+npx skills add remotion-dev/skills
+```
+
+The local `remotion-video-production` guide is not a substitute for all upstream reference files. The command has not been executed from the remote GitHub editor.
+
+## Import and validation checklist
+- [ ] Verify canonical source and current license
+- [ ] Include all referenced files for imported skills
+- [ ] Document tool versions and prerequisites
+- [ ] Review install scripts and dependency changes
+- [ ] Run a minimal preview/render
+- [ ] Inspect final video metadata and representative frames
+- [ ] Update README with verified results
+
+Do not mark an underlying tool as installed merely because a local skill guide describes it.
