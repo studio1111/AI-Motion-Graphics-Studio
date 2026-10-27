@@ -41,6 +41,10 @@ jobs:
           node-version: 20
       - name: Install pinned dependencies
         run: npm install --no-audit --no-fund
+      - name: Install FFmpeg tools for output verification
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
       - name: Ensure Remotion browser
         run: npx remotion browser ensure
       - name: Render smoke demo
