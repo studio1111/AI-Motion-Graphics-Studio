@@ -1,6 +1,6 @@
 # Agent Skills Index
 
-Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository currently contains 19 local skill guides.
+Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository currently contains 24 local skill guides. These are agent instructions, not proof that every external application or service is installed.
 
 ## Creative direction and design
 - `cinematic-motion-design`
@@ -9,6 +9,9 @@ Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository curr
 - `logo-brand-animation`
 - `ai-visual-development`
 - `cinematography-shot-design`
+- `motion-graphics-supervisor`
+- `story-driven-educational-documentary`
+- `motion-graphics-visual-systems`
 
 ## Animation and scene construction
 - `remotion-video-production`
@@ -26,24 +29,29 @@ Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository curr
 - `video-rendering-quality`
 - `motion-review`
 - `production-pipeline`
+- `audio-first-narration-and-sound`
+- `motion-render-quality-gates`
+
+## Master prompts and research
+- `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: full production-team prompt
+- `prompts/REFERENCE_VIDEO_ANALYSIS_PROMPT.md`: timestamped reference craft analysis
+- `docs/RESEARCH_AND_BENCHMARK_PLAN.md`: 1,000-video research target, sampling quotas, evidence levels, and completion criteria
 
 ## Official Remotion skill package
-
 Source: https://github.com/remotion-dev/skills  
-Install complete official package from a checkout with:
+Install complete official package from a working checkout with:
 
 ```bash
 npx skills add remotion-dev/skills
 ```
 
-The local `remotion-video-production` guide is not a substitute for all upstream reference files. The command has not been executed from the remote GitHub editor.
+The local Remotion guide is not a substitute for all upstream reference files. The command has not been executed from the remote GitHub editor. The upstream repository has no declared license in GitHub repository metadata, so its files are not copied into this repository.
 
 ## Validation status
-- [x] Verified official Remotion skills source and current skill tree.
-- [x] Confirmed the upstream repository does not declare a license in GitHub repository metadata; upstream files are not copied into this repo.
-- [x] Added a pinned Remotion sample composition and automated skill-structure validator.
-- [x] Added GitHub Actions jobs to validate skill files and render/inspect a sample MP4.
-- [ ] Wait for the first CI run to finish and inspect its result/artifact.
+- [x] Added five original production skills and two master prompts.
+- [x] Added a documented research plan for a stratified sample of 1,000 videos.
+- [ ] Run skill validator and inspect CI results after the index update.
 - [ ] Inspect representative rendered frames and confirm visual output.
+- [ ] Complete the 1,000-video research study; current research provider returned HTTP 402.
 
-Do not mark an underlying tool as installed merely because a local skill guide describes it. CI configuration being committed is not equivalent to a passing CI run.
+Do not mark an underlying tool as installed merely because a local skill guide describes it. A committed workflow is not equivalent to a passing CI run.
