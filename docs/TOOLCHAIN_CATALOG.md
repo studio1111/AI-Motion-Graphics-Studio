@@ -27,9 +27,13 @@ Current model discovery returned image-to-video options including Cinema Studio 
 ### Transcription
 The project's intended path for extracting speech from source video is WhisperX when installed. Preserve transcript timestamps, speaker information when available, and confidence/uncertainty. Do not infer exact spoken words from visuals alone.
 
+## GitHub skill review
+- Installed the Remotion Video Agent skill from frankxai/awesome-motion-design-agent-skills, adapted for this repository and attributed in the skill file. The upstream repository's LICENSE is CC0 1.0 Universal.
+- Reviewed Vincentwei1021/video-talkcraft as a potentially rich motion recipe system. Its LICENSE is PolyForm Noncommercial 1.0.0 and explicitly requires prior authorization for commercial use. Since videos may be monetized, that toolkit was not copied or installed. Its public description is not treated as permission to reuse its implementation.
+- Remotion official skills: https://github.com/remotion-dev/skills. The upstream repository has no declared license in GitHub repository metadata, so its files are not vendored. The documented installer has not been run from this remote editing environment.
+
 ## Public project candidates found during web discovery
 - frankxai/awesome-motion-design-agent-skills: https://github.com/frankxai/awesome-motion-design-agent-skills
-- Remotion official skills: https://github.com/remotion-dev/skills
 - Motion: https://github.com/motiondivision/motion
 - Rive WebAssembly runtime: https://github.com/rive-app/rive-wasm
 - dotLottie web: https://github.com/LottieFiles/dotlottie-web
