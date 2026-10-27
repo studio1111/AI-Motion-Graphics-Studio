@@ -31,7 +31,7 @@ jobs:
   render-smoke-test:
     name: Render sample MP4 with Remotion
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -43,15 +43,28 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Ensure Remotion browser
         run: npx remotion browser ensure
-      - name: Render sample video
-        run: mkdir -p out
-      - name: Execute render
-        run: npx remotion render src/index.ts MotionDemo out/motion-demo.mp4 --codec=h264
-      - name: Verify rendered MP4
+      - name: Render smoke demo
+        run: |
+          mkdir -p out
+          npx remotion render src/index.ts MotionDemo out/motion-demo.mp4 --codec=h264
+      - name: Verify smoke MP4
         run: |
           test -s out/motion-demo.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of default=noprint_wrappers=1 out/motion-demo.mp4
-      - name: Upload render proof
+      - name: Render AI capabilities paper-cut film
+        run: npx remotion render src/index.ts AiCapabilitiesFilm out/ai-capabilities-paper-cut.mp4 --codec=h264
+      - name: Verify AI film output
+        run: |
+          test -s out/ai-capabilities-paper-cut.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,r_frame_rate -of default=noprint_wrappers=1 out/ai-capabilities-paper-cut.mp4
+      - name: Upload comparison render
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-capabilities-paper-cut-film
+          path: out/ai-capabilities-paper-cut.mp4
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload smoke render
         uses: actions/upload-artifact@v4
         with:
           name: motion-studio-smoke-render
