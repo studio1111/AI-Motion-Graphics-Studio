@@ -1,27 +1,22 @@
 ---
 name: motion-style-engine
-description: Select a coherent visual language for motion graphics across typography, color, composition, depth, materials, camera movement, transitions, pacing, and sound.
+description: Select a coherent visual language for motion graphics across typography, color, composition, depth, materials, camera movement, transitions, pacing and sound.
 ---
 # Motion Style Engine
 
-Read `docs/MOTION_STYLE_BIBLE.md` and `docs/MOTION_DESIGN_SYSTEM.md` before storyboarding.
+Read `docs/MOTION_STYLE_BIBLE.md`, `docs/STYLE_PRESET_CATALOG.md` and `docs/MOTION_DESIGN_SYSTEM.md` before storyboarding.
 
 ## Select
-Score style candidates 0–5 for topic fit, audience comprehension, emotional fit, distinctiveness, asset feasibility and technical cost. Select one lead and at most two supporting influences. Record the reason and the exact design decisions.
+Score candidates 0–5 for topic fit, audience comprehension, emotional fit, distinctiveness, asset feasibility and cost. Select one lead preset and at most two supporting influences. Record why the selected treatment helps this particular subject.
 
 ## Style lock
-Define:
-- title, headline, body, data and mono type roles;
-- available licensed fonts with language coverage;
-- color tokens and semantic meaning;
-- grid, safe areas, focal hierarchy and negative space;
-- surface/material, texture, lighting and depth rules;
-- camera grammar, motion curves and 3–5 transition families;
-- sound motif, music energy arc, silence plan and narration priority;
-- continuity anchors and forbidden visual clichés.
+Define exact palette tokens, actual font files/weights/availability, display/body/data type roles, grid/safe zones, focal hierarchy, materials, texture, lighting, depth, camera grammar, 2–4 motion behaviors, 3–5 transition families, sound motif/music arc/silence, continuity anchors and topic-specific anti-patterns.
 
 ## Shot prompts
-Specify subject/action, setting, shot size, camera position and movement, lens/depth feel, lighting direction, palette, materials, atmosphere, duration, start/end state, continuity constraints and prohibited artifacts. For reference-image animation, name what must remain unchanged. Use one main action per short generated clip. Composite exact type, charts and labels in deterministic code.
+Specify subject/action, setting, framing, camera position/movement, lens/depth feel, light direction, palette, materials, atmosphere, duration, start/end state, continuity invariants and prohibited artifacts. For image-to-video identify what must remain unchanged. Use one main action per short generated clip. Composite exact typography, charts and labels in deterministic code.
+
+## Font and localization checks
+Do not imply candidate fonts are installed. Verify actual file, license, weight, glyph coverage and fallback. For Persian/Arabic, inspect rendered connected shaping, RTL order, punctuation, mixed Latin/digits, line breaks and captions. If a glyph or script fails, choose a suitable licensed available font and record the fallback.
 
 ## Variation without chaos
-Alternate wide/close, motion/stillness, dense/light, flat/deep, literal/metaphorical scenes as narrative requires. Make each style topic-specific. If three consecutive frames could belong to any unrelated video, strengthen the visual metaphor. Never copy a creator's complete shot sequence or signature composition.
+Alternate wide/close, movement/stillness, dense/light, flat/deep and literal/metaphorical images as the narrative requires. Make each style topic-specific. If three consecutive scenes could belong to an unrelated video, make the visual metaphor more specific. Never copy a creator's whole sequence or signature composition.
