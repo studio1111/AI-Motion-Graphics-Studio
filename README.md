@@ -60,9 +60,10 @@ Check the installer's target and the resulting diff before accepting changes. Th
 
 ## Executable sample and CI validation
 
-A Remotion project includes both the 3-second smoke demo and a 90-second Persian science explainer:
+The Remotion project includes a 3-second smoke demo, a 90-second Persian science explainer, and a new 65-second Persian paper-cut film for side-by-side comparison:
 
-- `SkyBlueFilm` in `src/sky-blue.tsx` explains why the sky looks blue and why sunsets turn warm, using animated Persian typography, a shifting color palette, moving light rays, atmospheric particles, and an original synthesized ambient score. Rendered and probed output: 1920×1080, 30 fps, approximately 90 seconds. The sample is text-led and does not yet include spoken narration or AI-generated photorealistic footage.
+- `AiCapabilitiesFilm` in `src/ai-capabilities.tsx` is a 65-second Persian paper-cut collage about AI capabilities, limitations, and human creativity. It uses layered paper shapes, cutout-style illustrations, animated typography, moving scraps, scene-specific palettes, and transitions. It is a visual-first comparison render: it does not yet include spoken narration or a music track, and uses procedural vector artwork rather than generated photographic footage.
+- `SkyBlueFilm` in `src/sky-blue.tsx` explains why the sky looks blue and why sunsets turn warm, using animated Persian typography, a shifting color palette, moving light rays, atmospheric particles, and an original synthesized ambient score. The sample is text-led and does not yet include spoken narration or AI-generated photorealistic footage.
 - Render it from a working checkout with `npx remotion render src/index.ts SkyBlueFilm out/why-is-the-sky-blue.mp4 --codec=h264`.
 - `package.json` pins Remotion CLI/runtime to `4.0.539` and React to `19.1.0`.
 - `src/index.ts` and `src/root.tsx` define the `MotionDemo` composition (1920×1080, 30 fps, 3 seconds).
