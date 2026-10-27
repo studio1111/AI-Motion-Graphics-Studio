@@ -38,13 +38,12 @@ npx skills add remotion-dev/skills
 
 The local `remotion-video-production` guide is not a substitute for all upstream reference files. The command has not been executed from the remote GitHub editor.
 
-## Import and validation checklist
-- [ ] Verify canonical source and current license
-- [ ] Include all referenced files for imported skills
-- [ ] Document tool versions and prerequisites
-- [ ] Review install scripts and dependency changes
-- [ ] Run a minimal preview/render
-- [ ] Inspect final video metadata and representative frames
-- [ ] Update README with verified results
+## Validation status
+- [x] Verified official Remotion skills source and current skill tree.
+- [x] Confirmed the upstream repository does not declare a license in GitHub repository metadata; upstream files are not copied into this repo.
+- [x] Added a pinned Remotion sample composition and automated skill-structure validator.
+- [x] Added GitHub Actions jobs to validate skill files and render/inspect a sample MP4.
+- [ ] Wait for the first CI run to finish and inspect its result/artifact.
+- [ ] Inspect representative rendered frames and confirm visual output.
 
-Do not mark an underlying tool as installed merely because a local skill guide describes it.
+Do not mark an underlying tool as installed merely because a local skill guide describes it. CI configuration being committed is not equivalent to a passing CI run.
