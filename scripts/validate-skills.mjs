@@ -36,7 +36,7 @@ for (const directory of skillDirs) {
   if (name && name !== directory) errors.push(`${path}: name '${name}' must match directory '${directory}'`);
   if (name && seenNames.has(name)) errors.push(`${path}: duplicate skill name '${name}'`);
   if (name) seenNames.add(name);
-  if (!/^#{1,6}\\s+/m.test(content)) errors.push(`${path}: expected at least one Markdown heading`);
+  if (!content.split(/\r?\n/).some((line) => /^#{1,6}\s+/.test(line))) errors.push(path + ": expected at least one Markdown heading");
 }
 
 const index = await readFile(join(root, "README.md"), "utf8");
