@@ -1,38 +1,63 @@
 # AI Motion Graphics Studio
 
-A curated, safety-reviewed toolkit for AI-assisted motion design and programmatic video production.
+A curated Agent Skills toolkit for advanced cinematic motion graphics and AI-assisted video production.
 
-## Goals
-- Create repeatable motion graphics, product promos, explainers, kinetic typography, logo reveals, and animated infographics.
-- Keep agent instructions separate from actual rendering tools.
-- Prefer official upstream skill repositories and document source, license, prerequisites, and tested setup for every imported skill.
-- Avoid copying third-party material without checking its license and preserve attribution.
+## What is included
 
-## Skill catalogue
+The repository currently contains **19 local skill guides** under `.agents/skills/`. They are valid local `SKILL.md` instruction files for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
 
-| Area | Planned integration | Status |
-|---|---|---|
-| Programmatic video | Official Remotion agent skills | To verify/import |
-| Web animation | GSAP documentation and carefully scoped agent guidance | To verify/import |
-| HTML/CSS motion scenes | HyperFrames | To verify/import |
-| Motion design principles | Curated local guidance | Planned |
-| Kinetic typography | Remotion/GSAP workflows | Planned |
-| Cinematography | Curated prompt and shot-planning guidance | Planned |
-| 3D motion | Blender / Three.js workflow guidance | Planned |
-| Animated infographics | Remotion chart and data-visualization workflows | Planned |
-| Captions and subtitles | Remotion caption workflow | Planned |
+### Creative direction and design
+- `cinematic-motion-design`: art direction, visual hierarchy, pacing, transitions
+- `cinematic-storyboarding`: storyboard, shot list, beat sheet, continuity
+- `kinetic-typography`: animated titles and type-led sequences
+- `logo-brand-animation`: logo reveals and brand stingers
+- `ai-visual-development`: image/video prompts and visual continuity
+- `cinematography-shot-design`: lens, lighting, blocking, camera choreography
 
-A tool/framework is not automatically an Agent Skill. Only directories with valid `SKILL.md` instructions are treated as skills by compatible agents.
+### Animation and scene construction
+- `remotion-video-production`: frame-based React video workflow
+- `gsap-motion`: timeline-driven web/SVG animation
+- `hyperframes-motion`: HTML/CSS timeline scene workflow, integration to verify
+- `threejs-webgl-motion`: real-time 3D and WebGL scenes
+- `blender-3d-animation`: 3D modeling/animation/render workflow
+- `svg-lottie-animation`: vector and Lottie animation
+- `animated-infographics`: charts and data storytelling
 
-## Compatibility
-Skills are stored under `.agents/skills/` where practical. The consuming agent must support Agent Skills or be configured to read this directory. Runtime dependencies such as Node.js, Remotion, FFmpeg, Blender, and browser tooling are separate from the skill instructions.
+### Finishing and delivery
+- `audio-sound-design`: voice, music, sound effects and mix planning
+- `color-grading-compositing`: color management and visual finishing
+- `subtitles-accessibility`: captions, readability, multilingual and RTL checks
+- `video-rendering-quality`: export settings and technical QC
+- `motion-review`: creative and technical review
+- `production-pipeline`: end-to-end production orchestration
 
-## Safety and quality checks
-1. Inspect upstream source and license before importing.
-2. Do not run install scripts or downloaded code blindly.
-3. Pin versions when practical and document system requirements.
-4. Test a minimal render before declaring a workflow working.
-5. Do not commit API keys, tokens, credentials, generated media, or large binaries.
+## Install the official Remotion skills
 
-## Status
-Repository initialization. Integrations are not considered complete until their upstream source, license, dependencies, and basic test are recorded.
+The local Remotion guide is a workflow overview. To install the complete official Remotion skill package, including its linked reference/rule files, run this in the project workspace:
+
+```bash
+npx skills add remotion-dev/skills
+```
+
+Upstream: https://github.com/remotion-dev/skills  
+Official documentation: https://www.remotion.dev/docs/ai/skills
+
+Check the installer's target and the resulting diff before accepting changes. This repository's remote editing connector does not run shell commands, so the official package command has **not** been executed here.
+
+## Compatibility and dependencies
+
+- Skills are stored in `.agents/skills/<skill-name>/SKILL.md`.
+- The agent must support Agent Skills or be configured to read `.agents/skills/`.
+- Remotion, Node.js, GSAP, Blender, Three.js, FFmpeg, browser automation, fonts, plugins, and AI media services are separate runtime dependencies.
+- HyperFrames is listed as a workflow guide only; its canonical upstream, licensing, and executable integration must be verified before claiming it is installed.
+
+## Safety, licensing, and quality
+- Inspect upstream source, license, dependencies, and scripts before installing.
+- Check commercial-use terms for Remotion and every external asset, font, plugin, music track, model, or service.
+- Do not execute downloaded scripts blindly.
+- Keep credentials, generated media, caches, and large render files out of Git.
+- Test a minimal preview/render and inspect the exported file before calling a workflow production-ready.
+
+## Current status
+
+Local skill guides have been committed. Underlying tools are not installed by these markdown files, and no render has yet been executed in this repository. The next validation step is to install the official Remotion skill package in a checkout, then create and render a minimal sample composition.
