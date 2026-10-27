@@ -1,7 +1,11 @@
 import React from "react";
-import { Composition } from "remotion";
+import { Composition, interpolate, useCurrentFrame } from "remotion";
 
 const Demo: React.FC = () => {
+  const frame = useCurrentFrame();
+  const titleOpacity = interpolate(frame, [0, 18, 30], [0, 0, 1], { extrapolateRight: "clamp" });
+  const titleY = interpolate(frame, [0, 30], [44, 0], { extrapolateRight: "clamp" });
+  const ringRotation = interpolate(frame, [0, 90], [-28, 18]);
   return (
     <div
       style={{
@@ -25,7 +29,7 @@ const Demo: React.FC = () => {
           height: 440,
           border: "1px solid rgba(135, 202, 255, 0.45)",
           borderRadius: "50%",
-          transform: "rotateX(65deg) rotateZ(-18deg)",
+          transform: `rotateX(65deg) rotateZ(${ringRotation}deg) scale(${interpolate(frame, [0, 90], [0.82, 1])})`,
           boxShadow: "0 0 70px rgba(75, 168, 255, 0.12)",
         }}
       />
@@ -36,10 +40,10 @@ const Demo: React.FC = () => {
           height: 300,
           border: "1px solid rgba(255, 255, 255, 0.12)",
           borderRadius: "50%",
-          transform: "rotateX(65deg) rotateZ(28deg)",
+          transform: `rotateX(65deg) rotateZ(${-ringRotation * 0.7}deg)`,
         }}
       />
-      <div style={{ zIndex: 1, textAlign: "center", padding: 60 }}>
+      <div style={{ zIndex: 1, textAlign: "center", padding: 60, opacity: titleOpacity, transform: `translateY(${titleY}px)` }}>
         <div
           style={{
             fontSize: 20,
