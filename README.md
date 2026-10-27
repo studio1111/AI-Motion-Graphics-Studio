@@ -1,23 +1,26 @@
 # AI Motion Graphics Studio
 
-A curated Agent Skills toolkit for advanced cinematic motion graphics and AI-assisted video production.
+A curated Agent Skills toolkit for advanced cinematic motion graphics and AI-assisted video production, focused on educational and documentary storytelling with the least practical user intervention.
 
 ## What is included
 
-The repository currently contains **19 local skill guides** under `.agents/skills/`. They are valid local `SKILL.md` instruction files for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
+The repository contains **24 local skill guides** under `.agents/skills/`. These are original workflow instructions for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
 
 ### Creative direction and design
-- `cinematic-motion-design`: art direction, visual hierarchy, pacing, transitions
+- `cinematic-motion-design`: art direction, hierarchy, pacing, transitions
 - `cinematic-storyboarding`: storyboard, shot list, beat sheet, continuity
 - `kinetic-typography`: animated titles and type-led sequences
 - `logo-brand-animation`: logo reveals and brand stingers
 - `ai-visual-development`: image/video prompts and visual continuity
 - `cinematography-shot-design`: lens, lighting, blocking, camera choreography
+- `motion-graphics-supervisor`: end-to-end production orchestration and review
+- `story-driven-educational-documentary`: evidence-led documentary storytelling
+- `motion-graphics-visual-systems`: visual grammar, scene variety, and transitions
 
 ### Animation and scene construction
 - `remotion-video-production`: frame-based React video workflow
 - `gsap-motion`: timeline-driven web/SVG animation
-- `hyperframes-motion`: HTML/CSS timeline scene workflow, integration to verify
+- `hyperframes-motion`: HTML/CSS timeline workflow, integration to verify
 - `threejs-webgl-motion`: real-time 3D and WebGL scenes
 - `blender-3d-animation`: 3D modeling/animation/render workflow
 - `svg-lottie-animation`: vector and Lottie animation
@@ -30,10 +33,20 @@ The repository currently contains **19 local skill guides** under `.agents/skill
 - `video-rendering-quality`: export settings and technical QC
 - `motion-review`: creative and technical review
 - `production-pipeline`: end-to-end production orchestration
+- `audio-first-narration-and-sound`: narration timing, music, mix, and captions
+- `motion-render-quality-gates`: project, render, frame, audio, and delivery checks
 
-## Install the official Remotion skills
+## Master prompts and research plan
 
-The local Remotion guide is a workflow overview. To install the complete official Remotion skill package, including its linked reference/rule files, run this in the project workspace:
+- `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: comprehensive production-team prompt.
+- `prompts/REFERENCE_VIDEO_ANALYSIS_PROMPT.md`: timestamped craft-analysis template for public reference videos.
+- `docs/RESEARCH_AND_BENCHMARK_PLAN.md`: stratified 1,000-video research plan with evidence levels and completion criteria.
+
+The research plan is not a claim that 1,000 videos have already been reviewed. The initial TubeLab research request returned HTTP 402, so the empirical study remains pending.
+
+## Official Remotion skill package
+
+The local Remotion guide is a workflow overview. To install the complete official Remotion skill package, including linked reference/rule files, run this in a working checkout:
 
 ```bash
 npx skills add remotion-dev/skills
@@ -42,33 +55,31 @@ npx skills add remotion-dev/skills
 Upstream: https://github.com/remotion-dev/skills  
 Official documentation: https://www.remotion.dev/docs/ai/skills
 
-Check the installer's target and the resulting diff before accepting changes. This repository's remote editing connector does not run shell commands, so the official package command has **not** been executed here.
+Inspect the installer's target and resulting diff before accepting changes. The remote GitHub editing connector cannot run shell commands, so the official package command has not been executed here. The upstream repository has no declared license in its GitHub metadata, so its files are not vendored into this repository.
 
 ## Compatibility and dependencies
 
 - Skills are stored in `.agents/skills/<skill-name>/SKILL.md`.
 - The agent must support Agent Skills or be configured to read `.agents/skills/`.
 - Remotion, Node.js, GSAP, Blender, Three.js, FFmpeg, browser automation, fonts, plugins, and AI media services are separate runtime dependencies.
-- HyperFrames is listed as a workflow guide only; its canonical upstream, licensing, and executable integration must be verified before claiming it is installed.
+- HyperFrames remains a workflow guide only; its canonical upstream, licensing, and executable integration must be verified before claiming it is installed.
+- Free/open-source and local tools should be preferred where they meet the quality bar. Cloud AI media endpoints can incur usage charges and must be checked before use.
 
 ## Safety, licensing, and quality
+
 - Inspect upstream source, license, dependencies, and scripts before installing.
 - Check commercial-use terms for Remotion and every external asset, font, plugin, music track, model, or service.
 - Do not execute downloaded scripts blindly.
 - Keep credentials, generated media, caches, and large render files out of Git.
-- Test a minimal preview/render and inspect the exported file before calling a workflow production-ready.
+- A render must be probed and visually/audio inspected before calling a workflow production-ready.
 
-## Executable sample and CI validation
+## Existing executable sample and CI validation
 
-A Remotion project includes both the 3-second smoke demo and a 90-second Persian science explainer:
+The repository includes a 3-second smoke demo and an earlier 90-second Persian science explainer sample. The sample is a reference implementation, not proof that the project can automatically produce every requested style.
 
-- `SkyBlueFilm` in `src/sky-blue.tsx` explains why the sky looks blue and why sunsets turn warm, using animated Persian typography, a shifting color palette, moving light rays, atmospheric particles, and an original synthesized ambient score. Rendered and probed output: 1920×1080, 30 fps, approximately 90 seconds. The sample is text-led and does not yet include spoken narration or AI-generated photorealistic footage.
-- Render it from a working checkout with `npx remotion render src/index.ts SkyBlueFilm out/why-is-the-sky-blue.mp4 --codec=h264`.
+- `SkyBlueFilm` in `src/sky-blue.tsx` is the earlier 90-second science sample. The user previously asked to remove sample content; verify the current branch before using it as a production deliverable.
 - `package.json` pins Remotion CLI/runtime to `4.0.539` and React to `19.1.0`.
-- `src/index.ts` and `src/root.tsx` define the `MotionDemo` composition (1920×1080, 30 fps, 3 seconds).
 - `scripts/validate-skills.mjs` checks skill frontmatter, directory/name consistency, unique names, and index coverage.
-- `.github/workflows/validate-motion-studio.yml` runs the skill validator and renders an MP4 on pushes, pull requests, and manual dispatch. The render is uploaded as a short-lived workflow artifact.
+- `.github/workflows/validate-motion-studio.yml` validates skills and renders an MP4 on pushes, pull requests, and manual dispatch.
 
-The workflow has been added and GitHub Actions is running it. A successful commit or file upload is not proof that the render passed; check the Actions run and its `motion-studio-smoke-render` artifact before treating the runtime as verified.
-
-The official Remotion skill repository is linked above, but it has no declared repository license in its GitHub metadata. To avoid redistributing upstream files without clear terms, this repository does not vendor its full skill tree. The 19 local guides remain original workflow guides, and the official package can be installed in a working checkout using `npx skills add remotion-dev/skills` after reviewing its current terms.
+A successful commit or file upload is not proof that the render passed. Inspect the latest Actions run and its `motion-studio-smoke-render` artifact before treating the runtime as verified.
