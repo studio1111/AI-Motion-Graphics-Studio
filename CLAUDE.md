@@ -21,3 +21,9 @@ Every scene should reveal, compare, transform, reframe, explain or carry emotion
 
 ## Implementation boundary
 This repository currently has a Remotion smoke-test pipeline plus skills, prompts and design system. Do not claim unattended topic-to-final-video generation until executable code, configured services, tests and a real final artifact prove it.
+
+
+## Executable production CLI
+A real command-line path now exists in scripts/produce.mjs. It creates a brief, source record, storyboard, timed scene manifest, Remotion props, narration text, SRT captions, procedural ambience, video render and QC report. It can optionally use Firecrawl and Claude only when paid-service opt-in is enabled and the matching API key is set. It can optionally use local Pocket TTS when installed and supported. Do not claim that technical QC is a creative review, and do not represent the conceptual fallback as fact-checked research. See docs/PRODUCTION_CLI.md for exact usage.
+
+The GitHub Actions workflow Produce Motion Graphics Video can render a user-specified topic and upload the output artifact. Paid providers are disabled by default. Keep the removed former Sky Blue example removed.

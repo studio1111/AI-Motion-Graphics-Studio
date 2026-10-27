@@ -44,3 +44,14 @@ Where supported, include MP4/preview, editable source, narration, on-screen copy
 
 ## Implementation status
 Only the smoke-test renderer and validation workflow are currently verified in principle. Do not claim unattended topic-to-final-video generation until executable runs and real artifacts prove it.
+
+
+## Current executable implementation
+The CLI at scripts/produce.mjs implements intake/defaults, style routing, a deterministic local storyboard fallback, optional Firecrawl discovery and Claude scene-plan generation after explicit paid-service opt-in, frame allocation, optional Pocket TTS for supported languages, procedural ambient audio, SRT creation, Remotion rendering, FFprobe checks, FFmpeg decoding and frame-sample extraction. The output folder includes the brief, source record, storyboard, timed storyboard, props, narration text, captions, manifest, QC report and MP4 when successful.
+
+## Verified limits
+- A local fallback creates a conceptual template and explicitly warns that topic-specific factual research was not performed.
+- Firecrawl search results are candidates, not automatically verified claims. Claude is instructed not to invent data and source references are filtered against supplied/retrieved URLs.
+- Official Pocket TTS has no Persian model in its current published language list; the pipeline reports unsupported language instead of using a mismatched voice.
+- Technical probes and frame extraction run automatically, but creative visual review and audio listening remain NOT_RUN. Font names in a preset do not confirm font files exist.
+- Run the repository CI before claiming implementation verified. The 1,000-video study remains incomplete.

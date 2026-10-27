@@ -1,0 +1,45 @@
+# Motion Graphics Studio Production CLI
+
+The executable entry point is scripts/produce.mjs. It builds a storyboard and a Remotion prop manifest, optionally generates local voice, writes audio/captions, renders MP4, then runs technical checks.
+
+## Quick start
+
+    npm install
+    npx remotion browser ensure
+    npm run validate
+    npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
+
+The default Persian workflow may render without narration because official Pocket TTS currently has no Persian model. For supported languages (English, German, Spanish, French, Italian, Portuguese, Dutch), the local engine can use Pocket TTS if its executable is installed.
+
+## Arguments
+
+- --topic: required topic or question unless supplied in a brief JSON file.
+- --language: fa, en, de, es, fr, it, pt, nl.
+- --duration: target seconds, 5 to 600.
+- --style: auto or a preset such as cinematic-documentary, scientific-2-5d, data-journalism, or vertical-social.
+- --aspect-ratio: 16:9, 9:16, or 1:1.
+- --brief: optional JSON brief with topic, language, durationSeconds, aspectRatio, style and sources.
+- --sources: optional JSON array of source URLs or source objects.
+- --voice: auto, off, or pocket-tts.
+- --allow-paid-ai: explicitly permits Firecrawl/Claude API use, if corresponding keys exist.
+- --no-research: skip optional Firecrawl search.
+- --plan-only: write storyboard and manifests without audio generation or rendering.
+- --output-dir: root output directory, default out.
+
+## What runs automatically
+
+1. Validates the brief and chooses a style using the topic, format and style catalog.
+2. If paid AI is explicitly enabled, Firecrawl may search for sources and Claude may generate a topic-specific scene plan. The API is not called without opt-in and credentials.
+3. Without available AI access, generates an eight-scene conceptual plan with varied visual layouts and explicit warnings that factual research has not been performed.
+4. Allocates exact scene frames; if local TTS succeeds, scene durations respect measured speech and may extend beyond the target instead of truncating narration.
+5. Optionally creates voice WAVs using Pocket TTS for the supported languages.
+6. Creates an original soft procedural ambient WAV, Remotion props, storyboard timing, voiceover text and SRT captions.
+7. Renders MP4, probes codec/dimensions/frame rate/duration/audio streams, decodes with FFmpeg and extracts frame samples.
+
+## Outputs
+
+Each run has its own folder under out. It contains brief.json, storyboard.json, storyboard-timed.json, props.json, voiceover.txt, captions.srt, research.json, manifest.json, qc-report.json, and video.mp4 when rendering succeeds. Audio assets are under public/generated for Remotion to load and for the output artifact to retain.
+
+## Honest quality boundary
+
+Technical PASS means the file exists, matches expected metadata and passes the decode test. Extracting frame samples is not the same as visually reviewing them. The QC report leaves creativeReview and audioListening as NOT_RUN. The conceptual fallback is not a sourced factual documentary. Fonts, models and paid APIs are not assumed installed or free.

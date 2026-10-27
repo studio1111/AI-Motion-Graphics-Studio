@@ -1,0 +1,122 @@
+name: Produce Motion Graphics Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: Topic or question for the video
+        required: true
+        type: string
+      language:
+        description: Spoken and on-screen language
+        required: true
+        type: choice
+        options: [fa, en, de, es, fr, it, pt, nl]
+        default: fa
+      duration:
+        description: Target duration in seconds
+        required: true
+        type: number
+        default: 90
+      style:
+        description: Visual style preset
+        required: true
+        type: choice
+        options:
+          - auto
+          - cinematic-documentary
+          - editorial-kinetic-type
+          - data-journalism
+          - scientific-2-5d
+          - tactile-collage
+          - premium-3d-product
+          - character-2d
+          - swiss-modernist
+          - procedural-generative
+          - maps-timeline
+          - vertical-social
+          - hybrid-live-action
+        default: auto
+      aspect_ratio:
+        description: Output aspect ratio
+        required: true
+        type: choice
+        options: ["16:9", "9:16", "1:1"]
+        default: "16:9"
+      allow_paid_ai:
+        description: Explicitly allow configured Firecrawl/Claude API calls that may incur charges
+        required: true
+        type: choice
+        options: ["false", "true"]
+        default: "false"
+      generate_voice:
+        description: Generate local Pocket TTS narration when supported
+        required: true
+        type: boolean
+        default: false
+      plan_only:
+        description: Create storyboard and manifests without rendering
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MOTION_TOPIC: ${{ inputs.topic }}
+      MOTION_STUDIO_LANGUAGE: ${{ inputs.language }}
+      MOTION_STUDIO_DURATION: ${{ inputs.duration }}
+      MOTION_STUDIO_STYLE: ${{ inputs.style }}
+      MOTION_STUDIO_ASPECT_RATIO: ${{ inputs.aspect_ratio }}
+      MOTION_STUDIO_ALLOW_PAID_API: ${{ inputs.allow_paid_ai }}
+      MOTION_STUDIO_VOICE: ${{ inputs.generate_voice && inputs.language != 'fa' && 'pocket-tts' || 'auto' }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+      FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Set up Python for optional local TTS
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Node dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install media tools and readable system fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-liberation2 fonts-noto-core
+      - name: Validate production code
+        run: npm run validate
+      - name: Install Pocket TTS only when explicitly requested and supported
+        if: ${{ inputs.generate_voice && inputs.language != 'fa' }}
+        run: python -m pip install --no-cache-dir pocket-tts
+      - name: Explain Persian voice fallback
+        if: ${{ inputs.generate_voice && inputs.language == 'fa' }}
+        run: echo "Official Pocket TTS currently has no Persian model. The workflow will not substitute an unrelated voice."
+      - name: Ensure Remotion browser
+        run: npx remotion browser ensure
+      - name: Produce and render video
+        if: ${{ !inputs.plan_only }}
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE"
+      - name: Produce storyboard and manifest only
+        if: ${{ inputs.plan_only }}
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice off --plan-only
+      - name: Upload video, source manifest and generated assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: motion-graphics-${{ github.run_id }}
+          path: |
+            out/**
+            public/generated/**
+          if-no-files-found: warn
+          retention-days: 7

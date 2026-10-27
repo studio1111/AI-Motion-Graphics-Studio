@@ -1,0 +1,74 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { allocateFrames, buildLocalPlan, chooseStyle, normalizePlan, parseArgs, safeSlug, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+
+test("local fallback creates eight scenes and varies visual layouts",()=>{
+  const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
+  assert.equal(plan.scenes.length,8);
+  assert.equal(plan.contentMode,"conceptual_template");
+  assert.ok(plan.scenes[0].title.includes("دگرگونی اقلیم"));
+  assert.equal(plan.scenes.reduce((sum,s)=>sum+s.durationInFrames,0),2700);
+  assert.ok(new Set(plan.scenes.map(s=>s.layout)).size>=5);
+  assert.ok(plan.scenes.every(s=>s.sourceRefs.length===0));
+  assert.match(plan.scenes[5].narration,/داده|آمار/);
+});
+
+test("frame allocator fills target duration exactly with positive durations",()=>{
+  for(const [count,total] of [[8,2700],[4,120],[6,1800],[12,360]]){
+    const draft=Array.from({length:count},(_,i)=>({title:"Scene "+i,body:"A different scene description.",narration:"Explain the idea clearly."}));
+    const frames=allocateFrames(draft,total,30);
+    assert.equal(frames.reduce((a,b)=>a+b,0),total);
+    assert.ok(frames.every(v=>Number.isInteger(v)&&v>0));
+  }
+});
+
+test("automatic style selection considers topic and target format",()=>{
+  assert.equal(chooseStyle("auto","Population statistics and data","16:9"),"data-journalism");
+  assert.equal(chooseStyle("auto","Quantum physics","16:9"),"scientific-2-5d");
+  assert.equal(chooseStyle("auto","Any topic","9:16"),"vertical-social");
+  assert.equal(chooseStyle("documentary","Any topic","16:9"),"cinematic-documentary");
+  assert.throws(()=>chooseStyle("unregistered-style","Topic"),/Unknown style/);
+});
+
+test("storyboard validator catches duplicate IDs and unknown layouts",()=>{
+  const plan=buildLocalPlan({topic:"Test topic",language:"en",styleId:"cinematic-documentary",totalFrames:240,fps:30});
+  plan.scenes[1].id=plan.scenes[0].id;
+  plan.scenes[2].layout="teleport";
+  const errors=validateStoryboard(plan);
+  assert.ok(errors.some(e=>e.includes("Duplicate scene id")));
+  assert.ok(errors.some(e=>e.includes("layout is invalid")));
+});
+
+test("normalizer removes source references that were not supplied",()=>{
+  const base=buildLocalPlan({topic:"Source integrity",language:"en",styleId:"cinematic-documentary",totalFrames:240,fps:30});
+  base.scenes[0].sourceRefs=["https://invented.example/fact","https://trusted.example/article"];
+  const normalized=normalizePlan(base,{topic:"Source integrity",language:"en",styleId:"cinematic-documentary",fps:30,totalFrames:240,duration:8,aspectRatio:"16:9",sources:[{url:"https://trusted.example/article",title:"Supplied source",description:"",markdown:""}]});
+  assert.deepEqual(normalized.scenes[0].sourceRefs,["https://trusted.example/article"]);
+  assert.equal(normalized.scenes.reduce((sum,s)=>sum+s.durationInFrames,0),240);
+});
+
+test("paid provider calls are disabled by default",()=>{
+  const options=parseArgs([],{});
+  assert.equal(options.allowPaidAI,false);
+  assert.equal(options.language,"fa");
+  const opted=parseArgs(["--topic","Solar science","--allow-paid-ai","--plan-only"],{});
+  assert.equal(opted.allowPaidAI,true);
+  assert.equal(opted.planOnly,true);
+  assert.equal(opted.topic,"Solar science");
+  assert.throws(()=>parseArgs(["--mystery"],{}),/Unknown option/);
+});
+
+test("output slug is path-safe",()=>{
+  const slug=safeSlug("../../my dangerous: topic");
+  assert.ok(slug.length>0&&slug.length<=48);
+  assert.ok(!slug.includes("/")&&!slug.includes("\\"));
+  assert.equal(safeSlug("***"),"motion-video");
+});
+
+test("WAV duration parser handles a minimal PCM header",()=>{
+  const wav=Buffer.alloc(48);
+  wav.write("RIFF",0);wav.writeUInt32LE(40,4);wav.write("WAVE",8);
+  wav.writeUInt32LE(96000,28);wav.write("data",36);wav.writeUInt32LE(48000,40);
+  assert.equal(wavDuration(wav),0.5);
+  assert.equal(wavDuration(Buffer.from("not-wav")),null);
+});

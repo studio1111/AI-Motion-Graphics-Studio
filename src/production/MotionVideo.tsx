@@ -495,6 +495,41 @@ const SceneView: React.FC<{
           </div>
         </div>
 
+        {props.captionsEnabled && scene.audioSrc && scene.narration ? (
+          <div
+            dir={rtl ? "rtl" : "auto"}
+            style={{
+              position: "absolute",
+              left: margin,
+              right: margin,
+              bottom: 76,
+              display: "flex",
+              justifyContent: "center",
+              zIndex: 5,
+              pointerEvents: "none"
+            }}
+          >
+            <div
+              style={{
+                maxWidth: vertical ? "96%" : "78%",
+                padding: vertical ? "10px 16px" : "12px 22px",
+                background: rgba(palette.background, 0.9),
+                border: "1px solid " + rgba(palette.foreground, 0.16),
+                borderRadius: 5,
+                color: palette.foreground,
+                fontFamily: typography.body,
+                fontSize: vertical ? 22 : 24,
+                lineHeight: 1.32,
+                textAlign: "center",
+                whiteSpace: "pre-wrap",
+                boxShadow: "0 8px 30px " + rgba(palette.background, 0.22)
+              }}
+            >
+              {scene.narration}
+            </div>
+          </div>
+        ) : null}
+
         <div style={{ position: "absolute", left: margin, right: margin, bottom: 34, display: "flex", alignItems: "center", gap: 18 }}>
           <div style={{ height: 2, flex: 1, background: rgba(palette.foreground, 0.14), overflow: "hidden" }}>
             <div style={{ width: String(sceneProgress * 100) + "%", height: "100%", background: palette.accent }} />
@@ -510,9 +545,13 @@ export const MotionVideo: React.FC<MotionVideoProps> = (props) => {
   const { fps } = useVideoConfig();
   const totalFrames = props.scenes.reduce((sum, scene) => sum + Math.max(1, scene.durationInFrames), 0);
   let offset = 0;
+  const voiceRanges: Array<{ startFrame: number; endFrame: number }> = [];
   const sceneSequences = props.scenes.map((scene, index) => {
     const startFrame = offset;
     offset += Math.max(1, scene.durationInFrames);
+    if (scene.audioSrc) {
+      voiceRanges.push({ startFrame, endFrame: startFrame + Math.min(scene.durationInFrames, scene.audioDurationInFrames || scene.durationInFrames) });
+    }
     return (
       <Sequence key={scene.id} from={startFrame} durationInFrames={scene.durationInFrames} name={scene.title}>
         <SceneView scene={scene} palette={props.palette} typography={props.typography} props={{ ...props, durationInFrames: totalFrames }} index={index} sceneCount={props.scenes.length} offset={startFrame} />
@@ -526,7 +565,11 @@ export const MotionVideo: React.FC<MotionVideoProps> = (props) => {
       {props.audioBedSrc ? (
         <Audio
           src={staticFile(props.audioBedSrc)}
-          volume={(frame) => interpolate(frame, [0, fps * 2, Math.max(fps * 2, totalFrames - fps * 3), totalFrames], [0, 0.19, 0.19, 0], clamp)}
+          volume={(frame) => {
+            const envelope = interpolate(frame, [0, fps * 2, Math.max(fps * 2, totalFrames - fps * 3), totalFrames], [0, 0.075, 0.075, 0], clamp);
+            const narrationIsActive = voiceRanges.some((range) => frame >= range.startFrame && frame < range.endFrame);
+            return narrationIsActive ? Math.min(envelope, 0.025) : envelope;
+          }}
         />
       ) : null}
     </AbsoluteFill>

@@ -1,27 +1,40 @@
 # AI Motion Graphics Studio
 
-A curated agent-skill and Claude Code prompt toolkit for professional motion graphics.
+A programmatic motion-graphics studio built on Remotion, with style presets, prompt/skill libraries, and an autonomous storyboard-to-render CLI.
 
 ## Start here
-- `CLAUDE.md`: persistent production instructions.
+- `CLAUDE.md`: persistent project instructions.
+- `docs/PRODUCTION_CLI.md`: real CLI workflow and configuration.
 - `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`: autonomous Claude production prompt.
-- `docs/MOTION_STYLE_BIBLE.md`: twelve distinct style families.
-- `docs/STYLE_PRESET_CATALOG.md`: twelve concrete presets with palette tokens, font-role candidates, motion grammar, pacing, sound and anti-patterns.
-- `docs/MOTION_DESIGN_SYSTEM.md`: typography, color, motion, pacing, sound and accessibility.
-- `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: target production state machine and quality gates.
-- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene-prompt recipes and modifiers.
-- `docs/REFERENCE_PATTERN_MATRIX.md`: 2026 article-level findings and evidence limitations.
-- `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: general production master prompt.
-- `prompts/REFERENCE_VIDEO_ANALYSIS_PROMPT.md`: reference analysis template.
-- `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: benchmark target and public video candidates.
-- `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost notes.
+- `docs/MOTION_STYLE_BIBLE.md`: twelve motion-design families.
+- `docs/STYLE_PRESET_CATALOG.md`: concrete palettes, font roles, motion, sound and anti-patterns.
+- `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
+- `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
+- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
+- `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
+- `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
+- `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost caveats.
 
-The repository contains 26 general skills under `.agents/skills/` and five Claude Code project skills under `.claude/skills/`. The former “Why is the sky blue?” example remains removed. The three-second `MotionDemo` is technical smoke-test infrastructure only.
+## Running the production engine
 
-## Research status
-The catalog has 55 public video candidates, mainly metadata-only. Three recent article-level studies describe 100 UI animation videos, 74 B2B tech demos and 95 enterprise AI launches. They come from one publisher, may overlap and are not counted as videos reviewed by this project. Their linked raw datasets returned HTTP 410. TubeLab and TubeAlfred attempts returned HTTP 402. The 1,000-video visual study is **not complete**, and no full-video reviews are claimed.
+Local install and validation:
 
-## Runtime status
-The executable project remains a Remotion smoke-test pipeline. Fully unattended topic-to-final-video generation is not yet verified. The latest confirmed Actions run validated both skill catalogs, rendered the smoke-test MP4, installed FFmpeg/FFprobe, verified the MP4 metadata and uploaded an artifact.
+    npm install
+    npx remotion browser ensure
+    npm run validate
 
-Pocket TTS and WhisperX are target/preferred routes only when their actual runtimes are installed and tested. Cloud providers may incur charges; confirm current pricing, schemas, limits and usage rights before use.
+Build and render a 90-second video:
+
+    npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
+
+For Persian, set language to fa. The local fallback is an eight-scene conceptual template; it does not invent factual statistics. To generate a topic-specific storyboard with configured services, set ANTHROPIC_API_KEY and/or FIRECRAWL_API_KEY, then explicitly pass --allow-paid-ai. This switch can incur provider charges. Secrets alone do not enable those APIs.
+
+GitHub Actions has a production workflow: open Actions, choose Produce Motion Graphics Video, enter the topic and format, keep paid AI disabled unless authorized, then run the workflow. Generated video and manifests are uploaded as a short-lived artifact.
+
+## Runtime status and limitations
+
+The repository includes a data-driven MotionVideo composition with eleven layout modes, a local production CLI, optional Firecrawl research, optional Claude storyboard generation, optional Pocket TTS for its supported languages, a generated ambient audio bed, captions/SRT, Remotion rendering and FFprobe/FFmpeg technical checks. GitHub Actions runs the production tests and renders both the generic smoke test and the data-driven composition.
+
+Technical QC does not automatically prove creative quality. Reports intentionally leave human visual review and audio listening as NOT_RUN. Font names are candidates, not proof the font files exist. Official Pocket TTS does not list Persian; it will not silently substitute an unrelated-language voice. Full 1,000-video visual analysis is still incomplete; the reference set contains candidates and article-level evidence, not a claim of 1,000 videos watched.
+
+The former “Why is the sky blue?” example remains removed. MotionDemo is smoke-test infrastructure only.

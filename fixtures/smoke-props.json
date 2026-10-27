@@ -1,0 +1,88 @@
+{
+  "topic": "Motion design smoke test",
+  "title": "Motion design smoke test",
+  "subtitle": "Test the production composition",
+  "language": "en",
+  "styleId": "editorial-kinetic-type",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "durationInFrames": 180,
+  "captionsEnabled": false,
+  "palette": {
+    "background": "#111114",
+    "foreground": "#F2EFE8",
+    "muted": "#A8A6A0",
+    "accent": "#F04D35",
+    "accent2": "#D9C35B",
+    "panel": "#25252B",
+    "line": "#55535B"
+  },
+  "typography": {
+    "display": "Barlow Condensed, Liberation Sans, sans-serif",
+    "body": "Source Sans 3, Liberation Sans, sans-serif",
+    "mono": "IBM Plex Mono, Liberation Mono, monospace"
+  },
+  "scenes": [
+    {
+      "id": "smoke-01",
+      "kicker": "QUESTION",
+      "title": "Start with a better question.",
+      "body": "A strong visual story begins with one clear purpose.",
+      "narration": "",
+      "layout": "hero",
+      "durationInFrames": 45,
+      "bullets": [
+        "Focus",
+        "Context",
+        "Purpose"
+      ],
+      "transition": "wipe"
+    },
+    {
+      "id": "smoke-02",
+      "kicker": "SYSTEM",
+      "title": "Make the invisible visible.",
+      "body": "Relationships become easier to understand when they have form.",
+      "narration": "",
+      "layout": "diagram",
+      "durationInFrames": 45,
+      "bullets": [
+        "Input",
+        "Process",
+        "Outcome"
+      ],
+      "transition": "scale"
+    },
+    {
+      "id": "smoke-03",
+      "kicker": "TRANSFORM",
+      "title": "Change the frame, not just the zoom.",
+      "body": "A new layout should reveal a new part of the idea.",
+      "narration": "",
+      "layout": "editorial",
+      "durationInFrames": 45,
+      "bullets": [
+        "Reveal",
+        "Connect",
+        "Hold"
+      ],
+      "transition": "split"
+    },
+    {
+      "id": "smoke-04",
+      "kicker": "TAKEAWAY",
+      "title": "Motion should mean something.",
+      "body": "Resolve the promise, then let the result settle.",
+      "narration": "",
+      "layout": "outro",
+      "durationInFrames": 45,
+      "bullets": [
+        "Clarity",
+        "Craft",
+        "Purpose"
+      ],
+      "transition": "fade"
+    }
+  ]
+}

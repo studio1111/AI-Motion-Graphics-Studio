@@ -50,3 +50,7 @@ Discovery returned image-to-video candidates and marketing-motion routes. Verify
 
 ## Cost, rights and research status
 Check live prices and quotas before generation. Keep credentials in secrets and track each generated asset's provenance. A generated asset does not itself establish commercial-use rights. TubeLab and TubeAlfred returned HTTP 402. The public catalog has 55 video candidates, mostly L0, and the 1,000-video visual study remains incomplete.
+
+
+## Executable CLI
+scripts/produce.mjs is the local orchestration entry point. It does not require additional npm packages beyond the existing Remotion project. Configured Firecrawl search and Claude generation require API keys and the explicit paid-provider opt-in. Pocket TTS is an optional local Python runtime, only invoked when installed and the requested language is supported. Technical QC uses FFprobe and FFmpeg, which the GitHub Actions workflow installs on its runner.
