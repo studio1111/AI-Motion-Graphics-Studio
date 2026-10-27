@@ -1,6 +1,6 @@
 # Agent Skills Index
 
-Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository currently contains 26 local skill guides. These are agent instructions, not proof that every external application or service is installed.
+Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository currently contains 25 local skill guides. These are agent instructions, not proof that every external application or service is installed.
 
 ## Creative direction and design
 - `cinematic-motion-design`
@@ -50,7 +50,7 @@ npx skills add remotion-dev/skills
 The local Remotion guide is not a substitute for all upstream reference files. The command has not been executed from the remote GitHub editor. The upstream repository has no declared license in GitHub repository metadata, so its files are not copied into this repository.
 
 ## Validation status
-- [x] Added seven original production/routing skills and two master prompts.
+- [x] Added six original production/routing skills and two master prompts.
 - [x] Added toolchain catalog and documented 1,000-video research plan.
 - [ ] Run skill validator and inspect CI results after the index update.
 - [ ] Inspect representative rendered frames and confirm visual output.
