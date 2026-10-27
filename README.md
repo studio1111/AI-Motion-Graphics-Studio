@@ -4,7 +4,7 @@ A curated Agent Skills toolkit for advanced cinematic motion graphics and AI-ass
 
 ## What is included
 
-The repository contains **25 local skill guides** under `.agents/skills/`. These are original workflow instructions for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
+The repository contains **26 local skill guides** under `.agents/skills/`. These are original workflow instructions plus one attributed CC0 upstream skill; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
 
 ### Creative direction and design
 - `cinematic-motion-design`: art direction, hierarchy, pacing, transitions
@@ -18,7 +18,8 @@ The repository contains **25 local skill guides** under `.agents/skills/`. These
 - `motion-graphics-visual-systems`: visual grammar, scene variety, and transitions
 
 ### Animation and scene construction
-- `remotion-video-production`: frame-based React video workflow
+- `remotion-video-production`: existing project workflow
+- `remotion-video-agent`: adapted from an upstream CC0 skill with attribution
 - `gsap-motion`: timeline-driven web/SVG animation
 - `hyperframes-motion`: HTML/CSS timeline workflow, integration to verify
 - `threejs-webgl-motion`: real-time 3D and WebGL scenes
