@@ -1,6 +1,6 @@
 # Agent Skills Index
 
-26 general skill guides live in `.agents/skills/<name>/SKILL.md`. These are workflow instructions, not proof that external applications are installed.
+26 general skill guides live in `.agents/skills/<name>/SKILL.md`. These are workflow guides, not proof that an external application is installed.
 
 ## Creative direction and design
 - `cinematic-motion-design`
@@ -40,6 +40,7 @@
 - `prompts/REFERENCE_VIDEO_ANALYSIS_PROMPT.md`
 - `prompts/STYLE_RECIPE_LIBRARY.md`
 - `docs/MOTION_STYLE_BIBLE.md`
+- `docs/STYLE_PRESET_CATALOG.md`
 - `docs/MOTION_DESIGN_SYSTEM.md`
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`
 - `docs/REFERENCE_PATTERN_MATRIX.md`
@@ -47,6 +48,6 @@
 - `research/REFERENCE_SEED_CATALOG.md`
 - `docs/TOOLCHAIN_CATALOG.md`
 
-Claude Code-specific project skills are in `.claude/skills/`. The official Remotion AI skill installer is described at https://www.remotion.dev/docs/ai/skills, but this remote editing session did not run `npx skills add remotion-dev/skills`; files were not vendored because upstream licensing metadata was unclear.
+Claude Code-specific skills are under `.claude/skills/`. The official Remotion AI skills installer is documented at https://www.remotion.dev/docs/ai/skills, but this remote edit did not run `npx skills add remotion-dev/skills`. The upstream repository license metadata was unclear, so its files were not vendored.
 
-Current status: 55 public video candidates, mostly L0 metadata, plus external article-level reports summarized in the pattern matrix. The 1,000-video study remains incomplete. CI must pass before claiming the current render pipeline is verified.
+Current status: 55 public video candidates, mostly L0 metadata, plus three article-level reports in the pattern matrix. The 1,000-video study remains incomplete. CI must pass before claiming the current render validation.
