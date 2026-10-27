@@ -1,4 +1,5 @@
 import React from "react";
+import { SkyBlueFilm } from "./sky-blue";
 import { Composition, interpolate, useCurrentFrame } from "remotion";
 
 const Demo: React.FC = () => {
@@ -92,6 +93,14 @@ const Demo: React.FC = () => {
 
 export const MotionStudioRoot: React.FC = () => (
   <>
+    <Composition
+      id="SkyBlueFilm"
+      component={SkyBlueFilm}
+      durationInFrames={2700}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
     <Composition
       id="MotionDemo"
       component={Demo}
