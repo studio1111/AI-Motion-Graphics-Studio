@@ -1,42 +1,35 @@
 # Motion Graphics Research and Benchmark Plan
 
-## Purpose
-Build a durable craft library from a broad sample of public motion graphics and educational/documentary videos, then turn recurring patterns into original skills, reusable components, prompts, and measurable quality checks.
+## Current status: 2026-10-27
+The 1,000-video study is incomplete. Firecrawl public search supplied a handful of candidates listed in `research/REFERENCE_SEED_CATALOG.md`. TubeLab and TubeAlfred returned HTTP 402 for insufficient credits and the attempted searches did not execute. Current seeds contain L0/L1 evidence only; no full-video L2 or timestamped L3 review is claimed.
 
-## Honest scope
-The research provider returned HTTP 402 during the initial attempt. Therefore, this repository does not claim that 1,000 videos have already been watched or analyzed. Search discovery, metadata review, transcript review, full-video viewing, and frame-by-frame analysis are different evidence levels.
-
-## Target sample: at least 1,000 unique videos
+## Sample target: 1,000 unique videos
 - 200 educational/science explainers
 - 150 documentary/editorial explainers
-- 100 data visualization and infographic films
-- 100 kinetic typography and title sequences
+- 100 data visualization and infographics
+- 100 kinetic typography/title sequences
 - 100 2D character/shape animation
-- 100 3D and 2.5D motion design
-- 75 maps, timelines, and historical visualization
+- 100 3D/2.5D motion design
+- 75 maps/timelines/history
 - 75 product/technology explainers
-- 50 brand/logo and identity motion
-- 50 social vertical/short-form explainers
-Total: 1,000.
-
-## Per-video fields
-Canonical URL/platform; title and creator; publication date and duration; language; public view/engagement data and capture date; genre; hook; narrative structure; scene density; visual modes; typography and information density; transitions and camera movement; palette/depth/texture/lighting; narration/music/effects; accessibility; transferable techniques; confidence; inspection level; notes.
+- 50 brand/logo motion
+- 50 vertical/social explainers
 
 ## Evidence levels
-- L0: search result or metadata only.
-- L1: description or transcript reviewed.
-- L2: full video watched.
+- L0: title, search result, thumbnail or metadata.
+- L1: description, article, transcript or captions reviewed.
+- L2: complete video watched.
 - L3: timestamped scene analysis with selected frames.
-Do not count L0 or L1 as complete visual analysis. Report counts by evidence level and genre.
+Only L2/L3 count as complete visual review. Report evidence-level totals separately.
 
-## Sampling and bias control
-Deduplicate by canonical URL/video ID and near-identical reposts. Sample across creators, languages, formats, publication periods, and view bands. Include successful outliers and technically strong lower-view work. Views are not a direct measure of craft. Respect platform terms and creator rights; do not download or redistribute videos without permission.
+## Per-reference schema
+Canonical URL/video ID, title, creator, date, duration, language, engagement data/capture date, genre, query, transcript availability, evidence level, review date/spans, hook, story beats, scene density, visual modes, composition, typography, palette/materials, camera/motion, transitions, voice/music/effects, accessibility, transferable techniques, confidence, notes and duplicate group.
 
-## Synthesis
-After each 100 videos, update a pattern matrix. Separate broadly recurring techniques from genre-specific ones. Convert supported findings into original prompt modules, storyboard recipes, reusable components, and tested quality gates. Do not call a technique universal based on a small or biased sample.
+## Collection and sampling
+Discover in varied batches, canonicalize URLs, deduplicate reposts, record metadata honestly, retrieve permitted captions where available, and select a balanced subset for full viewing/frame analysis. Balance creators, genre, language, duration, platform, year and view bands. Views do not prove craft quality. Respect terms and rights. Refresh a pattern matrix after every 100 records and promote a general rule only when diverse evidence supports it.
 
 ## Completion criteria
-1,000 unique valid references; metadata and inspection level for each; genre quotas met or gaps disclosed; duplicate/coverage reports; synthesis mapped to reusable skills and tested components; evidence and capture dates retained.
+1,000 unique canonical references; quotas met or gaps disclosed; coverage and duplicate summaries; evidence counts; linked synthesis; and at least three evaluation briefs per major style family. Do not represent an unfinished study as complete.
 
-## Current status
-Plan created. Research-provider attempt failed with HTTP 402. The 1,000-video study remains pending; this plan is not evidence that it has been completed.
+## Access and budget
+TubeLab and TubeAlfred reported insufficient credits. Do not incur paid search or generation costs without a suitable approved budget. This is a tracked research target, not a background task. `research/REFERENCE_SEED_CATALOG.md` is a starter, not the completed dataset.
