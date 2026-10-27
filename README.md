@@ -4,7 +4,7 @@ A curated Agent Skills toolkit for advanced cinematic motion graphics and AI-ass
 
 ## What is included
 
-The repository contains **26 local skill guides** under `.agents/skills/`. These are original workflow instructions for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
+The repository contains **25 local skill guides** under `.agents/skills/`. These are original workflow instructions for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
 
 ### Creative direction and design
 - `cinematic-motion-design`: art direction, hierarchy, pacing, transitions
@@ -65,22 +65,14 @@ Inspect the installer's target and resulting diff before accepting changes. The 
 - The agent must support Agent Skills or be configured to read `.agents/skills/`.
 - Remotion, Node.js, GSAP, Blender, Three.js, FFmpeg, browser automation, fonts, plugins, and AI media services are separate runtime dependencies.
 - HyperFrames remains a workflow guide only; its canonical upstream, licensing, and executable integration must be verified before claiming it is installed.
-- Pocket TTS is the preferred local narration route for this project when installed and suitable; WhisperX is the intended transcription route when installed. Confirm actual installation in a working checkout.
+- Pocket TTS is the preferred local narration route when installed and suitable; WhisperX is the intended transcription route when installed. Confirm actual installation in a working checkout.
 - Free/open-source and local tools should be preferred where they meet the quality bar. Cloud AI media endpoints can incur usage charges and must be checked before use.
 
-## Safety, licensing, and quality
+## Executable smoke test and CI validation
 
-- Inspect upstream source, license, dependencies, and scripts before installing.
-- Check commercial-use terms for Remotion and every external asset, font, plugin, music track, model, or service.
-- Do not execute downloaded scripts blindly.
-- Keep credentials, generated media, caches, and large render files out of Git.
-- A render must be probed and visually/audio inspected before calling a workflow production-ready.
+The repository retains a 3-second generic studio bumper as a minimal Remotion smoke test. The former “Why is the sky blue?” sample composition and source file have been removed, as requested; the remaining bumper is infrastructure validation, not a production sample.
 
-## Existing executable sample and CI validation
-
-The repository includes a 3-second smoke demo and an earlier 90-second Persian science explainer sample. The sample is a reference implementation, not proof that the project can automatically produce every requested style.
-
-- `SkyBlueFilm` in `src/sky-blue.tsx` is the earlier 90-second science sample. The user previously asked to remove sample content; verify the current branch before using it as a production deliverable.
+- `src/index.ts` and `src/root.tsx` define `MotionDemo` (1920×1080, 30 fps, 3 seconds).
 - `package.json` pins Remotion CLI/runtime to `4.0.539` and React to `19.1.0`.
 - `scripts/validate-skills.mjs` checks skill frontmatter, directory/name consistency, unique names, and index coverage.
 - `.github/workflows/validate-motion-studio.yml` validates skills and renders an MP4 on pushes, pull requests, and manual dispatch.
