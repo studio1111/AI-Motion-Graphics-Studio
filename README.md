@@ -58,6 +58,15 @@ Check the installer's target and the resulting diff before accepting changes. Th
 - Keep credentials, generated media, caches, and large render files out of Git.
 - Test a minimal preview/render and inspect the exported file before calling a workflow production-ready.
 
-## Current status
+## Executable sample and CI validation
 
-Local skill guides have been committed. Underlying tools are not installed by these markdown files, and no render has yet been executed in this repository. The next validation step is to install the official Remotion skill package in a checkout, then create and render a minimal sample composition.
+A minimal Remotion project is included to prove that the toolchain can produce a real MP4:
+
+- `package.json` pins Remotion CLI/runtime to `4.0.539` and React to `19.1.0`.
+- `src/index.ts` and `src/root.tsx` define the `MotionDemo` composition (1920×1080, 30 fps, 3 seconds).
+- `scripts/validate-skills.mjs` checks skill frontmatter, directory/name consistency, unique names, and index coverage.
+- `.github/workflows/validate-motion-studio.yml` runs the skill validator and renders an MP4 on pushes, pull requests, and manual dispatch. The render is uploaded as a short-lived workflow artifact.
+
+The workflow has been added and GitHub Actions is running it. A successful commit or file upload is not proof that the render passed; check the Actions run and its `motion-studio-smoke-render` artifact before treating the runtime as verified.
+
+The official Remotion skill repository is linked above, but it has no declared repository license in its GitHub metadata. To avoid redistributing upstream files without clear terms, this repository does not vendor its full skill tree. The 19 local guides remain original workflow guides, and the official package can be installed in a working checkout using `npx skills add remotion-dev/skills` after reviewing its current terms.
