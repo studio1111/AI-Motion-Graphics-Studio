@@ -4,7 +4,7 @@ A curated Agent Skills toolkit for advanced cinematic motion graphics and AI-ass
 
 ## What is included
 
-The repository contains **24 local skill guides** under `.agents/skills/`. These are original workflow instructions for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
+The repository contains **26 local skill guides** under `.agents/skills/`. These are original workflow instructions for compatible agent clients; they are not a claim that every underlying application, plugin, or rendering engine has been installed.
 
 ### Creative direction and design
 - `cinematic-motion-design`: art direction, hierarchy, pacing, transitions
@@ -26,7 +26,7 @@ The repository contains **24 local skill guides** under `.agents/skills/`. These
 - `svg-lottie-animation`: vector and Lottie animation
 - `animated-infographics`: charts and data storytelling
 
-### Finishing and delivery
+### Finishing, routing, and delivery
 - `audio-sound-design`: voice, music, sound effects and mix planning
 - `color-grading-compositing`: color management and visual finishing
 - `subtitles-accessibility`: captions, readability, multilingual and RTL checks
@@ -35,12 +35,14 @@ The repository contains **24 local skill guides** under `.agents/skills/`. These
 - `production-pipeline`: end-to-end production orchestration
 - `audio-first-narration-and-sound`: narration timing, music, mix, and captions
 - `motion-render-quality-gates`: project, render, frame, audio, and delivery checks
+- `ai-media-tool-routing`: schema-checked routing for optional video, speech, transcription, and audio models
 
-## Master prompts and research plan
+## Master prompts, research, and toolchain catalog
 
 - `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: comprehensive production-team prompt.
 - `prompts/REFERENCE_VIDEO_ANALYSIS_PROMPT.md`: timestamped craft-analysis template for public reference videos.
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md`: stratified 1,000-video research plan with evidence levels and completion criteria.
+- `docs/TOOLCHAIN_CATALOG.md`: core deterministic stack and optional AI model routes.
 
 The research plan is not a claim that 1,000 videos have already been reviewed. The initial TubeLab research request returned HTTP 402, so the empirical study remains pending.
 
@@ -63,6 +65,7 @@ Inspect the installer's target and resulting diff before accepting changes. The 
 - The agent must support Agent Skills or be configured to read `.agents/skills/`.
 - Remotion, Node.js, GSAP, Blender, Three.js, FFmpeg, browser automation, fonts, plugins, and AI media services are separate runtime dependencies.
 - HyperFrames remains a workflow guide only; its canonical upstream, licensing, and executable integration must be verified before claiming it is installed.
+- Pocket TTS is the preferred local narration route for this project when installed and suitable; WhisperX is the intended transcription route when installed. Confirm actual installation in a working checkout.
 - Free/open-source and local tools should be preferred where they meet the quality bar. Cloud AI media endpoints can incur usage charges and must be checked before use.
 
 ## Safety, licensing, and quality
