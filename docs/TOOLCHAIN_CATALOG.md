@@ -54,3 +54,10 @@ Check live prices and quotas before generation. Keep credentials in secrets and 
 
 ## Executable CLI
 scripts/produce.mjs is the local orchestration entry point. It does not require additional npm packages beyond the existing Remotion project. Configured Firecrawl search and Claude generation require API keys and the explicit paid-provider opt-in. Pocket TTS is an optional local Python runtime, only invoked when installed and the requested language is supported. Technical QC uses FFprobe and FFmpeg, which the GitHub Actions workflow installs on its runner.
+
+
+## Persian local speech
+
+- `persian-speech` provides the `speech` CLI backed by Mana-Persian-Piper. Package/runtime license is MIT, and the Mana-TTS corpus is CC0 according to the current cards: https://pypi.org/project/persian-speech/1.1.3/, https://huggingface.co/MahtaFetrat/Mana-Persian-Piper, https://huggingface.co/datasets/MahtaFetrat/Mana-TTS.
+- The model is downloaded when first used and is not vendored in Git.
+- Pocket TTS is used for supported non-Persian languages only; official languages are listed at https://github.com/kyutai-labs/pocket-tts.

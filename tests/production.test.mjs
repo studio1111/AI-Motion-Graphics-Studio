@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { allocateFrames, buildLocalPlan, chooseStyle, normalizePlan, parseArgs, safeSlug, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+import { allocateFrames, buildLocalPlan, chooseStyle, normalizePlan, parseArgs, safeSlug, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
 
 test("local fallback creates eight scenes and varies visual layouts",()=>{
   const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
@@ -55,6 +55,7 @@ test("paid provider calls are disabled by default",()=>{
   assert.equal(opted.allowPaidAI,true);
   assert.equal(opted.planOnly,true);
   assert.equal(opted.topic,"Solar science");
+  assert.equal(parseArgs(["--voice","persian-speech"],{}).voice,"persian-speech");
   assert.throws(()=>parseArgs(["--mystery"],{}),/Unknown option/);
 });
 
@@ -71,4 +72,15 @@ test("WAV duration parser handles a minimal PCM header",()=>{
   wav.writeUInt32LE(96000,28);wav.write("data",36);wav.writeUInt32LE(48000,40);
   assert.equal(wavDuration(wav),0.5);
   assert.equal(wavDuration(Buffer.from("not-wav")),null);
+});
+
+test("caption segmentation limits the visible caption and creates multiple cues", () => {
+  const text = "A long spoken sentence should be broken into readable chunks instead of being shown all at once across a whole scene. This must work with Persian text too: هر جمله باید به بخش‌های کوتاه‌تر و خواناتر تقسیم شود.";
+  const segments = splitCaptionSegments(text, 44);
+  assert.ok(segments.length >= 3);
+  for (const segment of segments) {
+    const lines = segment.split("\n");
+    assert.ok(lines.length <= 2);
+    assert.ok(lines.every(line => line.length <= 44));
+  }
 });

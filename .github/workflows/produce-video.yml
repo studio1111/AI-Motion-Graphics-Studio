@@ -50,7 +50,7 @@ on:
         options: ["false", "true"]
         default: "false"
       generate_voice:
-        description: Generate local Pocket TTS narration when supported
+        description: Generate local narration; Persian uses Persian Speech and other supported languages use Pocket TTS
         required: true
         type: boolean
         default: false

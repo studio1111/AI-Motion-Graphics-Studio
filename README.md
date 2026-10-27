@@ -38,3 +38,8 @@ The repository includes a data-driven MotionVideo composition with eleven layout
 Technical QC does not automatically prove creative quality. Reports intentionally leave human visual review and audio listening as NOT_RUN. Font names are candidates, not proof the font files exist. Official Pocket TTS does not list Persian; it will not silently substitute an unrelated-language voice. Full 1,000-video visual analysis is still incomplete; the reference set contains candidates and article-level evidence, not a claim of 1,000 videos watched.
 
 The former “Why is the sky blue?” example remains removed. MotionDemo is smoke-test infrastructure only.
+
+
+## Local narration engines
+
+The production workflow can now generate Persian/Farsi narration locally via `persian-speech` / Mana-Persian-Piper, and uses Pocket TTS for supported non-Persian languages. The Persian package lists its runtime/model distribution as MIT and its Mana-TTS corpus as CC0: [package](https://pypi.org/project/persian-speech/1.1.3/), [voice model](https://huggingface.co/MahtaFetrat/Mana-Persian-Piper), [dataset card](https://huggingface.co/datasets/MahtaFetrat/Mana-TTS). First synthesis downloads model weights; no weights are committed to the repository. The `generate_voice` option is enabled by default in the production workflow. WhisperX remains a future transcription route, not an installed dependency.

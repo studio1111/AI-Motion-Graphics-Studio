@@ -33,6 +33,10 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-liberation2 fonts-noto-core
       - name: Validate skills and production engine
         run: npm run validate
+      - name: Syntax-check and exercise the production CLI
+        run: |
+          node --check scripts/produce.mjs
+          npm run produce -- --topic "CLI orchestration regression" --language en --duration 20 --style auto --aspect-ratio 16:9 --voice off --plan-only
       - name: Ensure Remotion browser
         run: npx remotion browser ensure
       - name: Prepare render directory

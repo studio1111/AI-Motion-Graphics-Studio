@@ -51,3 +51,6 @@
 Claude Code-specific skills are under `.claude/skills/`. The official Remotion AI skills installer is documented at https://www.remotion.dev/docs/ai/skills, but this remote edit did not run `npx skills add remotion-dev/skills`. The upstream repository license metadata was unclear, so its files were not vendored.
 
 Current status: 55 public video candidates, mostly L0 metadata, plus three article-level reports in the pattern matrix. The 1,000-video study remains incomplete. CI must pass before claiming the current render validation.
+
+
+Local Farsi narration uses the opt-in/installed `persian-speech` package in the production CLI; see `docs/PRODUCTION_CLI.md`. Voice model weights are fetched at first use and are not committed to this repository.

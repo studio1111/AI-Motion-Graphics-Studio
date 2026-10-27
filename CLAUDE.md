@@ -27,3 +27,8 @@ This repository currently has a Remotion smoke-test pipeline plus skills, prompt
 A real command-line path now exists in scripts/produce.mjs. It creates a brief, source record, storyboard, timed scene manifest, Remotion props, narration text, SRT captions, procedural ambience, video render and QC report. It can optionally use Firecrawl and Claude only when paid-service opt-in is enabled and the matching API key is set. It can optionally use local Pocket TTS when installed and supported. Do not claim that technical QC is a creative review, and do not represent the conceptual fallback as fact-checked research. See docs/PRODUCTION_CLI.md for exact usage.
 
 The GitHub Actions workflow Produce Motion Graphics Video can render a user-specified topic and upload the output artifact. Paid providers are disabled by default. Keep the removed former Sky Blue example removed.
+
+
+## Narration defaults
+
+With voice generation enabled, route Farsi to the local `persian-speech` / Mana-Persian-Piper runtime, and supported non-Persian languages to Pocket TTS. Do not substitute a wrong-language voice when a runtime is missing. Measure WAV duration, extend scene timing rather than truncating speech, segment captions into short readable cues, and record actual TTS failures. See `docs/PRODUCTION_CLI.md` for package and license references.

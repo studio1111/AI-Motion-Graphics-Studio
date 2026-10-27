@@ -28,6 +28,36 @@ const rgba = (hex: string, alpha: number) => {
 
 const isRtlLanguage = (language: string) => /^(fa|ar|ur|he)(-|$)/i.test(language);
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+const splitCaptionSegments = (text: string, maxChars = 44) => {
+  const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let line = "";
+  for (const word of words) {
+    const next = line ? line + " " + word : word;
+    if (line && next.length > maxChars) { lines.push(line); line = word; }
+    else line = next;
+  }
+  if (line) lines.push(line);
+  const segments: string[] = [];
+  for (let index = 0; index < lines.length; index += 2) {
+    segments.push([lines[index], lines[index + 1]].filter(Boolean).join("\n"));
+  }
+  return segments;
+};
+
+const captionForFrame = (text: string, frame: number, spokenFrames: number) => {
+  const segments = splitCaptionSegments(text);
+  if (!segments.length || frame < 0 || frame >= Math.max(1, spokenFrames)) return "";
+  const weights = segments.map((segment) => segment.split(/\s+/).filter(Boolean).length);
+  const total = weights.reduce((sum, value) => sum + value, 0) || 1;
+  const position = frame / Math.max(1, spokenFrames) * total;
+  let accumulated = 0;
+  for (let index = 0; index < segments.length; index += 1) {
+    accumulated += weights[index];
+    if (position < accumulated || index === segments.length - 1) return segments[index];
+  }
+  return segments[segments.length - 1];
+};
 
 const SceneBackdrop: React.FC<{ palette: MotionPalette; frame: number; index: number }> = ({ palette, frame, index }) => {
   const drift = interpolate(frame, [0, 150], [-2, 3], clamp);
@@ -512,6 +542,8 @@ const SceneView: React.FC<{
             <div
               style={{
                 maxWidth: vertical ? "96%" : "78%",
+                minWidth: vertical ? "56%" : "38%",
+                minHeight: vertical ? 54 : 58,
                 padding: vertical ? "10px 16px" : "12px 22px",
                 background: rgba(palette.background, 0.9),
                 border: "1px solid " + rgba(palette.foreground, 0.16),
@@ -525,7 +557,7 @@ const SceneView: React.FC<{
                 boxShadow: "0 8px 30px " + rgba(palette.background, 0.22)
               }}
             >
-              {scene.narration}
+              {captionForFrame(scene.narration, frame, scene.audioDurationInFrames || scene.durationInFrames)}
             </div>
           </div>
         ) : null}

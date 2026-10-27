@@ -9,7 +9,7 @@ The executable entry point is scripts/produce.mjs. It builds a storyboard and a 
     npm run validate
     npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
 
-The default Persian workflow may render without narration because official Pocket TTS currently has no Persian model. For supported languages (English, German, Spanish, French, Italian, Portuguese, Dutch), the local engine can use Pocket TTS if its executable is installed.
+When the `speech` executable from `persian-speech` is installed, `--voice auto` uses a local Persian (Farsi) voice for `fa`. The package documents an MIT-licensed runtime/model distribution and a Mana-TTS corpus listed as CC0. The model downloads on first use, so initial synthesis needs network access. For supported non-Persian languages, the pipeline uses Pocket TTS. The GitHub workflow installs the appropriate local TTS package only when narration is enabled.
 
 ## Arguments
 
@@ -32,7 +32,7 @@ The default Persian workflow may render without narration because official Pocke
 2. If paid AI is explicitly enabled, Firecrawl may search for sources and Claude may generate a topic-specific scene plan. The API is not called without opt-in and credentials.
 3. Without available AI access, generates an eight-scene conceptual plan with varied visual layouts and explicit warnings that factual research has not been performed.
 4. Allocates exact scene frames; if local TTS succeeds, scene durations respect measured speech and may extend beyond the target instead of truncating narration.
-5. Optionally creates voice WAVs using Pocket TTS for the supported languages.
+5. Optionally creates voice WAVs using Persian Speech / Mana-Persian-Piper for Farsi, or Pocket TTS for its supported languages. If synthesis fails or a runtime is missing, the warning is preserved and rendering continues when possible.
 6. Creates an original soft procedural ambient WAV, Remotion props, storyboard timing, voiceover text and SRT captions.
 7. Renders MP4, probes codec/dimensions/frame rate/duration/audio streams, decodes with FFmpeg and extracts frame samples.
 

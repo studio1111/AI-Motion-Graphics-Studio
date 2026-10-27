@@ -63,7 +63,7 @@ export function parseArgs(argv=process.argv.slice(2),env=process.env){
   const map=new Map([["--topic","topic"],["--language","language"],["--duration","duration"],["--style","style"],["--aspect-ratio","aspectRatio"],["--voice","voice"],["--output-dir","outputDir"],["--brief","briefPath"],["--sources","sourcesPath"]]);
   for(let i=0;i<argv.length;i++){const arg=argv[i];if(arg==="--allow-paid-ai"){o.allowPaidAI=true;continue;}if(arg==="--plan-only"||arg==="--skip-render"){o.planOnly=true;continue;}if(arg==="--no-research"){o.skipResearch=true;continue;}if(arg==="--help"||arg==="-h"){o.help=true;continue;}const flag=arg.includes("=")?arg.slice(0,arg.indexOf("=")):arg;const inline=arg.includes("=")?arg.slice(arg.indexOf("=")+1):undefined;const key=map.get(flag);if(!key)throw new Error("Unknown option: "+arg);const value=inline===undefined?argv[++i]:inline;if(value===undefined||value==="")throw new Error("Missing value for "+flag);o[key]=key==="duration"?Number(value):value;}
   o.language=String(o.language).toLowerCase().split("-")[0];o.style=String(o.style).toLowerCase().replaceAll("_","-").replaceAll(" ","-");o.aspectRatio=String(o.aspectRatio).replace(/\s+/g,"");o.voice=String(o.voice).toLowerCase();
-  if(!["auto","off","pocket-tts"].includes(o.voice))throw new Error("Voice must be auto, off, or pocket-tts.");
+  if(!["auto","off","pocket-tts","persian-speech"].includes(o.voice))throw new Error("Voice must be auto, off, pocket-tts, or persian-speech.");
   if(!["16:9","9:16","1:1"].includes(o.aspectRatio))throw new Error("Aspect ratio must be 16:9, 9:16, or 1:1.");
   if(!Number.isFinite(o.duration)||o.duration<5||o.duration>600)throw new Error("Duration must be between 5 and 600 seconds.");
   return o;
@@ -129,13 +129,64 @@ function executable(command){for(const d of (process.env.PATH||"").split(delimit
 function run(command,args,timeout=120000){return new Promise(resolvePromise=>{let stdout="",stderr="",settled=false;let child;try{child=spawn(command,args,{stdio:["ignore","pipe","pipe"]});}catch(e){resolvePromise({code:null,error:String(e)});return;}const append=(a,b)=>(a+b.toString()).slice(-10000);child.stdout.on("data",d=>stdout=append(stdout,d));child.stderr.on("data",d=>stderr=append(stderr,d));let timedOut=false;const timer=setTimeout(()=>{timedOut=true;child.kill("SIGTERM");setTimeout(()=>{if(!settled)child.kill("SIGKILL");},3000).unref();},timeout);child.on("error",e=>{if(settled)return;settled=true;clearTimeout(timer);resolvePromise({code:null,stdout,stderr,error:String(e),timedOut});});child.on("close",code=>{if(settled)return;settled=true;clearTimeout(timer);resolvePromise({code,stdout,stderr,timedOut});});});}
 export function wavDuration(b){if(!Buffer.isBuffer(b)||b.length<44||b.toString("ascii",0,4)!=="RIFF")return null;const byteRate=b.readUInt32LE(28);let dataSize=null;for(let i=12;i+8<=b.length;){const name=b.toString("ascii",i,i+4),n=b.readUInt32LE(i+4);if(name==="data"){dataSize=n;break;}i+=8+n+(n%2);}return byteRate&&dataSize!==null?dataSize/byteRate:null;}
 async function makeVoice(scenes,language,mode,runId,fps,warnings){
- const result={status:"disabled",engine:null,generatedScenes:0,warnings:[]};if(mode==="off")return result;
- const lang={en:["english","alba"],de:["german","juergen"],fr:["french","estelle"],pt:["portuguese","rafael"],it:["italian","giovanni"],es:["spanish","lola"],nl:["dutch","alba"]};const locale=String(language).split("-")[0];
- if(!lang[locale]){const w="Official Pocket TTS has no "+locale+" model; no wrong-language voice was substituted.";result.status="unsupported_language";result.warnings.push(w);warnings.push(w);return result;}
- const exe=executable("pocket-tts");if(!exe){const w="Pocket TTS is not installed; the render will use generated ambience and on-screen text without narration.";result.status="not_installed";result.warnings.push(w);warnings.push(w);return result;}
- result.engine="Pocket TTS";result.status="generating";const dir=resolve("public","generated",runId);await mkdir(dir,{recursive:true});
- for(let i=0;i<scenes.length;i++){const s=scenes[i];if(!s.narration.trim())continue;const name="voice-"+String(i+1).padStart(2,"0")+".wav",file=join(dir,name);const r=await run(exe,["generate","--text",s.narration,"--output-path",file,"--language",lang[locale][0],"--voice",lang[locale][1],"--quiet"],180000);if(r.code!==0){const w="Pocket TTS failed on "+s.id+": "+String(r.stderr||r.error||"unknown error").slice(-200);result.status="partial";result.warnings.push(w);warnings.push(w);continue;}let b;try{b=await readFile(file);}catch{}const seconds=wavDuration(b);if(!seconds){const w="Pocket TTS produced unreadable WAV for "+s.id;result.status="partial";result.warnings.push(w);warnings.push(w);continue;}s.audioSrc="generated/"+runId+"/"+name;s.audioDurationInFrames=Math.ceil(seconds*fps);s.durationInFrames=s.audioDurationInFrames+Math.ceil(fps*1.1);result.generatedScenes++;}
- if(result.generatedScenes===scenes.length)result.status="generated";else if(result.generatedScenes)result.status="partial";else result.status="failed";return result;
+ const result={status:"disabled",engine:null,generatedScenes:0,warnings:[]};
+ if(mode==="off")return result;
+ const locale=String(language).split("-")[0].toLowerCase();
+ let engine=null;
+ if(locale==="fa"){
+  if(mode==="pocket-tts"){
+   const w="Pocket TTS does not currently provide an official Persian voice. Choose auto or persian-speech; no unrelated voice was substituted.";
+   result.status="unsupported_language";result.warnings.push(w);warnings.push(w);return result;
+  }
+  const speech=executable("speech");
+  if(!speech){
+   const w="Persian Speech (Mana-Persian-Piper) is not installed; output will have no Persian narration. Install persian-speech and rerun with --voice auto or --voice persian-speech.";
+   result.status="not_installed";result.warnings.push(w);warnings.push(w);return result;
+  }
+  engine={name:"Persian Speech / Mana-Persian-Piper",executable:speech,args:(text,file)=>[text,file],timeout:240000};
+ }else{
+  if(mode==="persian-speech"){
+   const w="persian-speech supports Persian text, not "+locale+". Use auto or pocket-tts for a supported language.";
+   result.status="unsupported_language";result.warnings.push(w);warnings.push(w);return result;
+  }
+  const models={en:["english","alba"],de:["german","juergen"],fr:["french","estelle"],pt:["portuguese","rafael"],it:["italian","giovanni"],es:["spanish","lola"],nl:["dutch","alba"]};
+  if(!models[locale]){
+   const w="No configured local voice supports language '"+locale+"'. No unrelated-language voice was substituted.";
+   result.status="unsupported_language";result.warnings.push(w);warnings.push(w);return result;
+  }
+  const pocket=executable("pocket-tts");
+  if(!pocket){
+   const w="Pocket TTS is not installed; output will have no generated narration. Install pocket-tts for the selected language.";
+   result.status="not_installed";result.warnings.push(w);warnings.push(w);return result;
+  }
+  engine={name:"Pocket TTS",executable:pocket,args:(text,file)=>["generate","--text",text,"--output-path",file,"--language",models[locale][0],"--voice",models[locale][1],"--quiet"],timeout:180000};
+ }
+ result.engine=engine.name;result.status="generating";
+ const dir=resolve("public","generated",runId);await mkdir(dir,{recursive:true});
+ const narratedScenes=scenes.filter(s=>String(s.narration||"").trim());
+ for(let i=0;i<scenes.length;i++){
+  const s=scenes[i];if(!String(s.narration||"").trim())continue;
+  const name="voice-"+String(i+1).padStart(2,"0")+".wav",file=join(dir,name);
+  const r=await run(engine.executable,engine.args(s.narration,file),engine.timeout);
+  if(r.code!==0){
+   const w=engine.name+" failed on "+s.id+(r.timedOut?" (timeout).":": "+String(r.stderr||r.error||"unknown error").slice(-220));
+   result.status="partial";result.warnings.push(w);warnings.push(w);continue;
+  }
+  let b;try{b=await readFile(file);}catch{}
+  const seconds=wavDuration(b);
+  if(!seconds||seconds<=0){
+   const w=engine.name+" produced an unreadable or empty WAV for "+s.id;
+   result.status="partial";result.warnings.push(w);warnings.push(w);continue;
+  }
+  s.audioSrc="generated/"+runId+"/"+name;
+  s.audioDurationInFrames=Math.ceil(seconds*fps);
+  s.durationInFrames=s.audioDurationInFrames+Math.ceil(fps*1.1);
+  result.generatedScenes++;
+ }
+ if(result.generatedScenes===narratedScenes.length&&narratedScenes.length>0)result.status="generated";
+ else if(result.generatedScenes>0)result.status="partial";
+ else result.status="failed";
+ return result;
 }
 async function writeBed(path,seconds){
  const rate=24000,count=Math.floor(Math.max(5,Math.min(600,seconds))*rate),bytes=count*4,b=Buffer.alloc(44+bytes);b.write("RIFF",0);b.writeUInt32LE(36+bytes,4);b.write("WAVE",8);b.write("fmt ",12);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(2,22);b.writeUInt32LE(rate,24);b.writeUInt32LE(rate*4,28);b.writeUInt16LE(4,32);b.writeUInt16LE(16,34);b.write("data",36);b.writeUInt32LE(bytes,40);const tau=Math.PI*2;
@@ -143,8 +194,38 @@ async function writeBed(path,seconds){
  await writeFile(path,b);
 }
 function srtTime(sec){const m=Math.round(Math.max(0,sec)*1000);const h=Math.floor(m/3600000),mi=Math.floor(m%3600000/60000),s=Math.floor(m%60000/1000),ms=m%1000;return [h,mi,s].map(v=>String(v).padStart(2,"0")).join(":")+","+String(ms).padStart(3,"0");}
-function srtText(text){const words=String(text||"").trim().split(/\s+/);const lines=[];let line="";for(const word of words){const next=line?line+" "+word:word;if(next.length>42&&line){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);return lines.length<=2?lines.join("\n"):lines[0]+"\n"+lines.slice(1).join(" ");}
-function makeSrt(scenes,fps){let cursor=0,index=1;const rows=[];for(const s of scenes){if(s.narration){const duration=Math.min(s.durationInFrames,s.audioDurationInFrames||s.durationInFrames);rows.push(index+++"\n"+srtTime(cursor/fps)+" --> "+srtTime((cursor+Math.max(1,duration))/fps)+"\n"+srtText(s.narration)+"\n");}cursor+=s.durationInFrames;}return rows.join("\n");}
+export function splitCaptionSegments(text,maxChars=44){
+ const words=String(text||"").trim().split(/\s+/).filter(Boolean);
+ if(!words.length)return [];
+ const lines=[];let line="";
+ for(const word of words){
+  const next=line?line+" "+word:word;
+  if(line&&next.length>maxChars){lines.push(line);line=word;}else line=next;
+ }
+ if(line)lines.push(line);
+ const segments=[];
+ for(let i=0;i<lines.length;i+=2)segments.push([lines[i],lines[i+1]].filter(Boolean).join("\n"));
+ return segments;
+}
+function makeSrt(scenes,fps){
+ let cursor=0,index=1;const rows=[];
+ for(const s of scenes){
+  const sceneFrames=s.durationInFrames;
+  const spokenFrames=Math.min(sceneFrames,s.audioDurationInFrames||sceneFrames);
+  const segments=splitCaptionSegments(s.narration);
+  const wordCounts=segments.map(v=>v.split(/\s+/).filter(Boolean).length);
+  const totalWords=wordCounts.reduce((a,b)=>a+b,0)||1;
+  let offset=0;
+  for(let i=0;i<segments.length;i++){
+   const start=cursor+Math.round(spokenFrames*offset/totalWords);
+   offset+=wordCounts[i];
+   const end=cursor+(i===segments.length-1?spokenFrames:Math.round(spokenFrames*offset/totalWords));
+   rows.push(index+++"\n"+srtTime(start/fps)+" --> "+srtTime(Math.max(start+1,end)/fps)+"\n"+segments[i]+"\n");
+  }
+  cursor+=sceneFrames;
+ }
+ return rows.join("\n");
+}
 function timedScenes(scenes,fps){let cursor=0;return scenes.map(s=>{const start=cursor,end=start+s.durationInFrames;cursor=end;return {...s,startFrame:start,endFrame:end,startSeconds:Number((start/fps).toFixed(3)),endSeconds:Number((end/fps).toFixed(3))};});}
 async function checkVideo(file,expected,dir){
  const report={fileExists:"NOT_RUN",nonEmpty:"NOT_RUN",probe:"NOT_RUN",decode:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN",failures:[],metadata:null,sampledFrames:[]};let st;try{st=await stat(file);report.fileExists="PASS";report.nonEmpty=st.size?"PASS":"FAIL";report.fileSizeBytes=st.size;}catch{report.fileExists="FAIL";report.nonEmpty="FAIL";report.failures.push("Video file missing.");return report;}
@@ -157,7 +238,7 @@ async function checkVideo(file,expected,dir){
  report.durationSeconds=duration;return report;
 }
 
-export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
+export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
 
 export async function produce(options,env=process.env){
  const warnings=[],runId=new Date().toISOString().replace(/[:.]/g,"-")+"-"+process.pid;let brief={};if(options.briefPath)brief=await readJson(resolve(options.briefPath));let sources=normalizeSources(brief.sources||brief.sourceUrls||[]);if(options.sourcesPath)sources=normalizeSources(sources.concat(normalizeSources(await readJson(resolve(options.sourcesPath))));
