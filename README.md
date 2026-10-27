@@ -60,8 +60,10 @@ Check the installer's target and the resulting diff before accepting changes. Th
 
 ## Executable sample and CI validation
 
-A minimal Remotion project is included to prove that the toolchain can produce a real MP4:
+A Remotion project includes both the 3-second smoke demo and a 90-second Persian science explainer:
 
+- `SkyBlueFilm` in `src/sky-blue.tsx` explains why the sky looks blue and why sunsets turn warm, using animated Persian typography, a shifting color palette, moving light rays, atmospheric particles, and an original synthesized ambient score. Rendered and probed output: 1920×1080, 30 fps, approximately 90 seconds. The sample is text-led and does not yet include spoken narration or AI-generated photorealistic footage.
+- Render it from a working checkout with `npx remotion render src/index.ts SkyBlueFilm out/why-is-the-sky-blue.mp4 --codec=h264`.
 - `package.json` pins Remotion CLI/runtime to `4.0.539` and React to `19.1.0`.
 - `src/index.ts` and `src/root.tsx` define the `MotionDemo` composition (1920×1080, 30 fps, 3 seconds).
 - `scripts/validate-skills.mjs` checks skill frontmatter, directory/name consistency, unique names, and index coverage.
