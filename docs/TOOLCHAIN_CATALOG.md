@@ -1,50 +1,41 @@
 # Motion Graphics Toolchain Catalog
 
-Last reviewed: 2026-10-27. This is a routing reference, not a claim that all tools are installed or configured.
+Last reviewed: 2026-10-27. Listing a tool here does not mean it is installed, free, configured, or licensed for every use.
 
-## Core deterministic pipeline
-- Remotion: programmatic React-based video composition and frame-accurate rendering. Existing repository dependency is pinned in package.json.
-- FFmpeg/FFprobe: audio/video processing and technical validation. Runtime availability must be checked on the actual runner.
-- SVG/HTML/CSS/GSAP: exact typography, vector animation, charts, diagrams, and timeline-driven motion.
-- Three.js: browser-based 3D and WebGL scenes.
-- Blender: offline 3D modeling, animation, camera, lighting, and rendering.
-- Lottie/dotLottie and Rive: reusable vector/interactivity assets; only use where export/runtime requirements fit.
-- Cavalry: promising procedural 2D motion-design application; it is a separate desktop application and is not installed by adding an Agent Skill.
+## Deterministic core
+- Remotion: frame-accurate React composition; versions are pinned in `package.json`.
+- FFmpeg/FFprobe: media processing and verification. CI must explicitly install FFmpeg; an earlier run rendered MP4 but failed because ffprobe was unavailable.
+- SVG/HTML/CSS/GSAP: exact text, vector animation, charts, diagrams, labels, and timing.
+- Three.js/Blender: true 3D when runtime and rendering budget justify it.
+- Lottie/dotLottie and Rive: reusable animation assets when formats/runtime fit.
+- Cavalry: procedural 2D motion application, separate from the Agent Skills workflow.
 
-## AI media catalog observations
+## Claude Code integration
+- Claude project skills use `.claude/skills/<skill-name>/SKILL.md`, separate from the general `.agents/skills/` catalogue.
+- Official skills overview: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview
+- Official prompting guide: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
+- Persistent instructions: `CLAUDE.md`; orchestration prompt: `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`.
+- Official Remotion skill installation docs: https://www.remotion.dev/docs/ai/skills. The command `npx skills add remotion-dev/skills` has not been run from this remote editing environment.
+
+## Emerging 2026 creative signals
+A current industry article discusses hybrid AI-assisted workflows, tactile craft, mixed media, 2D/3D combinations, flexible platform formats, and story-led design: https://elements.envato.com/learn/motion-design-trends. Treat these as hypotheses, not universally proven laws. Reference seeds and evidence levels live in `research/REFERENCE_SEED_CATALOG.md`.
+
+## Optional AI and speech services
 ### fal
-Live catalog recommendation for unnamed text-to-video tasks returned MiniMax H3 Max as the recommended starting point for short shots (up to 15 seconds, 480p/768p in the catalog guidance). Other listed candidates included Seedance, Kling, Wan, and FLUX video variants. Endpoint schemas and pricing must be checked at execution time. This is not evidence that any model was run or that use is free.
-
-The current speech-to-text catalog included:
-- fal optimized Whisper v3 (Wizper)
-- general speech-to-text endpoints
-- ElevenLabs Scribe V2
-The current TTS catalog included Eleven v4, MiniMax Speech 2.8 HD, Gemini Flash TTS, and Qwen TTS routes. Keep these as optional fallbacks, not automatic substitutions for the project's preferred local Pocket TTS.
+Catalog discovery surfaced image/video, text-to-video, speech-to-text, and TTS candidates. Before integrating a model, inspect its live schema, price, limits, output specifications, and terms. Discovery is not proof it ran or is free.
+- Prefer Pocket TTS for local narration when actually installed and suitable.
+- Prefer WhisperX for transcription when actually installed; preserve timestamps and confidence where available.
+- Composite exact typography, charts, maps, labels, and data deterministically.
 
 ### Higgsfield
-Current model discovery returned image-to-video options including Cinema Studio Video, Seedance 1.5 Pro, and Kling 2.6 Video. Cinema Studio Video exposes genre, quality mode, audio, speed-ramp, and optional multi-shot controls. The marketing motion route supports multiple video styles, but should be used only when the deliverable fits its product/marketing focus. Catalog output is not an installed runtime.
+Discovery returned image-to-video model candidates and a marketing-motion route. Verify current schema, availability, credits, output limits, and rights before use. Search does not establish runtime installation.
 
-### Transcription
-The project's intended path for extracting speech from source video is WhisperX when installed. Preserve transcript timestamps, speaker information when available, and confidence/uncertainty. Do not infer exact spoken words from visuals alone.
+## External projects and licensing
+- `frankxai/awesome-motion-design-agent-skills`: one upstream CC0 skill adapted with attribution.
+- `remotion-dev/skills`: official installer documented, but files were not vendored because repository license metadata was unclear and the remote editor cannot run installers.
+- `haidrrrry/claude-remotion-skill` and `vibe-motion/skills` appeared in search; review licensing, scripts, dependencies, security and compatibility before importing.
+- `Vincentwei1021/video-talkcraft` was not imported because its reported PolyForm Noncommercial 1.0.0 terms do not fit a potentially monetized project.
+- Unrelated third-party video skills may force affiliate promotions; those are not appropriate production dependencies and were not copied.
 
-## GitHub skill review
-- Installed the Remotion Video Agent skill from frankxai/awesome-motion-design-agent-skills, adapted for this repository and attributed in the skill file. The upstream repository's LICENSE is CC0 1.0 Universal.
-- Reviewed Vincentwei1021/video-talkcraft as a potentially rich motion recipe system. Its LICENSE is PolyForm Noncommercial 1.0.0 and explicitly requires prior authorization for commercial use. Since videos may be monetized, that toolkit was not copied or installed. Its public description is not treated as permission to reuse its implementation.
-- Remotion official skills: https://github.com/remotion-dev/skills. The upstream repository has no declared license in GitHub repository metadata, so its files are not vendored. The documented installer has not been run from this remote editing environment.
-
-## Public project candidates found during web discovery
-- frankxai/awesome-motion-design-agent-skills: https://github.com/frankxai/awesome-motion-design-agent-skills
-- Motion: https://github.com/motiondivision/motion
-- Rive WebAssembly runtime: https://github.com/rive-app/rive-wasm
-- dotLottie web: https://github.com/LottieFiles/dotlottie-web
-- Agent Skills standard: https://github.com/agentskills/agentskills
-- Public motion-graphics repository topic: https://github.com/topics/motion-graphics
-- Cavalry: https://cavalry.studio/en/
-
-These are candidates for evaluation, not automatically imported code. Before installation, inspect canonical upstream, license, maintenance, dependency footprint, scripts, compatibility, and whether it duplicates existing project functionality. The remote GitHub editor cannot run arbitrary shell installers, so executable dependencies need installation and validation in a working checkout or CI.
-
-## Research provider limitation
-The initial TubeLab searches returned HTTP 402. Therefore, the 1,000-video reference study remains pending and is tracked in docs/RESEARCH_AND_BENCHMARK_PLAN.md. Do not describe search-result snippets as having watched or analyzed the complete videos.
-
-## Supabase decision
-No Supabase database was created. A database is unnecessary for the initial local skill/prompt toolkit; introducing a hosted service before a concrete persistent research-data need would add configuration and possible cost without improving the current render pipeline.
+## Cost, rights and research status
+Check live price/quota before generation. Keep credentials in secrets and track asset provenance. A generated asset does not automatically grant commercial-use rights. TubeLab and TubeAlfred attempts returned HTTP 402 for insufficient credits; Firecrawl supplied a starter set, but the 1,000-video study remains pending.
