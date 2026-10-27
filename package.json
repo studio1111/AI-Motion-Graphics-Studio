@@ -1,11 +1,15 @@
 {
   "name": "ai-motion-graphics-studio",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "A minimal reproducible Remotion project used to smoke-test cinematic motion graphics workflows.",
+  "description": "Data-driven Remotion production engine for autonomous motion-graphics storyboards, rendering, and quality checks.",
   "scripts": {
     "validate:skills": "node scripts/validate-skills.mjs",
-    "render:demo": "remotion render src/index.ts MotionDemo out/motion-demo.mp4 --codec=h264"
+    "test": "node --test tests/*.test.mjs",
+    "validate": "npm run validate:skills && npm test",
+    "render:demo": "remotion render src/index.ts MotionDemo out/motion-demo.mp4 --codec=h264",
+    "render:smoke": "remotion render src/index.ts MotionVideo out/motion-video-smoke.mp4 --props=fixtures/smoke-props.json --codec=h264",
+    "produce": "node scripts/produce.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.539",
