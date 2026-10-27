@@ -39,12 +39,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
       - name: Install pinned dependencies
         run: npm install --no-audit --no-fund
       - name: Ensure Remotion browser
         run: npx remotion browser ensure
       - name: Render sample video
+        run: mkdir -p out
+      - name: Execute render
         run: npx remotion render src/index.ts MotionDemo out/motion-demo.mp4 --codec=h264
       - name: Verify rendered MP4
         run: |
