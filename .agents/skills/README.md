@@ -1,6 +1,6 @@
 # Agent Skills Index
 
-Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository currently contains 24 local skill guides. These are agent instructions, not proof that every external application or service is installed.
+Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository currently contains 26 local skill guides. These are agent instructions, not proof that every external application or service is installed.
 
 ## Creative direction and design
 - `cinematic-motion-design`
@@ -31,11 +31,13 @@ Skills are stored in `.agents/skills/<skill-name>/SKILL.md`. The repository curr
 - `production-pipeline`
 - `audio-first-narration-and-sound`
 - `motion-render-quality-gates`
+- `ai-media-tool-routing`
 
 ## Master prompts and research
 - `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: full production-team prompt
 - `prompts/REFERENCE_VIDEO_ANALYSIS_PROMPT.md`: timestamped reference craft analysis
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md`: 1,000-video research target, sampling quotas, evidence levels, and completion criteria
+- `docs/TOOLCHAIN_CATALOG.md`: deterministic tools, optional AI media routes, and installation caveats
 
 ## Official Remotion skill package
 Source: https://github.com/remotion-dev/skills  
@@ -48,10 +50,10 @@ npx skills add remotion-dev/skills
 The local Remotion guide is not a substitute for all upstream reference files. The command has not been executed from the remote GitHub editor. The upstream repository has no declared license in GitHub repository metadata, so its files are not copied into this repository.
 
 ## Validation status
-- [x] Added five original production skills and two master prompts.
-- [x] Added a documented research plan for a stratified sample of 1,000 videos.
+- [x] Added seven original production/routing skills and two master prompts.
+- [x] Added toolchain catalog and documented 1,000-video research plan.
 - [ ] Run skill validator and inspect CI results after the index update.
 - [ ] Inspect representative rendered frames and confirm visual output.
-- [ ] Complete the 1,000-video research study; current research provider returned HTTP 402.
+- [ ] Complete the 1,000-video research study; current TubeLab research provider returned HTTP 402.
 
 Do not mark an underlying tool as installed merely because a local skill guide describes it. A committed workflow is not equivalent to a passing CI run.
