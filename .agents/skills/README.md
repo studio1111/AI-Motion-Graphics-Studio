@@ -1,6 +1,6 @@
 # Agent Skills Index
 
-26 general skill guides live in `.agents/skills/<name>/SKILL.md`. Skills are instructions, not proof their underlying programs are installed.
+26 general skill guides live in `.agents/skills/<name>/SKILL.md`. These are workflow instructions, not proof that external applications are installed.
 
 ## Creative direction and design
 - `cinematic-motion-design`
@@ -34,7 +34,7 @@
 - `motion-render-quality-gates`
 - `ai-media-tool-routing`
 
-## Production docs
+## Production references
 - `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`
 - `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`
 - `prompts/REFERENCE_VIDEO_ANALYSIS_PROMPT.md`
@@ -42,12 +42,11 @@
 - `docs/MOTION_STYLE_BIBLE.md`
 - `docs/MOTION_DESIGN_SYSTEM.md`
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`
+- `docs/REFERENCE_PATTERN_MATRIX.md`
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md`
 - `research/REFERENCE_SEED_CATALOG.md`
 - `docs/TOOLCHAIN_CATALOG.md`
 
-Claude Code-specific skills are under `.claude/skills/`, with a separate index in `.claude/skills/README.md`.
+Claude Code-specific project skills are in `.claude/skills/`. The official Remotion AI skill installer is described at https://www.remotion.dev/docs/ai/skills, but this remote editing session did not run `npx skills add remotion-dev/skills`; files were not vendored because upstream licensing metadata was unclear.
 
-The complete official Remotion package is documented at https://www.remotion.dev/docs/ai/skills; the remote editor did not run `npx skills add remotion-dev/skills`. The upstream repository's licensing metadata was unclear, so its files were not copied.
-
-Current status: the 1,000-video study remains incomplete; current seed links contain metadata/article-level evidence only. The updated CI workflow must pass before runtime checks can be described as verified.
+Current status: 55 public video candidates, mostly L0 metadata, plus external article-level reports summarized in the pattern matrix. The 1,000-video study remains incomplete. CI must pass before claiming the current render pipeline is verified.
