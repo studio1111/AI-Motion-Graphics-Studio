@@ -6,6 +6,8 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `CLAUDE.md`: persistent project instructions.
 - `docs/PRODUCTION_CLI.md`: real CLI workflow and configuration.
 - `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`: autonomous Claude production prompt.
+- `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: cross-role production director prompt.
+- `prompts/PROFESSIONAL_PROMPT_PLAYBOOK.md`: original prompts for fourteen visual families, camera, motion, sound and repair.
 - `docs/MOTION_STYLE_BIBLE.md`: twelve motion-design families.
 - `docs/STYLE_PRESET_CATALOG.md`: concrete palettes, font roles, motion, sound and anti-patterns.
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
@@ -24,7 +26,7 @@ Local install and validation:
     npx remotion browser ensure
     npm run validate
 
-Build and render a 90-second video:
+Build and render a 90-second video (the CLI accepts 5 seconds to 60 minutes; long-form rendering requires a valid topic-specific storyboard):
 
     npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
 

@@ -128,7 +128,7 @@ export function parseArgs(argv=process.argv.slice(2),env=process.env){
   if(!SUPPORTED_LANGUAGES.has(o.language))throw new Error("Language must be one of: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");
   if(!["auto","off","pocket-tts","persian-speech"].includes(o.voice))throw new Error("Voice must be auto, off, pocket-tts, or persian-speech.");
   if(!["16:9","9:16","1:1"].includes(o.aspectRatio))throw new Error("Aspect ratio must be 16:9, 9:16, or 1:1.");
-  if(!Number.isFinite(o.duration)||o.duration<5||o.duration>600)throw new Error("Duration must be between 5 and 600 seconds.");
+  if(!Number.isFinite(o.duration)||o.duration<5||o.duration>3600)throw new Error("Duration must be between 5 and 3600 seconds (one hour).");
   return o;
 }
 export function safeSlug(value){const slug=String(value||"motion-video").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-+|-+$/g,"").slice(0,48);return slug||"motion-video";}
@@ -241,9 +241,15 @@ export function buildLocalPlan({topic,language="fa",styleId,totalFrames=2700,fps
 }
 export function validateStoryboard(p){
   const errors=[];if(!p||typeof p!=="object"||Array.isArray(p))return ["Storyboard must be an object."];if(!String(p.title||"").trim())errors.push("Title is required.");
-  if(!Array.isArray(p.scenes)||p.scenes.length<4||p.scenes.length>16){errors.push("Storyboard must have 4-16 scenes.");return errors;}const ids=new Set();
+  if(!Array.isArray(p.scenes)||p.scenes.length<4||p.scenes.length>120){errors.push("Storyboard must have 4-120 scenes.");return errors;}const ids=new Set();
   for(const s of p.scenes){if(!s||typeof s!=="object"){errors.push("Scene is invalid.");continue;}if(!String(s.id||"").trim())errors.push("Scene id is required.");if(ids.has(s.id))errors.push("Duplicate scene id: "+s.id);ids.add(s.id);for(const f of ["kicker","title","body","narration"])if(typeof s[f]!=="string")errors.push("Scene "+s.id+" field "+f+" must be text.");if(!LAYOUTS.has(s.layout))errors.push("Scene "+s.id+" layout is invalid.");if(s.bullets!==undefined&&(!Array.isArray(s.bullets)||s.bullets.length>4||s.bullets.some(v=>typeof v!=="string")))errors.push("Scene "+s.id+" bullets invalid.");}
   return errors;
+}
+export function validateRuntimePlan(plan,durationSeconds,{planOnly=false}={}){
+  if(Number(durationSeconds)>600&&!planOnly&&plan?.contentMode!=="ai_generated"){
+    return ["Long-form production over 10 minutes requires a valid topic-specific storyboard; the generic local fallback is not sufficient for a professional long-form render."];
+  }
+  return [];
 }
 export function normalizePlan(p,ctx){
   if(!p||typeof p!=="object")throw new Error("AI storyboard was not a JSON object.");const allowed=new Set((ctx.sources||[]).map(s=>s.url));const fallback=buildLocalPlan(ctx);
@@ -266,8 +272,9 @@ function parseClaudeJson(d){
 async function generateClaude(ctx,research,env){
  const sourceInfo=research.sources.map((s,i)=>({id:i+1,title:s.title,url:s.url,description:s.description,excerpt:s.markdown.slice(0,1400)}));
  const system="You are a research-aware writer and senior motion-design art director. Return only JSON. Never invent statistics, dates, quotes, sources or scientific claims. Use only the supplied URLs in sourceRefs. If unsupported, omit a factual detail or mark uncertainty. Create original work; don't copy existing films.";
- const prompt=["Create a story-led motion-graphics plan.","Topic: "+ctx.topic,"Language: "+ctx.language,"Runtime: "+ctx.duration+" seconds; aspect ratio: "+ctx.aspectRatio,"Selected visual style: "+ctx.styleId+" ("+PRESETS[ctx.styleId].label+")","Return JSON fields title, subtitle, scenes.","Use 7 to 10 scenes, each with id,kicker,title,body,narration,layout,bullets,sourceRefs,transition.","Allowed layouts: "+Array.from(LAYOUTS).join(", "),"Allowed transitions: wipe, fade, scale, split.","Use varied visual layouts, concise screen text and natural narration. Exact type is composited by renderer.","The opening hero title must be a concise subject-led phrase of 2–6 words where possible. Do not repeat generic question wording such as What question sits behind when the kicker already frames the question; avoid an oversized opening sentence that simply repeats the topic.","Do not fabricate data. Any sourceRefs must exactly match an input URL.","Available source material: "+JSON.stringify(sourceInfo)].join("\n");
- const model=env.ANTHROPIC_MODEL||"claude-sonnet-5-5";const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"x-api-key":env.ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","content-type":"application/json"},body:JSON.stringify({model,max_tokens:5200,temperature:0.6,system,messages:[{role:"user",content:prompt}]}),signal:AbortSignal.timeout(90000)});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error("Claude API HTTP "+r.status+": "+String(d.error?.message||"unknown error").slice(0,300));return {plan:parseClaudeJson(d),model,usage:d.usage||null};
+ const sceneGuidance=ctx.duration<=180?"Use 4 to 16 purposeful scenes for this short runtime.":ctx.duration<=600?"Use 12 to 40 purposeful scenes, organized into clear beats.":ctx.duration<=1800?"Use 30 to 80 purposeful scenes grouped into chapters with recaps and handoffs.":"Use 60 to 120 purposeful scenes grouped into chapters, each with its own question, development, payoff and handoff.";
+  const prompt=["Create a story-led motion-graphics plan.","Topic: "+ctx.topic,"Language: "+ctx.language,"Runtime: "+ctx.duration+" seconds; aspect ratio: "+ctx.aspectRatio,"Selected visual style: "+ctx.styleId+" ("+PRESETS[ctx.styleId].label+")","Return JSON fields title, subtitle, scenes.",sceneGuidance,"Every scene must have id,kicker,title,body,narration,layout,bullets,sourceRefs,transition.","For long runtimes, vary scene density, add chapter transitions and recaps, and avoid stretching a short-form template. Narration must fit the requested runtime naturally; do not pad with repeated claims.","Allowed layouts: "+Array.from(LAYOUTS).join(", "),"Allowed transitions: wipe, fade, scale, split.","Use varied visual layouts, concise screen text and natural narration. Exact type is composited by renderer.","The opening hero title must be a concise subject-led phrase of 2–6 words where possible. Do not repeat generic question wording such as What question sits behind when the kicker already frames the question; avoid an oversized opening sentence that simply repeats the topic.","Do not fabricate data. Any sourceRefs must exactly match an input URL.","Available source material: "+JSON.stringify(sourceInfo)].join("\n");
+ const model=env.ANTHROPIC_MODEL||"claude-sonnet-5-5";const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"x-api-key":env.ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","content-type":"application/json"},body:JSON.stringify({model,max_tokens:12000,temperature:0.6,system,messages:[{role:"user",content:prompt}]}),signal:AbortSignal.timeout(180000)});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error("Claude API HTTP "+r.status+": "+String(d.error?.message||"unknown error").slice(0,300));return {plan:parseClaudeJson(d),model,usage:d.usage||null};
 }
 function dimensions(ratio){return ratio==="9:16"?{width:1080,height:1920}:ratio==="1:1"?{width:1080,height:1080}:{width:1920,height:1080};}
 function sumFrames(scenes){return scenes.reduce((n,s)=>n+Math.max(1,Math.round(s.durationInFrames||0)),0);}
@@ -335,7 +342,7 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
  return result;
 }
 export function createProceduralBedWav(seconds, styleId = "cinematic-documentary", transitionCues = []) {
- const duration = Math.max(5, Math.min(600, Number(seconds) || 5));
+ const duration = Math.max(5, Math.min(3600, Number(seconds) || 5));
  const rate = 24000;
  const count = Math.floor(duration * rate);
  const bytes = count * 4;
@@ -510,11 +517,11 @@ async function checkVideo(file,expected,dir){
  report.durationSeconds=duration;return report;
 }
 
-export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
+export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..3600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
 
 export async function produce(options,env=process.env){
  const warnings=[],runId=new Date().toISOString().replace(/[:.]/g,"-")+"-"+process.pid;let brief={};if(options.briefPath)brief=await readJson(resolve(options.briefPath));let sources=normalizeSources(brief.sources||brief.sourceUrls||[]);if(options.sourcesPath)sources=normalizeSources(sources.concat(normalizeSources(await readJson(resolve(options.sourcesPath)))));
- const topic=String(brief.topic||options.topic||"").trim();if(!topic)throw new Error("No topic supplied. Use --topic or --brief.");const language=String(brief.language||options.language||"fa").toLowerCase().split("-")[0],duration=Number(brief.durationSeconds||brief.duration||options.duration||90),ratio=String(brief.aspectRatio||options.aspectRatio||"16:9");if(!SUPPORTED_LANGUAGES.has(language))throw new Error("Unsupported language: "+language+". Supported languages: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");if(duration<5||duration>600||!Number.isFinite(duration))throw new Error("Duration must be 5-600 seconds.");if(!["16:9","9:16","1:1"].includes(ratio))throw new Error("Invalid aspect ratio.");
+ const topic=String(brief.topic||options.topic||"").trim();if(!topic)throw new Error("No topic supplied. Use --topic or --brief.");const language=String(brief.language||options.language||"fa").toLowerCase().split("-")[0],duration=Number(brief.durationSeconds||brief.duration||options.duration||90),ratio=String(brief.aspectRatio||options.aspectRatio||"16:9");if(!SUPPORTED_LANGUAGES.has(language))throw new Error("Unsupported language: "+language+". Supported languages: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");if(duration<5||duration>3600||!Number.isFinite(duration))throw new Error("Duration must be 5-3600 seconds (one hour).");if(!["16:9","9:16","1:1"].includes(ratio))throw new Error("Invalid aspect ratio.");
  const fps=30,targetFrames=Math.round(duration*fps),styleId=chooseStyle(brief.style||options.style,topic,ratio),preset=PRESETS[styleId],size=dimensions(ratio),dir=resolve(options.outputDir||"out",runId);await mkdir(dir,{recursive:true});
  const briefRecord={topic,language,targetDurationSeconds:duration,targetFrames,aspectRatio:ratio,width:size.width,height:size.height,fps,requestedStyle:brief.style||options.style,selectedStyle:styleId,selectedStyleLabel:preset.label,paidAPIsOptedIn:options.allowPaidAI,voiceMode:options.voice,createdAt:new Date().toISOString(),assumptions:["Unspecified noncritical choices use defaults.","Local fallback is a conceptual template, not a researched factual script."]};await writeFile(join(dir,"brief.json"),JSON.stringify(briefRecord,null,2)+"\n");
  let research={status:sources.length?"user_sources_not_verified":"not_performed",method:sources.length?"user-provided sources":"none",capturedAt:new Date().toISOString(),sources,warning:sources.length?"Source list captured; factual claims not independently verified.":"No research sources were supplied or retrieved."};
@@ -526,6 +533,13 @@ export async function produce(options,env=process.env){
  if(options.allowPaidAI&&env.ANTHROPIC_API_KEY){try{const r=await generateClaude(ctx,research,env);plan=normalizePlan(r.plan,ctx);ai={status:"generated",model:r.model,usage:r.usage};}catch(e){warnings.push("Claude generation failed; local fallback used: "+String(e).slice(0,350));ai={status:"failed_fallback_used",model:env.ANTHROPIC_MODEL||"claude-sonnet-5-5"};}}
  else if(options.allowPaidAI){warnings.push("Paid AI was allowed but ANTHROPIC_API_KEY is not configured.");ai.status="key_missing_fallback_used";}
  if(!plan)plan=buildLocalPlan({topic,language,styleId,totalFrames:targetFrames,fps});let errors=validateStoryboard(plan);if(errors.length){warnings.push("Invalid storyboard; local fallback used: "+errors.join(" "));plan=buildLocalPlan({topic,language,styleId,totalFrames:targetFrames,fps});}
+ const runtimeErrors=validateRuntimePlan(plan,duration,{planOnly:options.planOnly});
+ if(runtimeErrors.length){
+  warnings.push(...runtimeErrors);
+  await writeFile(join(dir,"qc-report.json"),JSON.stringify({runId,status:"LONG_FORM_PLAN_REQUIRED",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",longFormStory:"FAIL",render:"BLOCKED",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},warnings,facts:{factualClaimsAutomaticallyVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,requestedDurationSeconds:duration}},null,2)+"\n");
+  throw new Error(runtimeErrors.join(" "));
+ }
+ if(duration>600&&options.planOnly&&plan.contentMode!=="ai_generated")warnings.push("Plan-only output is a generic scaffold; a long-form render requires a valid topic-specific storyboard.");
  const urls=new Set(sources.map(s=>s.url));plan.scenes=plan.scenes.map(s=>({...s,sourceRefs:(s.sourceRefs||[]).filter(u=>urls.has(u))}));if(plan.contentMode==="conceptual_template")warnings.push("Conceptual output only; factual claims have not been researched. Provide sources or explicitly opt into configured research/AI services for topic-specific scripts.");
  await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
  let voice={status:"not_attempted",engine:null,generatedScenes:0,warnings:[]};if(options.planOnly)voice.status="not_run_plan_only";else voice=await makeVoice(plan.scenes,language,options.voice,runId,fps,warnings);
