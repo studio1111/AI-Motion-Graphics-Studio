@@ -15,9 +15,10 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
 - `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
-- `prompt-library/`: standalone, tool-agnostic prompt suite with 96 reusable style recipes, ten advanced specialist master prompts, 15 scene-level templates and a 9-stage workflow pack, six specialized master prompts, a browsable catalog and copy-ready CLI for any AI assistant.
+- `prompt-library/`: standalone, tool-agnostic prompt suite with 96 style recipes, six foundational and ten advanced master prompts, 15 scene templates, a 9-stage workflow pack, browser UI and copy-ready CLI.
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
 - `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`: repeatable evidence-aware rubric for analyzing reference pages and videos.
+- `prompt-library/index.html`: browser interface to search/filter styles, compose a master prompt with a specialist/scene module, copy it, or download Markdown.
 - `prompt-library/PRODUCTION_WORKFLOW_PACK.md`: copy-ready prompts for story, storyboard, motion, typography, audio, rendering and quality repair.
 - `prompt-library/ADVANCED_MASTER_PROMPTS.md`: ten detailed specialist directors for documentary, product, typography, data, T2V, I2V, audio, code, repair and QC.
 - `prompt-library/SCENE_PROMPT_TEMPLATES.md`: 15 reusable shot-level prompt templates.
@@ -28,6 +29,11 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
 
 ## Portable prompt library
+
+### Browser prompt builder
+
+From the repository root, run `python -m http.server 8765`, then open `http://localhost:8765/prompt-library/` in a browser. The page loads the local recipe library, lets you search and filter styles, select an optional specialist master prompt and scene-level template, and copy or download the assembled prompt. If opened directly as a `file://` URL, browser fetch restrictions may block the data files, so serve the folder over HTTP.
+
 
 Use the built-in prompt library with any AI assistant or creative tool:
 
