@@ -19,6 +19,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
 - `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`: repeatable evidence-aware rubric for analyzing reference pages and videos.
 - `prompt-library/index.html`: browser interface to search/filter styles, compose a master prompt with a specialist/scene module, copy it, or download Markdown.
+- `prompt-library/PERSIAN_QUICK_START.md`: راهنمای فارسی استفاده از کتابخانهٔ مستقل پرامپت‌ها.
 - `prompt-library/PRODUCTION_WORKFLOW_PACK.md`: copy-ready prompts for story, storyboard, motion, typography, audio, rendering and quality repair.
 - `prompt-library/ADVANCED_MASTER_PROMPTS.md`: ten detailed specialist directors for documentary, product, typography, data, T2V, I2V, audio, code, repair and QC.
 - `prompt-library/SCENE_PROMPT_TEMPLATES.md`: 15 reusable shot-level prompt templates.
