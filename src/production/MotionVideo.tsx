@@ -11,6 +11,7 @@ import {
 } from "remotion";
 import type { CSSProperties } from "react";
 import type { MotionPalette, MotionScene, MotionVideoProps } from "./types";
+import { splitCaptionSegments } from "./captions.mjs";
 
 const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
 
@@ -33,23 +34,6 @@ const fitMotionFontSize = (text: string, base: number, minimum: number) => {
   const scale = length <= 28 ? 1 : length <= 42 ? 0.9 : length <= 58 ? 0.8 : length <= 78 ? 0.7 : 0.6;
   return Math.max(minimum, Math.round(base * scale));
 };
-const splitCaptionSegments = (text: string, maxChars = 44) => {
-  const words = String(text || "").trim().split(/\s+/).filter(Boolean);
-  const lines: string[] = [];
-  let line = "";
-  for (const word of words) {
-    const next = line ? line + " " + word : word;
-    if (line && next.length > maxChars) { lines.push(line); line = word; }
-    else line = next;
-  }
-  if (line) lines.push(line);
-  const segments: string[] = [];
-  for (let index = 0; index < lines.length; index += 2) {
-    segments.push([lines[index], lines[index + 1]].filter(Boolean).join("\n"));
-  }
-  return segments;
-};
-
 const captionForFrame = (text: string, frame: number, spokenFrames: number) => {
   const segments = splitCaptionSegments(text);
   if (!segments.length || frame < 0 || frame >= Math.max(1, spokenFrames)) return "";
