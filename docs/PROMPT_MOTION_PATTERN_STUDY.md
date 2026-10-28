@@ -40,7 +40,29 @@ Source: [Reddit marketing tool launch video](https://prompt-motion.com/anthonyri
 ### Studio adaptation
 A credible product film pipeline should first inspect approved product inputs, ask only essential brief questions, storyboard real value propositions and then use real screenshots/components. Use a proof render to detect false UI states or invented features. A link to a skill repository is a research lead, not proof that the repository has been audited, installed or activated. This project has not installed that third-party skill.
 
-## 5. Cross-check with official video prompting guidance
+## 5. Additional page-level examples: timing, sound, and connected motion
+
+These are further source-page analyses, not claims of continuous video playback.
+
+### Photo print app launch film
+Source: [Photo print app launch film](https://prompt-motion.com/twoclipping-221cab), attributed to @twoclipping. The entry's build notes describe loading source footage in a seekable form, waiting for the media-seek completion before drawing frames, placing original/licensed sound effects at measured transient peaks, starting music on the downbeat, and checking each beat frame before full export. It documents browser/video gotchas such as text swapping inside a morphing mask and a shape flood that must scale beyond all frame corners to avoid a visible edge.
+
+**Studio adaptation:** create an audio/visual event sheet with exact event time, visible state change, sound cue and acceptable transition range. If the renderer uses decoded footage, verify deterministic frame seeking before export. Build a beat contact sheet and inspect frame-difference spikes or single-frame pops. Protect critical copy with its own layer/mask, separate from the morphing object.
+
+### Orange dot motion system
+Source: [Orange dot motion system](https://prompt-motion.com/ultimaxbt-bbebf5), attributed to @ultimaxbt. The public page tags kinetic type, shapes and music and names HTML as the stack. The linked video has not been continuously reviewed here.
+
+**Studio adaptation:** use a single persistent motif that changes state across typography, a graph, a control and a halftone field. Reuse the same underlying motion curve for coupled objects that are meant to feel connected, so a visual marker and its chart don't imply different physical timing. Validate exact start/end positions and velocity for loop closure.
+
+### The “less AI-made” pattern
+Source: [Why AI motion graphics look AI-made, and the prompt lines that fix it](https://prompt-motion.com/blog/make-ai-motion-graphics-look-less-ai). The article expands on connected shape grammar, consistent accent color, deterministic time functions, beat synchronization, proof-frame review and avoiding disconnected decorative effects.
+
+**Studio adaptation:** the anti-pattern checklist should be specific to the chosen style, not a universal ban list. For a concept-led showreel, suppress unmotivated glows, shake and crossfades when they weaken continuity; for a different brief, use an effect only if it carries meaning. Keep the character or motif's position, motion, color and typography relationships explicit across state changes.
+
+### Evidence boundaries
+Prompt Motion's public pages can contain the exact prompt and build notes, but page text alone does not prove every movement or sound was present in the linked clip. These examples remain page-level evidence unless the video is actually reviewed. Never copy the creator's complete prompt into the studio library without explicit reuse permission; this report records transferable methods and original adaptations only.
+
+## 6. Cross-check with official video prompting guidance
 
 The [Runway prompting guide](https://academy.runwayml.com/guides/prompting-guide) distinguishes visible subject/environment/composition from motion and timing. For image-to-video it recommends emphasizing what changes, including camera movement and temporal progression, while allowing the input image to anchor the static appearance. It recommends starting with a clear/simple instruction and iterating, and describes sequential prompting through ordered events or timestamps.
 
@@ -56,7 +78,7 @@ The [OpenAI Sora prompting guide](https://developers.openai.com/cookbook/example
 7. Treat automatic captions, audio analysis, exact frame inspection and code rendering as separate capabilities; enable them only when they are genuinely available.
 8. Record the exact source, the review performed and its evidence level. Do not upgrade source-page inspection to full-video analysis.
 
-## 6. Production changes mapped to this study
+## 7. Production changes mapped to this study
 
 - `prompt-library/prompts.json`: expands the selectable collection to 77 structured, reusable recipes.
 - `prompt-library/ADVANCED_MASTER_PROMPTS.md`: specialist prompts for long-form narrative, brand films, typography, data, T2V, I2V, sound, code rendering, revision and QC.
@@ -64,6 +86,6 @@ The [OpenAI Sora prompting guide](https://developers.openai.com/cookbook/example
 - `tests/prompt-library.test.mjs`: ensures recipe count and domain coverage are not accidentally reduced.
 - `docs/REFERENCE_SOURCE_REGISTRY.md` and `research/references.jsonl`: remain the source attribution and evidence tracking system.
 
-## 7. What remains unproven
+## 8. What remains unproven
 
 This study reviewed public page/article text and previously logged sampled playback of one reference. It does not claim to have watched all 230-plus examples or to have benchmarked multiple video models in an automated render lab. The prompt library is now broader, but it still needs measured render comparisons across chosen tools, aspect ratios and runtimes before quality improvement can be expressed numerically. No paid API or third-party skill is implicitly activated.
