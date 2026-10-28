@@ -317,3 +317,21 @@ test("Remotion renders captions through the same tested wrapping helper as the p
   const motion=await readFile(new URL("../src/production/MotionVideo.tsx",import.meta.url),"utf8");
   assert.match(motion,/from ["']\.\/captions\.mjs["']/,"the renderer must use the shared tested caption segmenter");
 });
+
+
+test("style-aware camera choreography stays deterministic and within bounded motion",async()=>{
+  const module=await import("../src/production/motion-profiles.mjs").catch(()=>({}));
+  assert.equal(typeof module.getCameraMotion,"function","motion profile helper must exist");
+  const start=module.getCameraMotion("cinematic-documentary",0,90,0);
+  const middle=module.getCameraMotion("cinematic-documentary",45,90,0);
+  const end=module.getCameraMotion("cinematic-documentary",90,90,0);
+  const social=module.getCameraMotion("vertical-social",0,90,0);
+  assert.ok(start.scale>end.scale&&end.scale===1,"camera push-in must settle at scale 1");
+  assert.notDeepEqual(start,middle,"camera position must evolve across the scene");
+  assert.notDeepEqual(start,social,"motion intensity must depend on style");
+  for(const pose of [start,middle,end,social]){
+    assert.ok(pose.scale>=1&&pose.scale<=1.06);
+    assert.ok(Math.abs(pose.translateX)<=20&&Math.abs(pose.translateY)<=12);
+    assert.ok(Number.isFinite(pose.sweepX));
+  }
+});
