@@ -15,7 +15,11 @@
     "prompts:search": "node scripts/prompt-library.mjs search",
     "prompts:show": "node scripts/prompt-library.mjs show",
     "prompts:master": "node scripts/prompt-library.mjs master",
-    "prompts:export": "node scripts/prompt-library.mjs export"
+    "prompts:export": "node scripts/prompt-library.mjs export",
+    "opus55:sync": "node scripts/opus55-reference-library.mjs sync",
+    "opus55:list": "node scripts/opus55-reference-library.mjs list",
+    "opus55:search": "node scripts/opus55-reference-library.mjs search",
+    "opus55:show": "node scripts/opus55-reference-library.mjs show"
   },
   "dependencies": {
     "@remotion/cli": "4.0.539",
