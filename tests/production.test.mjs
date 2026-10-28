@@ -154,7 +154,7 @@ test("CLI accepts documented language codes and rejects unsupported ones",()=>{
 });
 
 
-test("portable prompt recipe option is normalized and mapped to supported presets", () => {
+test("portable prompt recipe option is normalized and mapped to supported presets", async () => {
   const args = parseArgs(["--prompt-recipe", "Motion_Design_Showreel"], {});
   assert.equal(args.promptRecipe, "motion-design-showreel");
   assert.equal(promptRecipeStyleHint({category:"showreel"}, "16:9"), "procedural-generative");
