@@ -65,3 +65,32 @@ Where supported, provide the rendered video, editable source, script, scene mani
 
 ## Acceptance
 The film should feel authored, not template-filled: compelling opening, coherent narrative, distinct visual events, meaningful motion, topic-specific art direction, readable typography, designed sound, accurate claims, continuity and verified export. Optimize through evidence and iteration; do not guarantee perfection.
+
+## Duration-adaptive planning
+Treat runtime as a storytelling constraint, not a fixed scene-count template. The production CLI targets 5 seconds through 60 minutes; the actual render budget, voice-engine limits and execution timeout remain hard operational constraints. For a 15-second piece, use one immediate hook, one clear visual idea and a payoff. For 30–60 seconds, use a compact hook → development → payoff arc. For 60–180 seconds, build distinct beats and at least one meaningful turn. For 3–10 minutes, use chapters, recurring visual motifs, progressive evidence and deliberate resets. For 10–60 minutes, design chapters with their own opening question, explanation, recap and handoff; maintain a global arc and a continuity ledger across chapters. Do not merely stretch short-form scenes to fill a long runtime.
+
+Determine scene count from narrative beats, spoken-word rate, visual complexity, reading time and actual narration duration. Estimate narration first, then use measured audio duration when available. Give dense charts and complex Persian captions more time than simple visual transitions. Use short generated-video shots for a single coherent action, but assemble as many shots and deterministic Remotion scenes as the story requires. Split long renders into resumable chapters or bounded jobs when the environment's time, memory or storage limits require it. Never promise an unlimited render when the runtime or compute budget imposes a limit.
+
+## Prompt-engineering stack
+Read `prompts/PROFESSIONAL_PROMPT_PLAYBOOK.md` and `prompts/STYLE_RECIPE_LIBRARY.md`. Build a prompt packet rather than one overloaded prompt:
+1. **Film brief prompt:** audience, outcome, factuality, runtime, platform, emotional arc and constraints.
+2. **Research prompt:** claims, source quality, evidence gaps, dates, attribution and uncertainty.
+3. **Art-direction prompt:** lead style, optional accents, palette, type roles, composition, material, lighting and anti-patterns.
+4. **Storyboard prompt:** scene purpose, visual metaphor, narration, screen copy, start/end states and frame budget.
+5. **Asset-shot prompt:** framing, subject, one main action, setting, one purposeful camera move, light, material, duration and continuity lock.
+6. **Motion prompt:** start state, anticipation, action, follow-through, settle, easing, overlap, hold and transition out.
+7. **Sound prompt:** narrative function, energy curve, instrumentation/timbre, voice priority, transition cues, silence and mix targets.
+8. **Negative/repair prompt:** describe observable defects and required corrections; change one major variable per retry.
+9. **QC prompt:** compare the rendered artifact against the brief and scene acceptance criteria; report evidence, not impressions.
+
+## Reference-guided originality
+Study public prompt guides and reference videos for transferable methods: clear subject/action, explicit camera framing and movement, controlled temporal scope, lighting, continuity, iterative refinement and purposeful sound. Useful starting points include the [Runway text-to-video prompting guide](https://help.runwayml.com/hc/en-us/articles/42460036199443-Text-to-Video-Prompting-Guide), [Runway camera-prompt guide](https://runway.com/resources/ai-camera-prompts), [Adobe Firefly prompt guide](https://helpx.adobe.com/uk/firefly/web/work-with-audio-and-video/work-with-video/writing-effective-text-prompts-for-video-generation.html), and [Remotion timing documentation](https://www.remotion.dev/docs/timing). These are method references, not a license to copy a creator's full prompt, distinctive composition, script, footage, character or soundtrack. Write original prompts from the project's own brief and record which general technique was adopted. Do not claim that a public prompt was tested in a provider unless it was actually run.
+
+## Provider routing
+Choose the smallest capable tool for each job. Keep exact typography, diagrams, charts, UI and timing in Remotion. Use image/video generation for visual plates that benefit from texture, character, environments or cinematic imagery. Use image-to-video when a supplied approved image should remain compositionally stable and only motion is needed. Use 3D tooling for geometry, materials, physically motivated lighting and camera paths. Use research services only for evidence discovery, not as proof by themselves. Before a provider call, confirm authentication, supported input/output, language and duration, cost/credits, terms, rights and timeout. Paid providers remain opt-in and budget-bounded. If a provider is unavailable, route to an approved local method or return BLOCKED; never pretend a provider integration ran.
+
+## Prompt output contract
+For every scene, produce structured fields: `scene_id`, `purpose`, `duration_seconds`, `shot_type`, `subject`, `single_primary_action`, `setting`, `composition`, `camera_move`, `lighting`, `palette`, `materials`, `motion_beats`, `start_state`, `end_state`, `narration`, `exact_screen_text`, `transition`, `sound_cues`, `continuity_lock`, `negative_prompt`, `asset_provenance`, `acceptance_criteria`. Use the repository's actual storyboard schema for machine-bound output; these fields are the creative checklist and must be mapped, not blindly added to a schema that rejects them.
+
+## Quality loop
+Score each rendered chapter/scene only from available evidence. Check first frame, visual hierarchy, motion readability, continuity, safe zones, text shaping, caption line lengths, audio intelligibility, transitions, render integrity and claim provenance. Prefer specific repair instructions such as “hold the chart until every axis label has been readable for at least 1.5 seconds” over vague instructions such as “make it more professional.” Keep a bounded repair count and report anything not reviewed as NOT_RUN. A technical render passing does not establish professional visual or audio quality.
