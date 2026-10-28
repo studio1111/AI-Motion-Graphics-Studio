@@ -35,3 +35,16 @@ test("reference evidence levels cannot claim reviews that did not happen",async(
   ]);
   assert.equal(report.validationErrors.length,3);
 });
+
+
+test("the current 100-reference seed imports without silently dropping rows or inflating evidence",async()=>{
+  const module=await import("../scripts/reference-catalog.mjs");
+  const {readFile}=await import("node:fs/promises");
+  const markdown=await readFile(new URL("../research/REFERENCE_SEED_CATALOG.md",import.meta.url),"utf8");
+  const parsed=module.parseSeedCatalog(markdown);
+  assert.equal(parsed.records.length,100);
+  assert.equal(parsed.skippedLines.length,0);
+  assert.equal(parsed.records.filter(record=>record.evidenceLevel==="L0").length,55);
+  assert.equal(parsed.records.filter(record=>record.evidenceLevel==="L1").length,45);
+  assert.equal(parsed.records.filter(record=>record.watched===true).length,0);
+});
