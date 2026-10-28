@@ -59,6 +59,27 @@ test("paid provider calls are disabled by default",()=>{
   assert.throws(()=>parseArgs(["--mystery"],{}),/Unknown option/);
 });
 
+test("local fallback keeps copy in every supported output language",()=>{
+  const expected={
+    fa:"مسئله را از نزدیک ببینیم",
+    en:"See the problem up close",
+    de:"Das Problem aus der Nähe betrachten",
+    es:"Miremos el problema de cerca",
+    fr:"Voir le problème de près",
+    it:"Guardiamo il problema da vicino",
+    pt:"Veja o problema de perto",
+    nl:"Bekijk het probleem van dichtbij"
+  };
+  for(const [language,title] of Object.entries(expected)){
+    const plan=buildLocalPlan({topic:"Test topic",language,styleId:"cinematic-documentary",totalFrames:240,fps:30});
+    assert.equal(plan.languageUsed,language);
+    assert.equal(plan.languageFallback,null);
+    assert.equal(plan.scenes.length,8);
+    assert.equal(plan.scenes[1].title,title);
+    assert.equal(plan.scenes.reduce((sum,scene)=>sum+scene.durationInFrames,0),240);
+  }
+});
+
 test("CLI accepts documented language codes and rejects unsupported ones",()=>{
   assert.equal(parseArgs(["--language","de-DE"],{}).language,"de");
   assert.equal(parseArgs(["--language","fa"],{}).language,"fa");

@@ -30,7 +30,7 @@ When the `speech` executable from `persian-speech` is installed, `--voice auto` 
 
 1. Validates the brief and chooses a style using the topic, format and style catalog.
 2. If paid AI is explicitly enabled, Firecrawl may search for sources and Claude may generate a topic-specific scene plan. The API is not called without opt-in and credentials.
-3. Without available AI access, generates an eight-scene conceptual plan with varied visual layouts and explicit warnings that factual research has not been performed.
+3. Without available AI access, generates an eight-scene conceptual plan localized for `fa`, `en`, `de`, `es`, `fr`, `it`, `pt` or `nl`, with varied visual layouts and explicit warnings that factual research has not been performed. These local translations are template copy, not a topic-specific researched script.
 4. Allocates exact scene frames; if local TTS succeeds, scene durations respect measured speech and may extend beyond the target instead of truncating narration.
 5. Optionally creates voice WAVs using Persian Speech / Mana-Persian-Piper for Farsi, or Pocket TTS for its supported languages. If synthesis fails or a runtime is missing, the warning is preserved and rendering continues when possible.
 6. Creates an original soft procedural ambient WAV, Remotion props, storyboard timing, voiceover text and SRT captions.

@@ -56,6 +56,67 @@ en:{subtitle:"A visual journey from question to understanding",rows:[
 ["THE SIGNAL","Read the signal carefully","Charts and numbers need a definition, scale and source to mean anything.","This conceptual graphic is not measured data. Replace it with verified values when needed.",["Pattern","Context","Confidence"]],
 ["THE CONNECTION","Connect the pieces","A strong narrative connects details to a specific conclusion.","Bring the opening question, system and change together into one clear explanation.",["Details","Relation","Insight"]],
 ["THE TAKEAWAY","Keep the central idea","Motion should help the audience understand, not replace evidence.","This is a conceptual template. A factual documentary still needs research and source verification.",["Clarity","Accuracy","Purpose"]]
+]},
+
+de:{subtitle:"Eine visuelle Reise von der Frage zum Verständnis",rows:[
+["DIE FRAGE","Welche Frage steckt hinter {topic}?","Eine klare visuelle Geschichte beginnt damit, festzulegen, was das Publikum verstehen soll.","Wir übersetzen das Thema zuerst in eine präzise Frage. Diese Frage führt durch die folgenden Szenen.",["Frage","Kontext","Antwort"]],
+["DER KONTEXT","Das Problem aus der Nähe betrachten","Trennen Sie wesentliche Hinweise von ergänzenden Details, damit die Idee verständlich bleibt.","Wir grenzen das Thema ab und trennen das Wesentliche von Ablenkungen.",["Fokus","Kontext","Bedeutung"]],
+["DAS SYSTEM","Das System in Teile zerlegen","Sichtbare Beziehungen erklären oft mehr als eine Liste unverbundener Fakten.","Wir zeigen die Bestandteile und ihre Beziehungen, statt Informationen nur zu sammeln.",["Eingabe","Prozess","Ergebnis"]],
+["DIE VERÄNDERUNG","Der Veränderung folgen","Abläufe und Folgen werden klarer, wenn jeder Schritt einen eigenen visuellen Zustand erhält.","Wir verfolgen den Prozess Schritt für Schritt. Jede Bewegung soll etwas erklären.",["Beginn","Wandel","Ergebnis"]],
+["DER VERGLEICH","Unterschiedliche Wege nebeneinanderstellen","Ein gemeinsamer Maßstab macht zwei Zustände besser vergleichbar.","Ein Vergleich braucht klare Kriterien. Reale Zahlen brauchen geprüfte Quellen und Einheiten.",["Zustand A","Zustand B","Unterschied"]],
+["DAS SIGNAL","Signale sorgfältig lesen","Diagramme und Zahlen brauchen Definition, Maßstab und Quelle, um etwas auszusagen.","Diese Grafik ist konzeptionell und zeigt keine Messdaten. Verwenden Sie reale Werte erst nach Prüfung.",["Muster","Kontext","Sicherheit"]],
+["DER ZUSAMMENHANG","Die Teile verbinden","Eine starke Erzählung verbindet Details mit einer klaren Schlussfolgerung.","Wir verbinden die Ausgangsfrage, das System und die Veränderung zu einer verständlichen Erklärung.",["Details","Beziehung","Erkenntnis"]],
+["DIE KERNAUSSAGE","Die zentrale Idee behalten","Bewegung soll das Verständnis unterstützen, nicht Belege ersetzen.","Dies ist eine konzeptionelle Vorlage. Ein faktenbasierter Beitrag braucht Recherche und geprüfte Quellen.",["Klarheit","Genauigkeit","Ziel"]]
+]},
+es:{subtitle:"Un viaje visual de la pregunta a la comprensión",rows:[
+["LA PREGUNTA","¿Qué pregunta hay detrás de {topic}?","Una historia visual clara empieza por definir qué debe entender el público.","Primero convertimos el tema en una pregunta precisa. Esa pregunta guía las escenas siguientes.",["Pregunta","Contexto","Respuesta"]],
+["EL CONTEXTO","Miremos el problema de cerca","Separa las señales esenciales de los detalles secundarios para mantener clara la idea.","Delimitamos el tema y separamos lo esencial de lo que distrae.",["Enfoque","Contexto","Importancia"]],
+["EL SISTEMA","Descompón el sistema","Mostrar relaciones puede explicar más que una lista de hechos aislados.","Mostramos las partes y sus relaciones en lugar de acumular información.",["Entrada","Proceso","Resultado"]],
+["EL CAMBIO","Sigue el cambio en el tiempo","La secuencia y las consecuencias se entienden mejor cuando cada paso tiene un estado visual propio.","Seguimos el proceso paso a paso. Cada movimiento debe revelar parte de la explicación.",["Inicio","Cambio","Resultado"]],
+["LA COMPARACIÓN","Pon los caminos lado a lado","Una escala compartida facilita comparar dos estados.","Comparamos con criterios claros. Los datos reales necesitan fuentes y unidades verificadas.",["Estado A","Estado B","Diferencia"]],
+["LA SEÑAL","Lee la señal con cuidado","Los gráficos necesitan definición, escala y fuente para comunicar algo fiable.","Este gráfico es conceptual, no representa datos medidos. Solo añadiremos cifras después de verificarlas.",["Patrón","Contexto","Confianza"]],
+["LA CONEXIÓN","Une las piezas","Una narración sólida conecta los detalles con una conclusión concreta.","Unimos la pregunta inicial, la estructura y el cambio en una explicación coherente.",["Detalles","Relación","Idea clave"]],
+["LA IDEA CLAVE","Recuerda la idea central","El movimiento debe facilitar la comprensión, no reemplazar las pruebas.","Esto es una plantilla conceptual. Un documental factual necesita investigación y fuentes verificadas.",["Claridad","Precisión","Objetivo"]]
+]},
+fr:{subtitle:"Un parcours visuel de la question à la compréhension",rows:[
+["LA QUESTION","Quelle question se cache derrière {topic} ?","Un récit visuel clair commence par définir ce que le public doit comprendre.","Nous transformons d’abord le sujet en une question précise. Elle guidera les scènes suivantes.",["Question","Contexte","Réponse"]],
+["LE CONTEXTE","Voir le problème de près","Séparez les éléments essentiels des détails secondaires pour préserver la clarté de l’idée.","Nous délimitons le sujet et distinguons l’essentiel de ce qui détourne l’attention.",["Priorité","Contexte","Enjeu"]],
+["LE SYSTÈME","Décomposer le système","Des relations visibles expliquent souvent mieux qu’une liste de faits sans liens.","Nous montrons les composants et leurs relations au lieu d’empiler l’information.",["Entrée","Processus","Résultat"]],
+["LE CHANGEMENT","Suivre l’évolution","La séquence et les conséquences sont plus claires lorsque chaque étape a son propre état visuel.","Nous suivons le processus étape par étape. Chaque mouvement doit éclairer une partie de l’explication.",["Départ","Évolution","Résultat"]],
+["LA COMPARAISON","Placer les options côte à côte","Une échelle commune facilite la comparaison de deux situations.","La comparaison exige des critères clairs. Les chiffres réels nécessitent des sources et des unités vérifiées.",["État A","État B","Écart"]],
+["LE SIGNAL","Lire le signal avec soin","Les graphiques et les nombres ont besoin d’une définition, d’une échelle et d’une source.","Ce graphique est conceptuel et ne représente pas des mesures. Les valeurs réelles doivent être vérifiées.",["Motif","Contexte","Confiance"]],
+["LE LIEN","Relier les éléments","Un récit solide relie les détails à une conclusion précise.","Nous réunissons la question initiale, la structure et le changement dans une explication cohérente.",["Détails","Relation","Idée clé"]],
+["À RETENIR","Garder l’idée centrale","Le mouvement doit aider à comprendre, pas remplacer les preuves.","Ceci est un modèle conceptuel. Un documentaire factuel exige recherche et sources vérifiées.",["Clarté","Précision","Objectif"]]
+]},
+it:{subtitle:"Un percorso visivo dalla domanda alla comprensione",rows:[
+["LA DOMANDA","Quale domanda si nasconde dietro {topic}?","Una storia visiva chiara parte da ciò che il pubblico dovrebbe capire.","Trasformiamo prima il tema in una domanda precisa. Questa domanda guiderà le scene successive.",["Domanda","Contesto","Risposta"]],
+["IL CONTESTO","Guardiamo il problema da vicino","Separiamo i segnali essenziali dai dettagli secondari per mantenere chiara l’idea.","Definiamo i confini del tema e distinguiamo ciò che conta dalle distrazioni.",["Fuoco","Contesto","Rilevanza"]],
+["IL SISTEMA","Scomponi il sistema","Rendere visibili le relazioni spesso spiega più di un elenco di fatti scollegati.","Mostriamo le parti e i loro rapporti invece di accumulare informazioni.",["Ingresso","Processo","Risultato"]],
+["IL CAMBIAMENTO","Segui il cambiamento nel tempo","Sequenza e conseguenze sono più chiare quando ogni passaggio ha uno stato visivo distinto.","Seguiamo il processo un passo alla volta. Ogni movimento deve rivelare una parte della spiegazione.",["Inizio","Cambiamento","Risultato"]],
+["IL CONFRONTO","Metti a confronto percorsi diversi","Una scala comune rende due situazioni più facili da confrontare.","Il confronto richiede criteri chiari. I dati reali hanno bisogno di fonti e unità verificate.",["Stato A","Stato B","Differenza"]],
+["IL SEGNALE","Leggi il segnale con attenzione","Grafici e numeri richiedono definizione, scala e fonte per avere significato.","Questo grafico è concettuale e non mostra dati misurati. I valori reali vanno verificati.",["Schema","Contesto","Affidabilità"]],
+["IL COLLEGAMENTO","Collega i pezzi","Una narrazione solida collega i dettagli a una conclusione precisa.","Uniamo la domanda iniziale, la struttura e il cambiamento in una spiegazione coerente.",["Dettagli","Relazione","Idea chiave"]],
+["IL MESSAGGIO","Ricorda l’idea centrale","Il movimento deve aiutare a capire, non sostituire le prove.","Questo è un modello concettuale. Un documentario fattuale richiede ricerca e fonti verificate.",["Chiarezza","Precisione","Obiettivo"]]
+]},
+pt:{subtitle:"Uma jornada visual da pergunta à compreensão",rows:[
+["A PERGUNTA","Que pergunta está por trás de {topic}?","Uma história visual clara começa ao definir o que o público precisa compreender.","Primeiro transformamos o tema em uma pergunta precisa. Ela orienta as cenas seguintes.",["Pergunta","Contexto","Resposta"]],
+["O CONTEXTO","Veja o problema de perto","Separe os sinais essenciais dos detalhes secundários para manter a ideia clara.","Delimitamos o tema e separamos o essencial daquilo que distrai.",["Foco","Contexto","Importância"]],
+["O SISTEMA","Divida o sistema em partes","Mostrar relações costuma explicar mais do que uma lista de fatos desconectados.","Mostramos as partes e suas relações em vez de apenas acumular informações.",["Entrada","Processo","Resultado"]],
+["A MUDANÇA","Acompanhe a mudança ao longo do tempo","A sequência e as consequências ficam mais claras quando cada etapa tem um estado visual próprio.","Acompanhamos o processo passo a passo. Cada movimento deve revelar parte da explicação.",["Início","Mudança","Resultado"]],
+["A COMPARAÇÃO","Coloque caminhos diferentes lado a lado","Uma escala comum facilita comparar dois estados.","A comparação precisa de critérios claros. Dados reais exigem fontes e unidades verificadas.",["Estado A","Estado B","Diferença"]],
+["O SINAL","Leia o sinal com atenção","Gráficos e números precisam de definição, escala e fonte para comunicar algo concreto.","Este gráfico é conceitual e não representa dados medidos. Valores reais só entram após verificação.",["Padrão","Contexto","Confiança"]],
+["A CONEXÃO","Conecte as partes","Uma narrativa forte conecta detalhes a uma conclusão específica.","Conectamos a pergunta inicial, a estrutura e a mudança em uma explicação coerente.",["Detalhes","Relação","Ideia central"]],
+["A IDEIA-CHAVE","Guarde a ideia central","O movimento deve facilitar a compreensão, não substituir as evidências.","Este é um modelo conceitual. Um documentário factual exige pesquisa e fontes verificadas.",["Clareza","Precisão","Objetivo"]]
+]},
+nl:{subtitle:"Een visuele reis van vraag naar inzicht",rows:[
+["DE VRAAG","Welke vraag zit achter {topic}?","Een helder visueel verhaal begint bij wat de kijker moet begrijpen.","We maken van het onderwerp eerst een precieze vraag. Die vraag stuurt de scènes die volgen.",["Vraag","Context","Antwoord"]],
+["DE CONTEXT","Bekijk het probleem van dichtbij","Scheid de belangrijkste signalen van details die de kern minder duidelijk maken.","We bakenen het onderwerp af en scheiden de kern van afleiding.",["Focus","Context","Belang"]],
+["HET SYSTEEM","Splits het systeem op in delen","Zichtbare verbanden leggen vaak meer uit dan een lijst losse feiten.","We tonen de onderdelen en hun verbanden in plaats van informatie op te stapelen.",["Invoer","Proces","Uitkomst"]],
+["DE VERANDERING","Volg de verandering door de tijd","Volgorde en gevolgen zijn duidelijker wanneer elke stap een eigen visuele toestand heeft.","We volgen het proces stap voor stap. Elke beweging moet een deel van de uitleg onthullen.",["Start","Verandering","Resultaat"]],
+["DE VERGELIJKING","Zet verschillende routes naast elkaar","Een gedeelde schaal maakt twee situaties makkelijker vergelijkbaar.","Vergelijken vraagt om duidelijke criteria. Echte cijfers hebben gecontroleerde bronnen en eenheden nodig.",["Situatie A","Situatie B","Verschil"]],
+["HET SIGNAAL","Lees het signaal zorgvuldig","Grafieken en getallen vragen om een definitie, schaal en bron om iets te betekenen.","Deze grafiek is conceptueel en toont geen gemeten gegevens. Echte waarden worden eerst gecontroleerd.",["Patroon","Context","Betrouwbaarheid"]],
+["HET VERBAND","Verbind de onderdelen","Een sterk verhaal verbindt details met een duidelijke conclusie.","We brengen de beginvraag, de structuur en de verandering samen in één heldere uitleg.",["Details","Verband","Inzicht"]],
+["DE KERN","Onthoud het centrale idee","Beweging moet begrip ondersteunen en mag bewijs niet vervangen.","Dit is een conceptueel sjabloon. Een feitelijke documentaire heeft onderzoek en gecontroleerde bronnen nodig.",["Helderheid","Nauwkeurigheid","Doel"]]
 ]}
 };
 

@@ -28,7 +28,7 @@ Build and render a 90-second video:
 
     npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
 
-For Persian, set language to fa. The local fallback is an eight-scene conceptual template; it does not invent factual statistics. To generate a topic-specific storyboard with configured services, set ANTHROPIC_API_KEY and/or FIRECRAWL_API_KEY, then explicitly pass --allow-paid-ai. This switch can incur provider charges. Secrets alone do not enable those APIs.
+Set `--language` to `fa`, `en`, `de`, `es`, `fr`, `it`, `pt` or `nl`. The local fallback provides a localized eight-scene conceptual template for each of these languages; it does not invent factual statistics and is not a researched script. To generate a topic-specific storyboard with configured services, set ANTHROPIC_API_KEY and/or FIRECRAWL_API_KEY, then explicitly pass --allow-paid-ai. This switch can incur provider charges. Secrets alone do not enable those APIs.
 
 GitHub Actions has a production workflow: open Actions, choose Produce Motion Graphics Video, enter the topic and format, keep paid AI disabled unless authorized, then run the workflow. Generated video and manifests are uploaded as a short-lived artifact.
 
