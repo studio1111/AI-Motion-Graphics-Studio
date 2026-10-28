@@ -267,7 +267,7 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
  else result.status="failed";
  return result;
 }
-export function createProceduralBedWav(seconds, styleId = "cinematic-documentary") {
+export function createProceduralBedWav(seconds, styleId = "cinematic-documentary", transitionCues = []) {
  const duration = Math.max(5, Math.min(600, Number(seconds) || 5));
  const rate = 24000;
  const count = Math.floor(duration * rate);
@@ -283,13 +283,20 @@ export function createProceduralBedWav(seconds, styleId = "cinematic-documentary
   : styleId === "maps-timeline" || styleId === "tactile-collage" ? 84
   : styleId === "data-journalism" ? 98 : 92;
  const beatSeconds = 60 / bpm;
+ const cues = Array.from(transitionCues || []).map(cue => {
+  const time = typeof cue === "number" ? cue : Number(cue?.time);
+  const type = typeof cue === "number" ? "wipe" : String(cue?.type || "wipe").toLowerCase();
+  return { time, type: ["wipe", "fade", "scale", "split"].includes(type) ? type : "wipe" };
+ }).filter(cue => Number.isFinite(cue.time) && cue.time > 0.05 && cue.time < duration - 0.05)
+   .sort((a, b) => a.time - b.time);
  const chords = [
   [45, 48, 52, 55], // A minor 7
   [41, 45, 48, 52], // F major 7
   [48, 52, 55, 59], // C major 7
   [43, 47, 50, 53]  // G dominant color
  ].map(notes => notes.map(note => 440 * Math.pow(2, (note - 69) / 12)));
- const toSample = (value) => Math.max(-0.92, Math.min(0.92, value));
+ const toSample = value => Math.max(-0.92, Math.min(0.92, value));
+ let cueIndex = 0;
  for (let i = 0; i < count; i++) {
   const t = i / rate;
   const fade = Math.max(0, Math.min(1, t / 2.8, (duration - t) / 3.2));
@@ -315,13 +322,34 @@ export function createProceduralBedWav(seconds, styleId = "cinematic-documentary
   const shimmer = Math.sin(tau * (pluckFrequency * 2) * stepPosition) * Math.exp(-stepPosition * 18) * 0.009;
   const accent = (stepIndex % 2 === 1 ? Math.sin(tau * 6400 * stepPosition) * Math.exp(-stepPosition * 55) * 0.009 : 0);
   const texture = Math.sin(tau * 173 * t + Math.sin(tau * 0.07 * t)) * 0.018;
-  const mono = (pad * 0.82 + sub + kick + pluck + shimmer + accent + texture) * slowSwell * fade;
+  while (cueIndex < cues.length && t > cues[cueIndex].time + 0.24) cueIndex++;
+  let transitionSfx = 0;
+  const cue = cues[cueIndex];
+  if (cue) {
+   const relative = t - cue.time;
+   if (relative >= -0.38 && relative < 0.24) {
+    const progress = Math.max(0, Math.min(1, (relative + 0.38) / 0.62));
+    const weight = cue.type === "fade" ? 0.42 : cue.type === "scale" ? 0.9 : cue.type === "split" ? 0.68 : 1;
+    const sweepBase = cue.type === "split" ? 730 : cue.type === "scale" ? 180 : 390;
+    const sweepRange = cue.type === "scale" ? 760 : cue.type === "split" ? 2200 : 1640;
+    const sweep = Math.sin(tau * (sweepBase * progress + sweepRange * progress * progress))
+      + 0.28 * Math.sin(tau * (sweepBase * 1.7 * progress + sweepRange * 0.72 * progress * progress) + 0.4);
+    const swell = Math.pow(progress, 1.45) * Math.exp(-Math.max(0, relative) * 14);
+    const impactHz = cue.type === "scale" ? 92 : cue.type === "split" ? 620 : 126;
+    const impact = Math.sin(tau * impactHz * relative + 1.15) * Math.exp(-Math.abs(relative) * 28) * 0.038 * weight;
+    transitionSfx = sweep * swell * 0.075 * weight + impact;
+   }
+  }
+  const mono = (pad * 0.82 + sub + kick + pluck + shimmer + accent + texture + transitionSfx) * slowSwell * fade;
   const left = toSample(mono + Math.sin(tau * 0.17 * t) * 0.006 * fade);
   const right = toSample(mono * (0.96 + 0.025 * Math.sin(tau * 0.13 * t)) + Math.sin(tau * 0.19 * t + 0.5) * 0.006 * fade);
   b.writeInt16LE(Math.round(left * 32767), 44 + i * 4);
   b.writeInt16LE(Math.round(right * 32767), 46 + i * 4);
  }
  return b;
+}
+async function writeBed(path, seconds, styleId, transitionCues = []) {
+ await writeFile(path, createProceduralBedWav(seconds, styleId, transitionCues));
 }
 async function writeBed(path, seconds, styleId) {
  await writeFile(path, createProceduralBedWav(seconds, styleId));
@@ -420,7 +448,7 @@ export async function produce(options,env=process.env){
  await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
  let voice={status:"not_attempted",engine:null,generatedScenes:0,warnings:[]};if(options.planOnly)voice.status="not_run_plan_only";else voice=await makeVoice(plan.scenes,language,options.voice,runId,fps,warnings);
  const hasVoice=plan.scenes.some(s=>s.audioSrc);if(!hasVoice){const frames=allocateFrames(plan.scenes,targetFrames,fps);plan.scenes=plan.scenes.map((s,i)=>({...s,durationInFrames:frames[i]}));}
- const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;if(!options.planOnly){const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});await writeBed(join(assets,"procedural-ambient-bed.wav"),actualDuration,styleId);audioBedSrc="generated/"+runId+"/procedural-ambient-bed.wav";}
+ const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;if(!options.planOnly){const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});const transitionCues=[];let cueFrames=0;for(let i=0;i<plan.scenes.length;i++){if(i>0)transitionCues.push({time:cueFrames/fps,type:plan.scenes[i].transition||"wipe"});cueFrames+=plan.scenes[i].durationInFrames;}await writeBed(join(assets,"procedural-ambient-bed.wav"),actualDuration,styleId,transitionCues);audioBedSrc="generated/"+runId+"/procedural-ambient-bed.wav";}
  const visualFamily=detectTopicVisualFamily(topic);const props={topic,title:plan.title,subtitle:plan.subtitle||"",language,styleId,visualFamily,fps,width:size.width,height:size.height,durationInFrames:totalFrames,palette:preset.palette,typography:preset.typography,captionsEnabled:hasVoice,scenes:plan.scenes,...(audioBedSrc?{audioBedSrc}:{})};
  await writeFile(join(dir,"props.json"),JSON.stringify(props,null,2)+"\n");await writeFile(join(dir,"voiceover.txt"),plan.scenes.map(s=>s.narration||"").filter(Boolean).join("\n\n")+"\n");await writeFile(join(dir,"captions.srt"),makeSrt(plan.scenes,fps));await writeFile(join(dir,"storyboard-timed.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,visualFamily,language,fps,width:size.width,height:size.height,durationInFrames:totalFrames,durationSeconds:actualDuration,scenes:timedScenes(plan.scenes,fps)},null,2)+"\n");
  const manifest={runId,createdAt:new Date().toISOString(),brief:briefRecord,selectedStyle:{id:styleId,label:preset.label,palette:preset.palette,typography:preset.typography},visualFamily,contentMode:plan.contentMode,research,ai,voice,audioBed:options.planOnly?"not_generated":"locally_synthesized_procedural_ambient_bed",render:{status:options.planOnly?"NOT_RUN":"PENDING",composition:"MotionVideo"},output:{runDirectory:dir,videoPath:null},warnings};await writeFile(join(dir,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");

@@ -861,9 +861,10 @@ export const MotionVideo: React.FC<MotionVideoProps> = (props) => {
         <Audio
           src={staticFile(props.audioBedSrc)}
           volume={(frame) => {
-            const envelope = interpolate(frame, [0, fps * 2, Math.max(fps * 2, totalFrames - fps * 3), totalFrames], [0, 0.11, 0.11, 0], clamp);
+            const baseBedLevel = voiceRanges.length ? 0.18 : 0.32;
+            const envelope = interpolate(frame, [0, fps * 2, Math.max(fps * 2, totalFrames - fps * 3), totalFrames], [0, baseBedLevel, baseBedLevel, 0], clamp);
             const narrationIsActive = voiceRanges.some((range) => frame >= range.startFrame && frame < range.endFrame);
-            return narrationIsActive ? Math.min(envelope, 0.032) : envelope;
+            return narrationIsActive ? Math.min(envelope, 0.05) : envelope;
           }}
         />
       ) : null}

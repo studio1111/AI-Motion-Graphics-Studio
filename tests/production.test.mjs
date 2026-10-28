@@ -139,6 +139,31 @@ test("procedural music bed is valid stereo PCM with a varied, non-silent wavefor
   assert.ok(sampled.size>100,"music bed should contain a changing signal, not a flat DC offset");
 });
 
+test("transition sound design is synchronized, localized and deterministic",()=>{
+  const dry=createProceduralBedWav(5,"scientific-2-5d");
+  const cued=createProceduralBedWav(5,"scientific-2-5d",[
+    {time:2.5,type:"wipe"},
+    {time:4,type:"scale"}
+  ]);
+  assert.equal(cued.length,dry.length);
+  const rate=24000,bytesPerFrame=4;
+  const quietStart=44+Math.floor(0.55*rate)*bytesPerFrame;
+  const quietEnd=44+Math.floor(1.05*rate)*bytesPerFrame;
+  assert.equal(Buffer.compare(cued.subarray(quietStart,quietEnd),dry.subarray(quietStart,quietEnd)),0);
+  const cueStart=44+Math.floor(2.15*rate)*bytesPerFrame;
+  const cueEnd=44+Math.floor(2.72*rate)*bytesPerFrame;
+  let absoluteDifference=0;
+  let samples=0;
+  for(let offset=cueStart;offset<cueEnd;offset+=4){
+    absoluteDifference+=Math.abs(cued.readInt16LE(offset)-dry.readInt16LE(offset));
+    samples++;
+  }
+  assert.ok(absoluteDifference/samples>20,"a transition cue should add a measurable, local sound effect");
+  assert.equal(Buffer.compare(cued,createProceduralBedWav(5,"scientific-2-5d",[
+    {time:2.5,type:"wipe"},{time:4,type:"scale"}
+  ])),0,"the procedural soundtrack should be reproducible");
+});
+
 test("QC samples interior frames rather than exact start and midpoint cuts",()=>{
   assert.deepEqual(sampleTimes(12),[0.96,6.96,11.52]);
   for(const duration of [5,12,90]){
