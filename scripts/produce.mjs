@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { access, mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
 import { spawn, spawnSync } from "node:child_process";
 import { delimiter, join, resolve } from "node:path";
@@ -8,6 +8,7 @@ import { splitCaptionSegments } from "../src/production/captions.mjs";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { generateAceStepMusic, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { masterAudioVideo } from "../src/production/audio-mastering.mjs";
+import { buildNarrationEnhancementFilter } from "../src/production/voice-processing.mjs";
 export { splitCaptionSegments };
 
 export const LAYOUTS = new Set(["hero","editorial","diagram","timeline","compare","data","particles","map","interface","quote","outro"]);
@@ -348,13 +349,22 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
    const w=engine.name+" failed on "+s.id+(r.timedOut?" (timeout).":": "+String(r.stderr||r.error||"unknown error").slice(-220));
    result.status="partial";result.warnings.push(w);warnings.push(w);continue;
   }
-  let b;try{b=await readFile(file);}catch{}
-  const seconds=wavDuration(b);
-  if(!seconds||seconds<=0){
-   const w=engine.name+" produced an unreadable or empty WAV for "+s.id;
-   result.status="partial";result.warnings.push(w);warnings.push(w);continue;
+  const enhancedFile=file.replace(/\\.wav$/i,".enhanced.wav");
+  const ffmpeg=executable("ffmpeg")||"ffmpeg";
+  const enhancement=await run(ffmpeg,["-y","-hide_banner","-loglevel","error","-i",file,"-af",buildNarrationEnhancementFilter(),"-ac","1","-ar","24000","-c:a","pcm_s16le",enhancedFile],Math.min(240000,engine.timeout));
+  if(enhancement.code!==0){
+   const w="Narration enhancement failed on "+s.id+": "+String(enhancement.stderr||enhancement.error||"unknown FFmpeg error").slice(-300);
+   result.status="partial";result.warnings.push(w);warnings.push(w);await rm(enhancedFile,{force:true});continue;
   }
-  s.audioSrc="generated/"+runId+"/"+name;
+  let enhancedBuffer;try{enhancedBuffer=await readFile(enhancedFile);}catch{}
+  const seconds=wavDuration(enhancedBuffer);
+  if(!seconds||seconds<=0){
+   const w="Narration enhancement generated an invalid WAV for "+s.id;
+   result.status="partial";result.warnings.push(w);warnings.push(w);await rm(enhancedFile,{force:true});continue;
+  }
+  await rename(enhancedFile,file);
+  let b;try{b=await readFile(file);}catch{}
+    s.audioSrc="generated/"+runId+"/"+name;
   s.audioDurationInFrames=Math.ceil(seconds*fps);
   s.durationInFrames=s.audioDurationInFrames+Math.ceil(fps*1.1);
   result.generatedScenes++;
