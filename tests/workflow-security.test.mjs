@@ -7,7 +7,7 @@ test("manual production workflow keeps paid APIs opt-in and repository permissio
   assert.match(workflow, /^permissions:\n  contents: read\s/m);
   assert.match(workflow, /allow_paid_ai:[\s\S]*?default:\s*["']?false["']?/);
   assert.match(workflow, /MOTION_STUDIO_ALLOW_PAID_API:\s*\$\{\{\s*inputs\.allow_paid_ai\s*\}\}/);
-  assert.match(workflow, /timeout-minutes:\\s*120/);
+  assert.match(workflow, /timeout-minutes:\s*120/);
 });
 
 test("manual production artifacts have bounded retention and an explicit missing-output policy", async () => {
