@@ -22,3 +22,9 @@ Record URL, title, creator, date, duration, language, engagement data/date if av
 
 ## Synthesis
 After each 100 records, refresh the pattern matrix. Promote a method into a general rule only when it recurs across creators and genres. Translate evidence into original style recipes and regression tests. Respect source terms and never redistribute other creators' footage.
+
+## Catalog workflow
+- Use `research/references.jsonl` as the structured source of truth; `research/REFERENCE_SEED_CATALOG.md` is the human-readable seed list.
+- Refresh the integrity and quota report with `npm run research:catalog`; the generated report is `docs/REFERENCE_PROGRESS.json`.
+- Keep related-article evidence separate from evidence about the linked video. A related article must not upgrade a video to L1 unless it actually describes that reference.
+- Never mark a reference L2/L3 unless the review fields required by the catalog validator are true.
