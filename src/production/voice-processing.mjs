@@ -11,8 +11,8 @@ export function buildNarrationEnhancementFilter() {
 
 export function getEnhancedNarrationPath(inputPath) {
   const source = String(inputPath || "");
-  if (!/\\.wav$/i.test(source)) {
+  if (!/\.wav$/i.test(source)) {
     throw new TypeError("Narration enhancement requires a WAV file path.");
   }
-  return source.replace(/\\.wav$/i, ".enhanced.wav");
+  return source.replace(/\.wav$/i, ".enhanced.wav");
 }
