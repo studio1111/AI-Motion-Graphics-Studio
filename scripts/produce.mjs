@@ -411,13 +411,17 @@ export function createProceduralBedWav(seconds, styleId = "cinematic-documentary
    Math.sin(tau * chord[2] * t + 0.31) * 0.065 +
    Math.sin(tau * chord[3] * t + 0.6) * 0.035 +
    Math.sin(tau * chord[2] * 1.003 * t) * 0.025;
-  const sub = Math.sin(tau * chord[0] * 0.5 * t) * (0.11 + 0.03 * Math.sin(tau * 0.03 * t));
+  const sub = Math.sin(tau * chord[0] * 0.5 * t) * (0.11 + 0.03 * Math.sin(tau * 0.03 * t)) + Math.sin(tau * chord[0] * t + 0.2) * 0.024;
   const strongBeat = Math.floor(t / beatSeconds) % 4 === 0;
   const kickEnvelope = Math.exp(-beatPosition * 22);
   const kick = Math.sin(tau * (58 * beatPosition - 15 * beatPosition * beatPosition)) * kickEnvelope * (strongBeat ? 0.085 : 0.025);
-  const pluck = Math.sin(tau * pluckFrequency * stepPosition) * Math.exp(-stepPosition * 7.5) * 0.048;
-  const shimmer = Math.sin(tau * (pluckFrequency * 2) * stepPosition) * Math.exp(-stepPosition * 18) * 0.009;
+  const pluck = (Math.sin(tau * pluckFrequency * stepPosition) + 0.32 * Math.sin(tau * pluckFrequency * 2.01 * stepPosition + 0.12) + 0.11 * Math.sin(tau * pluckFrequency * 3.02 * stepPosition + 0.2)) * Math.exp(-stepPosition * 6.8) * 0.034;
+  const shimmer = (Math.sin(tau * (pluckFrequency * 2) * stepPosition) + 0.24 * Math.sin(tau * pluckFrequency * 4.03 * stepPosition)) * Math.exp(-stepPosition * 16) * 0.008;
+  const motifIndex = stepIndex % 8;
+  const motifFrequency = chord[(motifIndex + Math.floor(motifIndex / 4)) % chord.length] * 2;
+  const lead = (Math.sin(tau * motifFrequency * stepPosition) + 0.25 * Math.sin(tau * motifFrequency * 2.01 * stepPosition + 0.1)) * Math.exp(-stepPosition * 5.2) * (motifIndex === 3 || motifIndex === 7 ? 0.008 : 0.015);
   const accent = (stepIndex % 2 === 1 ? Math.sin(tau * 6400 * stepPosition) * Math.exp(-stepPosition * 55) * 0.009 : 0);
+  const hat = (Math.sin(tau * 7137 * stepPosition) + 0.42 * Math.sin(tau * 11003 * stepPosition + 0.3)) * Math.exp(-stepPosition * 72) * (stepIndex % 2 === 1 ? 0.006 : 0.002);
   const texture = Math.sin(tau * 173 * t + Math.sin(tau * 0.07 * t)) * 0.018;
   while (cueIndex < cues.length && t > cues[cueIndex].time + 0.24) cueIndex++;
   let transitionSfx = 0;
@@ -437,9 +441,12 @@ export function createProceduralBedWav(seconds, styleId = "cinematic-documentary
     transitionSfx = sweep * swell * 0.075 * weight + impact;
    }
   }
-  const mono = (pad * 0.82 + sub + kick + pluck + shimmer + accent + texture + transitionSfx) * slowSwell * fade;
-  const left = toSample(mono + Math.sin(tau * 0.17 * t) * 0.006 * fade);
-  const right = toSample(mono * (0.96 + 0.025 * Math.sin(tau * 0.13 * t)) + Math.sin(tau * 0.19 * t + 0.5) * 0.006 * fade);
+  const arrangementLift = 0.68 + 0.32 * Math.min(1, t / Math.max(1, duration * 0.42));
+  const beatDuck = 1 - Math.exp(-beatPosition * 16) * (strongBeat ? 0.075 : 0.025);
+  const mono = (pad * 0.82 * beatDuck + sub + kick + pluck + shimmer + lead * arrangementLift + hat + accent + texture + transitionSfx) * slowSwell * fade;
+  const stereoMotion = (lead + shimmer) * 0.08;
+  const left = toSample(mono - stereoMotion + Math.sin(tau * 0.17 * t) * 0.006 * fade);
+  const right = toSample(mono + stereoMotion + Math.sin(tau * 0.19 * t + 0.5) * 0.006 * fade);
   b.writeInt16LE(Math.round(left * 32767), 44 + i * 4);
   b.writeInt16LE(Math.round(right * 32767), 46 + i * 4);
  }
