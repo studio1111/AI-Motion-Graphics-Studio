@@ -15,10 +15,13 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
 - `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
-- `prompt-library/`: standalone, tool-agnostic prompt suite with 70 reusable style recipes, six specialized master prompts, a browsable catalog and copy-ready CLI for any AI assistant.
+- `prompt-library/`: standalone, tool-agnostic prompt suite with 96 reusable style recipes, ten advanced specialist master prompts, 15 scene-level templates and a 9-stage workflow pack, six specialized master prompts, a browsable catalog and copy-ready CLI for any AI assistant.
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
 - `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`: repeatable evidence-aware rubric for analyzing reference pages and videos.
 - `prompt-library/PRODUCTION_WORKFLOW_PACK.md`: copy-ready prompts for story, storyboard, motion, typography, audio, rendering and quality repair.
+- `prompt-library/ADVANCED_MASTER_PROMPTS.md`: ten detailed specialist directors for documentary, product, typography, data, T2V, I2V, audio, code, repair and QC.
+- `prompt-library/SCENE_PROMPT_TEMPLATES.md`: 15 reusable shot-level prompt templates.
+- `docs/PROMPT_MOTION_PATTERN_STUDY.md`: cross-tool motion patterns and honest evidence limits.
 - `research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md`: source-linked lessons from Prompt Motion research pages.
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
 - `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost caveats.
