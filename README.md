@@ -33,8 +33,9 @@ Use the built-in prompt library with any AI assistant or creative tool:
     npm run prompts:show -- kinetic-type
     npm run prompts:show -- product-launch --format json
     npm run prompts:master
+    npm run prompts:export -- --category product-ui
 
-The `show` command combines the universal master prompt with the selected style recipe. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.
+The `show` command combines the universal master prompt with the selected style recipe. The `export` command creates a self-contained Markdown or JSON bundle, optionally filtered by style category, for transfer into another AI environment. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.
 
 ## Running the production engine
 
