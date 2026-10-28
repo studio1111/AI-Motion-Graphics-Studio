@@ -520,19 +520,151 @@ const QuoteGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; frame
   );
 };
 
-const LayoutGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; frame: number; vertical: boolean; typography: MotionVideoProps["typography"]; rtl: boolean }> = ({ scene, palette, frame, vertical, typography, rtl }) => {
+const TopicHeroGraphic: React.FC<{ family: NonNullable<MotionVideoProps["visualFamily"]>; palette: MotionPalette; frame: number }> = ({ family, palette, frame }) => {
+  const reveal = interpolate(frame, [0, 34], [0, 1], clamp);
+  const pulse = 0.5 + 0.5 * Math.sin(frame / 13);
+  const cityBuildings = [
+    { x: 28, w: 104, h: 178 }, { x: 144, w: 118, h: 252 }, { x: 273, w: 94, h: 208 },
+    { x: 378, w: 142, h: 318 }, { x: 531, w: 105, h: 236 }, { x: 647, w: 130, h: 278 },
+    { x: 788, w: 84, h: 194 }, { x: 883, w: 91, h: 226 }
+  ];
+  const windows = (building: { x: number; w: number; h: number }, index: number) =>
+    Array.from({ length: Math.max(4, Math.floor(building.h / 38) * 3) }, (_, i) => {
+      const columns = 3;
+      const rows = Math.ceil(Math.max(4, Math.floor(building.h / 38) * 3) / columns);
+      const col = i % columns;
+      const row = Math.floor(i / columns);
+      return <rect key={index + "-" + i} x={building.x + 15 + col * ((building.w - 30) / columns)} y={620 - building.h + 22 + row * ((building.h - 38) / rows)} width="7" height="13" rx="1" fill={i % 4 === 0 ? palette.accent2 : palette.foreground} opacity={0.16 + 0.46 * (0.5 + 0.5 * Math.sin(frame / 19 + i * 1.7 + index))} />;
+    });
+  return (
+    <svg viewBox="0 0 1000 700" role="img" aria-label="Topic-specific animated concept illustration" style={{ width: "100%", height: "100%", overflow: "visible" }}>
+      <defs>
+        <linearGradient id="topic-object-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={palette.accent2} stopOpacity="0.92" />
+          <stop offset="100%" stopColor={palette.accent} stopOpacity="0.7" />
+        </linearGradient>
+        <linearGradient id="topic-building-gradient" x1="0" y1="0" x2="0.9" y2="1">
+          <stop offset="0%" stopColor={palette.panel} />
+          <stop offset="100%" stopColor={palette.background} />
+        </linearGradient>
+        <radialGradient id="topic-halo">
+          <stop offset="0%" stopColor={palette.accent2} stopOpacity="0.26" />
+          <stop offset="100%" stopColor={palette.accent2} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {family === "city-heat" ? (
+        <>
+          <circle cx="752" cy="182" r="190" fill="url(#topic-halo)" />
+          <circle cx="752" cy="182" r={56 + pulse * 5} fill="none" stroke={rgba(palette.accent2, 0.22)} strokeWidth="2" />
+          <circle cx="752" cy="182" r="37" fill="url(#topic-object-gradient)" opacity="0.75" />
+          {cityBuildings.map((b, i) => <g key={i}>
+            <rect x={b.x} y={620 - b.h} width={b.w} height={b.h} rx="3" fill="url(#topic-building-gradient)" stroke={rgba(palette.line, 0.95)} strokeWidth="2" />
+            <path d={`M ${b.x + 8} ${620 - b.h + 12} L ${b.x + b.w - 8} ${620 - b.h + 12}`} stroke={rgba(palette.foreground, 0.16)} strokeWidth="2" />
+            {windows(b, i)}
+          </g>)}
+          <path d="M0 622 L1000 622" stroke={palette.foreground} strokeOpacity="0.23" strokeWidth="3" />
+          {[0, 1, 2, 3].map((i) => <path key={i} d={`M ${75 + i * 215} 400 C ${25 + i * 215} 345, ${150 + i * 215} 315, ${96 + i * 215} 260 S ${160 + i * 215} 208, ${125 + i * 215} 172`} fill="none" stroke={i % 2 ? palette.accent : palette.accent2} strokeWidth={3 + (i % 2)} strokeLinecap="round" strokeDasharray="12 16" strokeDashoffset={-frame * (1.8 + i * 0.3)} opacity={0.5 + reveal * 0.45} />)}
+          <path d="M100 655 Q300 642 500 655 T900 655" fill="none" stroke={rgba(palette.accent, 0.44)} strokeWidth="2" />
+          <g opacity="0.68">
+            {Array.from({ length: 8 }, (_, i) => <path key={i} d={`M ${80 + i * 118} 644 l18 -4 l18 4`} fill="none" stroke={palette.accent2} strokeWidth="2" />)}
+          </g>
+        </>
+      ) : family === "artificial-intelligence" ? (
+        <>
+          <circle cx="500" cy="350" r="270" fill="url(#topic-halo)" />
+          {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => {
+            const a = i * Math.PI / 6;
+            const x = 500 + Math.cos(a) * (285 + 9 * Math.sin(frame / 11 + i));
+            const y = 340 + Math.sin(a) * (245 + 7 * Math.cos(frame / 14 + i));
+            return <g key={i}><path d={`M500 340 L${x} ${y}`} stroke={rgba(palette.accent,0.5)} strokeWidth="2" strokeDasharray="7 10" strokeDashoffset={-frame * 1.5}/><circle cx={x} cy={y} r={7+(i%3)} fill={i%3===0?palette.accent2:palette.accent} /></g>;
+          })}
+          <rect x="350" y="208" width="300" height="264" rx="28" fill="url(#topic-building-gradient)" stroke={palette.accent} strokeWidth="4" />
+          {Array.from({length:8},(_,i)=><g key={i}><path d={`M${380+i*34} 208 v-26 M${380+i*34} 472 v26`} stroke={palette.accent2} strokeWidth="5" strokeLinecap="round"/><path d={`M350 ${238+i*29} h-26 M650 ${238+i*29} h26`} stroke={palette.accent2} strokeWidth="5" strokeLinecap="round"/></g>)}
+          <g transform={`translate(500 338) rotate(${Math.sin(frame/30)*4})`}><circle r="94" fill="none" stroke={rgba(palette.accent2,0.7)} strokeWidth="2" strokeDasharray="4 12"/><circle r="61" fill="url(#topic-object-gradient)" opacity="0.22"/><path d="M-37 -21 L0 -42 L38 -20 L38 21 L0 43 L-37 21 Z" fill="none" stroke={palette.accent2} strokeWidth="4"/><circle cx="0" cy="0" r="12" fill={palette.accent}/><circle cx="-37" cy="-21" r="6" fill={palette.foreground}/><circle cx="38" cy="-20" r="6" fill={palette.foreground}/><circle cx="0" cy="43" r="6" fill={palette.foreground}/></g>
+        </>
+      ) : family === "solar-energy" ? (
+        <>
+          <circle cx="222" cy="164" r={77 + pulse * 5} fill="url(#topic-object-gradient)" opacity="0.7"/>
+          {Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return <path key={i} d={`M${222+Math.cos(a)*100} ${164+Math.sin(a)*100} L${222+Math.cos(a)*130} ${164+Math.sin(a)*130}`} stroke={palette.accent2} strokeWidth="5" strokeLinecap="round" opacity={reveal}/>;})}
+          <path d="M60 420 L660 326 L866 555 L250 632 Z" fill="url(#topic-building-gradient)" stroke={palette.line} strokeWidth="4"/>
+          {Array.from({length:5},(_,i)=><path key={"r"+i} d={`M${101+i*118} ${414-i*19} L${294+i*107} ${616-i*16}`} stroke={palette.accent} strokeOpacity="0.68" strokeWidth="3"/>)}
+          {Array.from({length:4},(_,i)=><path key={"c"+i} d={`M${78+i*148} ${447-i*24} L${838-i*3} ${425+i*37}`} stroke={palette.accent2} strokeOpacity="0.58" strokeWidth="3"/>)}
+          <path d="M260 330 C380 255 454 263 524 315 S686 361 787 280" fill="none" stroke={palette.accent2} strokeWidth="5" strokeDasharray="12 14" strokeDashoffset={-frame*2} strokeLinecap="round"/>
+          <path d="M775 250 l26 28 -36 14" fill="none" stroke={palette.accent2} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+        </>
+      ) : family === "climate" ? (
+        <>
+          <circle cx="500" cy="350" r="250" fill="url(#topic-halo)"/>
+          <g transform={`rotate(${-12+frame*0.12} 500 350)`}><circle cx="500" cy="350" r="185" fill="url(#topic-building-gradient)" stroke={palette.accent} strokeWidth="4"/><ellipse cx="500" cy="350" rx="88" ry="185" fill="none" stroke={palette.accent2} strokeWidth="3"/><ellipse cx="500" cy="350" rx="155" ry="65" fill="none" stroke={palette.accent2} strokeWidth="3"/><ellipse cx="500" cy="350" rx="177" ry="120" fill="none" stroke={palette.line} strokeWidth="2"/><path d="M330 300 Q420 260 500 300 T670 300 M330 405 Q420 365 500 405 T670 405" fill="none" stroke={palette.accent} strokeWidth="8" strokeLinecap="round" strokeDasharray="14 16" strokeDashoffset={-frame*2}/></g>
+          {[0,1,2].map(i=><path key={i} d={`M${200+i*24} ${170+i*26} C${110+i*24} ${220+i*22} ${290+i*21} ${244+i*25} ${205+i*26} ${300+i*28}`} fill="none" stroke={palette.accent2} strokeWidth="4" strokeDasharray="10 13" strokeDashoffset={frame*1.4} opacity="0.75"/> )}
+        </>
+      ) : family === "biology" ? (
+        <>
+          <circle cx="500" cy="352" r="250" fill="url(#topic-halo)"/>
+          <circle cx="500" cy="352" r="212" fill="url(#topic-building-gradient)" stroke={palette.accent} strokeWidth="5"/>
+          {Array.from({length:26},(_,i)=>{const a=i*2.399;const r=22+(i%7)*25;return <g key={i}><circle cx={500+Math.cos(a)*r} cy={352+Math.sin(a)*r} r={4+(i%4)} fill={i%3===0?palette.accent2:palette.accent} opacity={0.35+0.4*pulse}/></g>;})}
+          <circle cx="500" cy="352" r="76" fill={palette.accent2} fillOpacity="0.18" stroke={palette.accent2} strokeWidth="3"/>
+          <circle cx="500" cy="352" r="29" fill={palette.accent} fillOpacity="0.68"/>
+          <path d={Array.from({length:17},(_,i)=>{const y=118+i*29;return `M${390+Math.sin(i/2)*55} ${y} Q500 ${y+12} ${610-Math.sin(i/2)*55} ${y+29}`;}).join(" ")} fill="none" stroke={palette.accent2} strokeWidth="5" strokeLinecap="round" strokeDasharray="8 12" strokeDashoffset={-frame*2}/>
+          <path d={Array.from({length:17},(_,i)=>{const y=118+i*29;return `M${610-Math.sin(i/2)*55} ${y} Q500 ${y+12} ${390+Math.sin(i/2)*55} ${y+29}`;}).join(" ")} fill="none" stroke={palette.accent} strokeWidth="5" strokeLinecap="round" strokeDasharray="8 12" strokeDashoffset={frame*2}/>
+        </>
+      ) : family === "space" ? (
+        <>
+          <circle cx="500" cy="350" r="184" fill="url(#topic-halo)"/>
+          <ellipse cx="500" cy="350" rx="362" ry="138" transform={`rotate(-24 500 350)`} fill="none" stroke={palette.accent2} strokeOpacity="0.6" strokeWidth="3"/>
+          <ellipse cx="500" cy="350" rx="284" ry="205" transform={`rotate(32 500 350)`} fill="none" stroke={palette.line} strokeWidth="3" strokeDasharray="4 12"/>
+          <circle cx="500" cy="350" r="116" fill="url(#topic-object-gradient)" opacity="0.82"/>
+          <path d="M405 326 Q500 250 596 325 Q511 435 405 326Z" fill={rgba(palette.background,0.26)}/>
+          <circle cx={500+338*Math.cos(frame/50)} cy={350+125*Math.sin(frame/50)} r="18" fill={palette.accent2} stroke={palette.foreground} strokeOpacity="0.5" strokeWidth="2"/>
+          {Array.from({length:26},(_,i)=><circle key={i} cx={(i*197+61)%960+20} cy={(i*113+29)%630+30} r={i%4===0?3:1.6} fill={palette.foreground} opacity={0.2+0.45*(0.5+0.5*Math.sin(frame/20+i))}/>)}
+        </>
+      ) : family === "finance" ? (
+        <>
+          <path d="M76 610 H928" stroke={palette.line} strokeWidth="3"/>
+          {[0,1,2,3,4,5,6].map(i=>{const h=110+i*48;const x=104+i*118;return <g key={i}><rect x={x} y={610-h*reveal} width="70" height={h*reveal} rx="4" fill={i%3===0?palette.accent2:palette.accent} fillOpacity={0.35+i*0.07}/><path d={`M${x+8} ${610-h*reveal+20} H${x+62}`} stroke={palette.foreground} strokeOpacity="0.45" strokeWidth="2"/></g>;})}
+          <path d="M95 500 C210 460 255 405 360 422 S545 320 640 332 S815 204 906 159" fill="none" stroke={palette.foreground} strokeWidth="5" strokeLinecap="round" strokeDasharray="1200" strokeDashoffset={1200*(1-reveal)} />
+          <path d="M865 154 l44 2 -13 40" fill="none" stroke={palette.accent2} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+          {[0,1,2,3,4,5].map(i=><circle key={i} cx={95+i*160} cy={512-i*59+Math.sin(frame/12+i)*7} r="7" fill={palette.accent2}/>)}
+        </>
+      ) : family === "cybersecurity" ? (
+        <>
+          <circle cx="500" cy="346" r="250" fill="url(#topic-halo)"/>
+          <path d="M500 109 L702 192 V350 C702 468 622 544 500 607 C378 544 298 468 298 350 V192Z" fill="url(#topic-building-gradient)" stroke={palette.accent} strokeWidth="6" strokeLinejoin="round"/>
+          <path d="M500 182 L630 236 V348 C630 432 575 485 500 530 C425 485 370 432 370 348 V236Z" fill={rgba(palette.accent,0.1)} stroke={palette.accent2} strokeWidth="3"/>
+          <rect x="450" y="325" width="100" height="92" rx="14" fill="url(#topic-object-gradient)" />
+          <path d="M466 325 V300 A34 34 0 0 1 534 300 V325" fill="none" stroke={palette.foreground} strokeWidth="10" strokeLinecap="round"/>
+          <circle cx="500" cy="363" r="9" fill={palette.background}/><path d="M500 372 V393" stroke={palette.background} strokeWidth="8" strokeLinecap="round"/>
+          {Array.from({length:8},(_,i)=>{const x=84+i*118;return <g key={i}><path d={`M${x} 115 v80 l${(500-x)*0.22} 40`} fill="none" stroke={palette.line} strokeWidth="2" strokeDasharray="5 9" strokeDashoffset={frame*1.5}/><circle cx={x} cy="115" r="6" fill={palette.accent2} opacity={0.42+0.5*pulse}/></g>;})}
+        </>
+      ) : family === "water" ? (
+        <>
+          <circle cx="750" cy="188" r="170" fill="url(#topic-halo)"/>
+          <path d={Array.from({length:7},(_,i)=>{const x=i*165-30;return `M${x} ${370+i%2*22} C${x+38} ${315+i%3*25} ${x+82} ${420-i%3*18} ${x+130} ${360+i%2*22} S${x+205} ${332+i%3*22} ${x+242} ${378+i%2*18}`;}).join(" ")} fill="none" stroke={palette.accent} strokeWidth="6" strokeOpacity={0.45+0.4*pulse} strokeDasharray="18 14" strokeDashoffset={-frame*2}/>
+          <path d="M500 110 C452 196 366 268 366 370 C366 460 425 518 500 518 C575 518 634 460 634 370 C634 268 548 196 500 110Z" fill="url(#topic-object-gradient)" fillOpacity="0.58" stroke={palette.accent2} strokeWidth="4"/>
+          <path d="M416 365 Q500 330 584 365" fill="none" stroke={palette.foreground} strokeWidth="4" strokeOpacity="0.8" strokeLinecap="round"/>
+          <path d="M427 405 Q500 372 573 405" fill="none" stroke={palette.foreground} strokeWidth="4" strokeOpacity="0.6" strokeLinecap="round"/>
+          <circle cx="500" cy="367" r={22+8*pulse} fill={palette.accent2} fillOpacity="0.4"/>
+        </>
+      ) : (
+        <>
+          <circle cx="500" cy="350" r="245" fill="url(#topic-halo)"/>
+          <g transform={`translate(500 350) rotate(${-8+frame*0.1})`}>
+            <path d="M0 -238 L210 -118 L210 118 L0 238 L-210 118 L-210 -118Z" fill="url(#topic-building-gradient)" stroke={palette.accent} strokeWidth="4"/>
+            <path d="M0 -174 L154 -88 L154 88 L0 174 L-154 88 L-154 -88Z" fill="none" stroke={palette.accent2} strokeWidth="3"/>
+            <path d="M-100 -70 L0 -132 L102 -70 L102 48 L0 110 L-100 48Z" fill="url(#topic-object-gradient)" fillOpacity="0.36" stroke={palette.foreground} strokeOpacity="0.55" strokeWidth="3"/>
+            <circle cx="0" cy="0" r={32+7*pulse} fill={palette.accent2} fillOpacity="0.7"/>
+          </g>
+          {Array.from({length:10},(_,i)=>{const a=i*Math.PI/5;return <circle key={i} cx={500+Math.cos(a)*300} cy={350+Math.sin(a)*250} r={5+i%3} fill={i%2?palette.accent:palette.accent2} opacity={0.3+0.5*reveal}/>;})}
+        </>
+      )}
+    </svg>
+  );
+};
+
+const LayoutGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; frame: number; vertical: boolean; typography: MotionVideoProps["typography"]; rtl: boolean; visualFamily: NonNullable<MotionVideoProps["visualFamily"]> }> = ({ scene, palette, frame, vertical, typography, rtl, visualFamily }) => {
   switch (scene.layout) {
     case "hero":
-      return (
-        <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", position: "relative" }}>
-          <div style={{ position: "absolute", width: vertical ? "76vw" : "28vw", height: vertical ? "76vw" : "28vw", maxWidth: 650, maxHeight: 650, border: "1px solid " + rgba(palette.accent, 0.62), borderRadius: "50%", transform: "rotateX(60deg) rotateZ(" + interpolate(frame, [0, 90], [-24, 32], clamp) + "deg) scale(" + interpolate(frame, [0, 30], [0.76, 1], clamp) + ")" }} />
-          <div style={{ fontFamily: typography.mono, color: palette.accent2, letterSpacing: 4, fontSize: 19 }}>THE CORE IDEA</div>
-          <div style={{ position: "relative", marginTop: 24, width: "100%", height: "56%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: 1, height: "100%", background: rgba(palette.foreground, 0.12), position: "absolute", left: "50%" }} />
-            <div style={{ position: "absolute", bottom: "15%", width: "64%", height: 3, background: palette.accent, transform: "scaleX(" + interpolate(frame, [0, 30], [0, 1], clamp) + ")" }} />
-          </div>
-        </div>
-      );
+      return <TopicHeroGraphic family={visualFamily} palette={palette} frame={frame} />;
     case "diagram":
       return <DiagramGraphic scene={scene} palette={palette} frame={frame} vertical={vertical} typography={typography} />;
     case "timeline":
@@ -629,7 +761,7 @@ const SceneView: React.FC<{
             </div>
           ) : null}
           <div style={{ width: mainGraphicWidth, height: vertical && !typographyLed ? "47%" : "100%", minHeight: vertical ? 250 : undefined, position: "relative", zIndex: 2 }}>
-            <LayoutGraphic scene={scene} palette={palette} frame={frame} vertical={vertical} typography={typography} rtl={rtl} />
+            <LayoutGraphic scene={scene} palette={palette} frame={frame} vertical={vertical} typography={typography} rtl={rtl} visualFamily={props.visualFamily || "general"} />
           </div>
         </div>
 

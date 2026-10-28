@@ -23,12 +23,15 @@ export type MotionScene = {
   transition?: "wipe" | "fade" | "scale" | "split";
 };
 
+export type MotionVisualFamily = "city-heat" | "artificial-intelligence" | "solar-energy" | "climate" | "biology" | "space" | "finance" | "cybersecurity" | "water" | "general";
+
 export type MotionVideoProps = {
   topic: string;
   title: string;
   subtitle: string;
   language: string;
   styleId: string;
+  visualFamily?: MotionVisualFamily;
   fps: number;
   width: number;
   height: number;
@@ -46,6 +49,7 @@ export const DEFAULT_MOTION_VIDEO_PROPS: MotionVideoProps = {
   subtitle: "From question to understanding",
   language: "en",
   styleId: "editorial-kinetic-type",
+  visualFamily: "general",
   fps: 30,
   width: 1920,
   height: 1080,

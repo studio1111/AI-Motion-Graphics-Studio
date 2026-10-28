@@ -132,6 +132,19 @@ export function parseArgs(argv=process.argv.slice(2),env=process.env){
   return o;
 }
 export function safeSlug(value){const slug=String(value||"motion-video").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-+|-+$/g,"").slice(0,48);return slug||"motion-video";}
+export function detectTopicVisualFamily(topic){
+ const text=String(topic||"").toLowerCase();
+ if(/(city|cities|urban|heat island|heat moves|heatwave|hotter|شهر|شهری|گرما|جزیره گرمایی)/i.test(text))return "city-heat";
+ if(/(artificial intelligence|machine learning|neural network|\bai\b|robot|هوش مصنوعی|یادگیری ماشین|شبکه عصبی|ربات)/i.test(text))return "artificial-intelligence";
+ if(/(solar|photovoltaic|renewable energy|wind power|electricity|power grid|خورشید|خورشیدی|برق|انرژی|نیروگاه|باد)/i.test(text))return "solar-energy";
+ if(/(climate|global warming|carbon|emissions|ecosystem|environment|اقلیم|گرمایش جهانی|کربن|انتشار گاز|محیط زیست|بوم‌سازگان)/i.test(text))return "climate";
+ if(/(biology|cell|dna|gene|virus|protein|medical|health|زیست‌شناسی|سلول|دی‌ان‌ای|ژن|ویروس|پروتئین|پزشکی|سلامت)/i.test(text))return "biology";
+ if(/(space|planet|orbit|universe|galaxy|black hole|astronomy|فضا|سیاره|مدار|کیهان|کهکشان|سیاهچاله|نجوم)/i.test(text))return "space";
+ if(/(finance|financial|market|economy|inflation|budget|stock|money|اقتصاد|مالی|بازار|تورم|بودجه|سهام|پول)/i.test(text))return "finance";
+ if(/(cyber|security|encryption|privacy|password|phishing|هک|امنیت سایبری|رمزنگاری|حریم خصوصی|گذرواژه|فیشینگ)/i.test(text))return "cybersecurity";
+ if(/(ocean|water cycle|river|rainfall|drought|water|اقیانوس|چرخه آب|رودخانه|بارندگی|خشکسالی|آب)/i.test(text))return "water";
+ return "general";
+}
 export function chooseStyle(style,topic,ratio="16:9"){
   const id=String(style||"auto").toLowerCase().replaceAll("_","-").replaceAll(" ","-");
   if(id!=="auto"){const found=ALIASES[id]||id;if(!PRESETS[found])throw new Error("Unknown style: "+style);return found;}
@@ -405,7 +418,7 @@ export async function produce(options,env=process.env){
  let voice={status:"not_attempted",engine:null,generatedScenes:0,warnings:[]};if(options.planOnly)voice.status="not_run_plan_only";else voice=await makeVoice(plan.scenes,language,options.voice,runId,fps,warnings);
  const hasVoice=plan.scenes.some(s=>s.audioSrc);if(!hasVoice){const frames=allocateFrames(plan.scenes,targetFrames,fps);plan.scenes=plan.scenes.map((s,i)=>({...s,durationInFrames:frames[i]}));}
  const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;if(!options.planOnly){const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});await writeBed(join(assets,"procedural-ambient-bed.wav"),actualDuration,styleId);audioBedSrc="generated/"+runId+"/procedural-ambient-bed.wav";}
- const props={topic,title:plan.title,subtitle:plan.subtitle||"",language,styleId,fps,width:size.width,height:size.height,durationInFrames:totalFrames,palette:preset.palette,typography:preset.typography,captionsEnabled:hasVoice,scenes:plan.scenes,...(audioBedSrc?{audioBedSrc}:{})};
+ const visualFamily=detectTopicVisualFamily(topic);const props={topic,title:plan.title,subtitle:plan.subtitle||"",language,styleId,visualFamily,fps,width:size.width,height:size.height,durationInFrames:totalFrames,palette:preset.palette,typography:preset.typography,captionsEnabled:hasVoice,scenes:plan.scenes,...(audioBedSrc?{audioBedSrc}:{})};
  await writeFile(join(dir,"props.json"),JSON.stringify(props,null,2)+"\n");await writeFile(join(dir,"voiceover.txt"),plan.scenes.map(s=>s.narration||"").filter(Boolean).join("\n\n")+"\n");await writeFile(join(dir,"captions.srt"),makeSrt(plan.scenes,fps));await writeFile(join(dir,"storyboard-timed.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,fps,width:size.width,height:size.height,durationInFrames:totalFrames,durationSeconds:actualDuration,scenes:timedScenes(plan.scenes,fps)},null,2)+"\n");
  const manifest={runId,createdAt:new Date().toISOString(),brief:briefRecord,selectedStyle:{id:styleId,label:preset.label,palette:preset.palette,typography:preset.typography},contentMode:plan.contentMode,research,ai,voice,audioBed:options.planOnly?"not_generated":"locally_synthesized_procedural_ambient_bed",render:{status:options.planOnly?"NOT_RUN":"PENDING",composition:"MotionVideo"},output:{runDirectory:dir,videoPath:null},warnings};await writeFile(join(dir,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");
  const qcPath=join(dir,"qc-report.json"),qc={runId,status:options.planOnly?"PLAN_ONLY":"PENDING",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",sourceResearch:research.status,fontAvailability:"NOT_RUN",rtlVisualReview:"NOT_RUN",voiceGeneration:voice.status,render:options.planOnly?"NOT_RUN":"PENDING",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},facts:{factualClaimsAutomaticallyVerified:false,fontFilesVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,sourceCount:sources.length},warnings,files:{storyboard:"storyboard.json",timedStoryboard:"storyboard-timed.json",props:"props.json",narration:"voiceover.txt",captions:"captions.srt",manifest:"manifest.json"}};

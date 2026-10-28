@@ -1,6 +1,24 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+
+test("topic visual classifier selects a safe, relevant illustration family",()=>{
+  const cases=[
+    ["How heat moves through a city","city-heat"],
+    ["Artificial intelligence and neural networks","artificial-intelligence"],
+    ["How solar energy becomes electricity","solar-energy"],
+    ["Climate change and carbon emissions","climate"],
+    ["How DNA and cells work","biology"],
+    ["How planets orbit stars","space"],
+    ["Inflation and the economy","finance"],
+    ["Encryption and cyber security","cybersecurity"],
+    ["The water cycle and rainfall","water"],
+    ["A story about curiosity","general"],
+    ["حرکت گرما در شهر","city-heat"],
+    ["هوش مصنوعی و یادگیری ماشین","artificial-intelligence"]
+  ];
+  for(const [topic,expected] of cases)assert.equal(detectTopicVisualFamily(topic),expected,topic);
+});
 
 test("local fallback creates eight scenes and varies visual layouts",()=>{
   const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
