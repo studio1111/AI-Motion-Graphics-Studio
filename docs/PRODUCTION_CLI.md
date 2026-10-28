@@ -15,7 +15,7 @@ When the `speech` executable from `persian-speech` is installed, `--voice auto` 
 
 - --topic: required topic or question unless supplied in a brief JSON file.
 - --language: fa, en, de, es, fr, it, pt, nl. Unsupported language codes are rejected instead of generating mislabeled output.
-- --duration: target seconds, 5 to 600.
+- --duration: target seconds, 5 to 3,600 (one hour). For a professional render over 10 minutes, a valid topic-specific AI storyboard is required; the generic eight-scene local fallback is blocked from rendering rather than stretched into filler. Plan-only mode may still produce a clearly labeled scaffold. Longer films should be chaptered into resumable renders when practical compute, storage or workflow limits require it.
 - --style: auto or a preset such as cinematic-documentary, scientific-2-5d, data-journalism, or vertical-social.
 - --aspect-ratio: 16:9, 9:16, or 1:1.
 - --brief: optional JSON brief with topic, language, durationSeconds, aspectRatio, style and sources.
