@@ -28,6 +28,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
 - `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost caveats.
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
+- `docs/PRODUCTION_READINESS_AUDIT.md`: offline provider/tool readiness report, explicit paid-provider gate, and separate configuration/connectivity/render/creative-QC release gates.
 
 ## Portable prompt library
 
