@@ -1,0 +1,38 @@
+name: Sync Opus 5.5 Reference Catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 6 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh-reference-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Fetch and validate upstream catalog
+        run: npm run opus55:sync
+      - name: Open catalog update pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/update-opus55-catalog
+          delete-branch: true
+          commit-message: "chore: refresh Opus 5.5 reference catalog"
+          title: "chore: refresh Opus 5.5 reference catalog"
+          body: |
+            Automated refresh of the public Opus 5.5 community prompt catalog.
+
+            - Validates upstream JSON before writing the local cache.
+            - Preserves creator, slug and original-post attribution.
+            - Does not execute code or activate third-party services.
+          add-paths: research/opus55-videos.json
