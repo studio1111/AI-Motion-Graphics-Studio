@@ -36,4 +36,4 @@ Discover in varied batches, canonicalize URLs and IDs, remove reposts, record me
 ## Access and budget
 TubeLab and TubeAlfred reported insufficient credits. Do not incur paid search or generation costs without a configured budget. This is a tracked research target, not an autonomous background job.
 
-Start from `research/REFERENCE_SEED_CATALOG.md`; it is a seed, not the completed dataset.
+The 100 seed rows are now structured in `research/references.jsonl`; `scripts/reference-catalog.mjs` canonicalizes URLs, reports duplicates, validates evidence claims, excludes tooling-only items from style quotas, and generates `docs/REFERENCE_PROGRESS.json`. Refresh the report with `npm run research:catalog`. Current machine-checked status: 100 input rows, 100 canonical URLs, 94 eligible style references, 55 L0 video-only records, 45 L1 article/source-reviewed records, 0 L2/L3 full-video reviews, and 906 additional eligible references needed. This remains an incomplete study.
