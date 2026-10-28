@@ -79,3 +79,21 @@ test("committed reference progress report is reproducible from the structured ca
   const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
   assert.deepEqual(saved,module.analyzeReferenceCatalog(records,{generatedAt:saved.generatedAt}));
 });
+
+
+test("Prompt Motion is the primary reference source and source-specific access rules are documented",async()=>{
+  const {readFile}=await import("node:fs/promises");
+  const registry=await readFile(new URL("../docs/REFERENCE_SOURCE_REGISTRY.md",import.meta.url),"utf8");
+  const skill=await readFile(new URL("../.claude/skills/reference-research/SKILL.md",import.meta.url),"utf8");
+  const master=await readFile(new URL("../prompts/MOTION_GRAPHICS_MASTER_PROMPT.md",import.meta.url),"utf8");
+  assert.match(registry,/Priority 1: Prompt Motion/);
+  assert.match(registry,/https:\/\/prompt-motion\.com\//);
+  assert.match(registry,/Priority 2: ShotBook/);
+  assert.match(registry,/Priority 3: Genery/);
+  assert.match(registry,/Priority 4: Motion in Design/);
+  assert.match(registry,/Priority 5: FilmGrab/);
+  assert.match(registry,/Priority 6: Pinterest/);
+  assert.match(registry,/do not build an automated scraper/i);
+  assert.match(skill,/Prompt Motion.*primary source/i);
+  assert.match(master,/Start with Prompt Motion/i);
+});
