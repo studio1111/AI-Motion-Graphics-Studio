@@ -81,13 +81,13 @@ if (command === "help" || command === "--help" || command === "-h") {
   const selected = category ? recipes.filter((r) => r.category === category) : recipes;
   if (selected.length === 0) {
     const categories = [...new Set(recipes.map((r) => r.category))].sort().join(", ");
-    process.stderr.write(`Unknown prompt category: ${category}. Available categories: ${categories}\\n`);
+    process.stderr.write(`Unknown prompt category: ${category}. Available categories: ${categories}\n`);
     process.exitCode = 2;
   } else {
     const masterPrompt = fs.readFileSync(path.join(libraryPath, "MASTER_PROMPT.md"), "utf8").trim();
     if (format === "json") {
       const readyToCopyPrompts = selected.map((r) => ({id:r.id,title:r.title,readyToCopyPrompt:composedPrompt(r)}));
-      process.stdout.write(JSON.stringify({schemaVersion:1,category:category ?? null,masterPrompt,recipes:selected,readyToCopyPrompts}, null, 2) + "\\n");
+      process.stdout.write(JSON.stringify({schemaVersion:1,category:category ?? null,masterPrompt,recipes:selected,readyToCopyPrompts}, null, 2) + "\n");
     } else {
       const scope = category ? `Category: ${category} (${selected.length} recipes)` : `All categories (${selected.length} recipes)`;
       const intro = [
@@ -98,9 +98,9 @@ if (command === "help" || command === "--help" || command === "-h") {
         "Copy the universal master prompt and append only one recipe that fits the brief. Use other recipes as references, not as a bundle of conflicting style instructions.",
         "",
         "Tools, APIs, licensing and rendering capabilities depend on the receiving AI environment; this export does not install or activate external services."
-      ].join("\\n");
+      ].join("\n");
       const reusableMaster = masterPrompt.replace("{{STYLE_RECIPE}}", "Select one recipe from the bundle below and append only that recipe.");
-      process.stdout.write([intro, reusableMaster, "## Selected recipe catalog", ...selected.map(recipeText)].join("\\n\\n") + "\\n");
+      process.stdout.write([intro, reusableMaster, "## Selected recipe catalog", ...selected.map(recipeText)].join("\n\n") + "\n");
     }
   }
 } else {
