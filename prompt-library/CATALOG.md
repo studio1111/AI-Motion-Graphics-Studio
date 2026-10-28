@@ -566,12 +566,7 @@ These are original, tool-agnostic recipes. Each one includes visual language, mo
 - **Story beats:** Scene boot, character/object reveal, action beat, title hold.
 - **Avoid:** Subpixel blur, inconsistent pixel size, excessive palette drift.
 
-## General rule
-
-Do not blindly combine every style. Select one primary visual grammar, then borrow at most one supporting technique when it improves the story. Keep the hook clear, the text readable, the sound intentional, and every factual claim verifiable.
-
-
-# Advanced recipe additions: 51-70
+## Advanced recipe additions: 51-70
 
 ## product-ui
 
@@ -813,3 +808,6 @@ Do not blindly combine every style. Select one primary visual grammar, then borr
 - **Story beats:** Cold open; define the question; build a chain of evidence or reasoning; address the most important caveat; land one memorable conclusion.
 - **Avoid:** Narration that merely reads on-screen text, overscripted density, visual stock montages without causal links, unsupported facts and music masking speech.
 
+## General rule
+
+Do not blindly combine every style. Select one primary visual grammar, then borrow at most one supporting technique when it improves the story. Keep the hook clear, the text readable, the sound intentional, and every factual claim verifiable.
