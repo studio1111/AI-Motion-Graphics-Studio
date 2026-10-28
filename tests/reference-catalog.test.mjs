@@ -51,3 +51,21 @@ test("the current 100-reference seed imports without silently dropping rows or i
   assert.equal(relatedArticleOnly.evidenceLevel,"L0");
   assert.equal(relatedArticleOnly.relatedArticleReviewed,true);
 });
+
+
+test("structured seed catalog preserves the honest current progress toward 1,000 eligible references",async()=>{
+  const module=await import("../scripts/reference-catalog.mjs");
+  const {readFile}=await import("node:fs/promises");
+  const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
+  const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
+  const report=module.analyzeReferenceCatalog(records);
+  assert.equal(report.inputRecords,100);
+  assert.equal(report.uniqueCanonicalReferences,100);
+  assert.equal(report.eligibleUniqueReferences,94);
+  assert.equal(report.evidenceLevelCounts.L0,55);
+  assert.equal(report.evidenceLevelCounts.L1,45);
+  assert.equal(report.evidenceLevelCounts.L2,0);
+  assert.equal(report.evidenceLevelCounts.L3,0);
+  assert.equal(report.remainingUniqueReferences,906);
+  assert.deepEqual(report.validationErrors,[]);
+});
