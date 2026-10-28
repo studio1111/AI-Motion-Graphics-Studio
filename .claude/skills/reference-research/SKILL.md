@@ -36,3 +36,8 @@ After each 100 records, refresh the pattern matrix. Promote a method into a gene
 - Motion in Design for interaction, physics-based motion, and polished GSAP timing; respect paid asset licensing.
 - FilmGrab for cinematography stills only; never treat stills as evidence of motion/audio or bulk-download/redistribute them.
 - Pinterest for manual discovery and links to original sources; do not scrape or bulk-download.
+
+
+## Analysis workflow and evidence discipline
+
+Before recording craft observations, read prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md. Use prompt-library/PRODUCTION_WORKFLOW_PACK.md when turning an observation into an implementation-ready prompt. Capture timing, motion, typography, camera, sound and legibility as separate dimensions. Record exact timestamps only when the video was actually inspected. A sampled clip remains sampled; a prompt or article alone is not a watched-video review. Source statistics are descriptive and must not be presented as causal proof.
