@@ -104,8 +104,8 @@ test("Prompt Motion references preserve attribution and never claim the linked v
   const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
   const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
   const promptMotion=records.filter(record=>record.sourceSite==="Prompt Motion");
-  assert.equal(promptMotion.length,5);
-  assert.deepEqual(promptMotion.map(record=>record.id),["P001","P002","P003","P004","P005"]);
+  assert.equal(promptMotion.length,13);
+  assert.deepEqual(promptMotion.map(record=>record.id),["P001","P002","P003","P004","P005","P006","P007","P008","P009","P010","P011","P012","P013"]);
   for(const record of promptMotion){
     assert.ok(record.sourceEntryUrl.startsWith("https://prompt-motion.com/"));
     assert.ok(record.originalSourceUrl);
