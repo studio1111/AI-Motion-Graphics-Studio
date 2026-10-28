@@ -41,5 +41,11 @@ G. Editing/compositing notes: layer order, key moments, transitions, typography 
 H. Quality-control checklist: factual review, spelling, timing, legibility, motion consistency, audio peaks, captions, aspect ratio, render and export settings.
 I. Final negative prompt / failure-prevention list.
 
+## Evidence-aware prompting and iteration
+13. For text-to-video, specify the subject, one primary action, composition, environment, lighting, camera movement and temporal progression. For image-to-video, keep the supplied image as the source of truth and focus the prompt on intended motion plus invariants.
+14. Use observable, sequential motion descriptions such as start state → change → settle. Add timestamps or beat grids when the timing is important and the tool supports them. Avoid contradictory instructions and change one or two variables per iteration.
+15. Use a style recipe as a controlled visual system, not an effects checklist. Favor one concept that evolves through purposeful transitions. Inspect proof frames before a full render.
+16. For details and evidence limits, consult `ADVANCED_MASTER_PROMPTS.md`, `SCENE_PROMPT_TEMPLATES.md` and `../docs/PROMPT_MOTION_PATTERN_STUDY.md`.
+
 ## Final self-review
 Score each from 1-5: concept clarity, hook, narrative progression, visual variety, typography, motion specificity, color coherence, sound design, accessibility, factual integrity and finish. If any critical category is below 4, revise before delivery. Explain any unavoidable tradeoff.
