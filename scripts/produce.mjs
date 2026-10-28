@@ -455,6 +455,16 @@ function makeSrt(scenes,fps){
  return rows.join("\n");
 }
 function timedScenes(scenes,fps){let cursor=0;return scenes.map(s=>{const start=cursor,end=start+s.durationInFrames;cursor=end;return {...s,startFrame:start,endFrame:end,startSeconds:Number((start/fps).toFixed(3)),endSeconds:Number((end/fps).toFixed(3))};});}
+export function validateVoiceGeneration(mode,voice){
+ if(mode==="off")return [];
+ if(!voice||voice.status!=="generated"){
+  const status=String(voice?.status||"missing");
+  const generated=Number.isInteger(voice?.generatedScenes)?voice.generatedScenes:0;
+  return ["Narration was requested but was not fully generated (status: "+status+"; generated scenes: "+generated+"). Refusing to deliver a silent or partially narrated video. Fix the voice engine or explicitly set --voice off for music-only output."];
+ }
+ return [];
+}
+
 export function parsePeakVolumeDb(logText){
  const match=String(logText||"").match(/max_volume:\s*(-?(?:\d+(?:\.\d+)?|inf))\s*dB/i);
  if(!match)return null;
@@ -512,6 +522,14 @@ export async function produce(options,env=process.env){
  const urls=new Set(sources.map(s=>s.url));plan.scenes=plan.scenes.map(s=>({...s,sourceRefs:(s.sourceRefs||[]).filter(u=>urls.has(u))}));if(plan.contentMode==="conceptual_template")warnings.push("Conceptual output only; factual claims have not been researched. Provide sources or explicitly opt into configured research/AI services for topic-specific scripts.");
  await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
  let voice={status:"not_attempted",engine:null,generatedScenes:0,warnings:[]};if(options.planOnly)voice.status="not_run_plan_only";else voice=await makeVoice(plan.scenes,language,options.voice,runId,fps,warnings);
+ const voiceErrors=options.planOnly?[]:validateVoiceGeneration(options.voice,voice);
+ if(voiceErrors.length){
+  warnings.push(...voiceErrors);
+  const voiceQc={runId,status:"VOICE_GENERATION_FAILED",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",voiceGeneration:"FAIL",render:"BLOCKED",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},voice,warnings,facts:{factualClaimsAutomaticallyVerified:false,fontFilesVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,sourceCount:sources.length}};
+  await writeFile(join(dir,"voice-status.json"),JSON.stringify(voice,null,2)+"\\n");
+  await writeFile(join(dir,"qc-report.json"),JSON.stringify(voiceQc,null,2)+"\\n");
+  throw new Error(voiceErrors.join(" "));
+ }
  const hasVoice=plan.scenes.some(s=>s.audioSrc);if(!hasVoice){const frames=allocateFrames(plan.scenes,targetFrames,fps);plan.scenes=plan.scenes.map((s,i)=>({...s,durationInFrames:frames[i]}));}
  const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;if(!options.planOnly){const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});const transitionCues=[];let cueFrames=0;for(let i=0;i<plan.scenes.length;i++){if(i>0)transitionCues.push({time:cueFrames/fps,type:plan.scenes[i].transition||"wipe"});cueFrames+=plan.scenes[i].durationInFrames;}await writeBed(join(assets,"procedural-ambient-bed.wav"),actualDuration,styleId,transitionCues);audioBedSrc="generated/"+runId+"/procedural-ambient-bed.wav";}
  const visualFamily=detectTopicVisualFamily(topic);const props={topic,title:plan.title,subtitle:plan.subtitle||"",language,styleId,visualFamily,fps,width:size.width,height:size.height,durationInFrames:totalFrames,palette:preset.palette,typography:preset.typography,captionsEnabled:hasVoice,scenes:plan.scenes,...(audioBedSrc?{audioBedSrc}:{})};
