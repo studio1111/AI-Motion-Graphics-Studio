@@ -684,7 +684,186 @@ const TopicHeroGraphic: React.FC<{ family: NonNullable<MotionVideoProps["visualF
   );
 };
 
+const TopicSceneGraphic: React.FC<{ scene: MotionScene; family: NonNullable<MotionVideoProps["visualFamily"]>; palette: MotionPalette; frame: number }> = ({ scene, family, palette, frame }) => {
+  const text = (scene.kicker + " " + scene.title).toLowerCase();
+  const progress = interpolate(frame, [0, 34], [0, 1], clamp);
+  const pulse = 0.5 + Math.sin(frame / 12) * 0.5;
+  const isCity = family === "city" || family === "city-heat";
+  const main = family === "city-heat" ? "#FF8058" : palette.accent;
+  const alt = family === "city-heat" ? "#FFD166" : palette.accent2;
+  const stage = /shade|shadow|سایه/.test(text) ? "shade"
+    : /route|path|مسیر/.test(text) ? "route"
+    : /network|blocks|connect|شبکه|بلوک/.test(text) ? "network"
+    : /balance|time|day|صبح|ظهر|عصر|زمان/.test(text) ? "time"
+    : /airflow|rising|heat|حرارت|هوای گرم|جریان هوا/.test(text) ? "flow"
+    : /sunlight|surface|street|solar|نور خورشید|سطح زمین|خیابان|پنل|نور به سلول/.test(text) ? "source"
+    : /input|example|ورودی|نمونه/.test(text) ? "input"
+    : /model|layer|weight|مدل|لایه|وزن/.test(text) ? "model"
+    : /output|prediction|خروجی|پیش‌بینی/.test(text) ? "output"
+    : /feedback|evaluation|بازخورد|ارزیابی/.test(text) ? "feedback"
+    : /human|people|oversight|انسان|نظارت/.test(text) ? "human"
+    : /edge|test|آزمون|حالت مرزی/.test(text) ? "edge"
+    : /storage|battery|ذخیره|باتری/.test(text) ? "storage"
+    : /current|inverter|جریان برق|اینورتر/.test(text) ? "current"
+    : /demand|مصرف|تقاضا/.test(text) ? "demand"
+    : /trade|cost|موازنه|هزینه/.test(text) ? "trade"
+    : "system";
+  const nodes = Array.from({ length: 7 }, (_, i) => ({
+    x: 120 + i * 126,
+    y: 250 + Math.sin(i * 1.3 + frame / 22) * 54,
+    r: 10 + (i % 3) * 4
+  }));
+  const cityBuildings = Array.from({length:7},(_,i)=>({x:80+i*125,y:310+(i%3)*28,w:90,h:290-(i%3)*28}));
+  return (
+    <svg viewBox="0 0 1000 700" role="img" aria-label={family + " explanatory illustration"} style={{ width:"100%", height:"100%", overflow:"visible" }}>
+      <defs>
+        <linearGradient id="stage-surface" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={palette.panel}/><stop offset="100%" stopColor={palette.background}/>
+        </linearGradient>
+        <linearGradient id="stage-energy" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={alt}/><stop offset="100%" stopColor={main}/>
+        </linearGradient>
+      </defs>
+      {isCity && stage === "source" ? (
+        <>
+          <circle cx="790" cy="120" r={60+pulse*7} fill={alt} fillOpacity="0.22"/>
+          <circle cx="790" cy="120" r="42" fill="url(#stage-energy)"/>
+          {Array.from({length:10},(_,i)=>{const a=i*Math.PI/5;return <path key={i} d={"M"+(790+Math.cos(a)*55)+" "+(120+Math.sin(a)*55)+" L"+(790+Math.cos(a)*78)+" "+(120+Math.sin(a)*78)} stroke={alt} strokeWidth="4" strokeLinecap="round"/>;})}
+          {cityBuildings.map((b,i)=><g key={i}><rect x={b.x} y={b.y} width={b.w} height={b.h} rx="4" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="3"/>{Array.from({length:8},(_,j)=><rect key={j} x={b.x+14+(j%3)*23} y={b.y+20+Math.floor(j/3)*32} width="8" height="13" fill={alt} fillOpacity="0.5"/>)}</g>)}
+          <path d={"M790 175 C690 250 600 245 520 335 S340 420 180 560"} fill="none" stroke={main} strokeWidth="7" strokeDasharray="15 17" strokeDashoffset={-frame*2}/>
+        </>
+      ) : isCity && stage === "flow" ? (
+        <>
+          {Array.from({length:6},(_,i)=><path key={i} d={"M"+(50+i*40)+" 585 C"+(160+i*30)+" 470 "+(90+i*60)+" 390 "+(230+i*50)+" 330 S"+(320+i*40)+" 190 "+(450+i*45)+" 140"} fill="none" stroke={i%2?main:alt} strokeWidth={4+i%2} strokeLinecap="round" strokeDasharray="14 18" strokeDashoffset={-frame*(1.3+i*0.2)}/>)}
+          {cityBuildings.map((b,i)=><rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} rx="4" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="3"/>)}
+          <circle cx="825" cy="122" r={52+pulse*7} fill="url(#stage-energy)" fillOpacity="0.9"/>
+        </>
+      ) : isCity && stage === "shade" ? (
+        <>
+          <path d="M60 535 H940 L870 625 H130Z" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="3"/>
+          <path d="M145 540 L245 350 L360 540 M640 540 L745 350 L860 540" fill={alt} fillOpacity="0.13"/>
+          {[245,745].map((x,i)=><g key={x}><path d={"M"+x+" 520 V350"} stroke={palette.accent} strokeWidth="12" strokeLinecap="round"/><circle cx={x} cy="305" r={78+Math.sin(frame/15+i)*4} fill={i?palette.accent:alt} fillOpacity="0.78"/><circle cx={x-38} cy="330" r="42" fill={i?palette.accent:alt} fillOpacity="0.65"/><circle cx={x+40} cy="330" r="44" fill={i?palette.accent:alt} fillOpacity="0.65"/></g>)}
+          <path d={"M360 555 Q500 "+(510+Math.sin(frame/17)*6)+" 640 555"} stroke={main} strokeWidth="7" strokeDasharray="14 16" strokeDashoffset={-frame*2} fill="none"/>
+        </>
+      ) : isCity && stage === "network" ? (
+        <>
+          <path d="M90 140 C290 220 180 420 410 450 S620 170 870 260 S800 500 560 565" fill="none" stroke={palette.line} strokeWidth="34" strokeLinecap="round" opacity="0.34"/>
+          <path d="M90 140 C290 220 180 420 410 450 S620 170 870 260 S800 500 560 565" fill="none" stroke={main} strokeWidth="5" strokeDasharray="14 18" strokeDashoffset={-frame*2}/>
+          {[{x:90,y:140},{x:260,y:280},{x:410,y:450},{x:620,y:170},{x:870,y:260},{x:560,y:565},{x:750,y:440}].map((p,i)=><g key={i}><circle cx={p.x} cy={p.y} r={22+Math.sin(frame/15+i)*3} fill={palette.panel} stroke={i%2?main:alt} strokeWidth="5"/><circle cx={p.x} cy={p.y} r="6" fill={i%2?main:alt}/></g>)}
+        </>
+      ) : isCity && stage === "time" ? (
+        <>
+          <path d="M110 500 A390 300 0 0 1 890 500" fill="none" stroke={palette.line} strokeWidth="7" strokeDasharray="8 12"/>
+          {[0,1,2,3,4,5,6,7,8].map(i=>{const x=110+i*97.5;const y=500-300*Math.sin(i*Math.PI/8);return <g key={i}><circle cx={x} cy={y} r="8" fill={palette.accent}/>{i%2===0?<path d={"M"+x+" "+(y+16)+" v25"} stroke={palette.line} strokeWidth="3"/>:null}</g>;})}
+          <circle cx={500+315*Math.cos(frame/70)} cy={500-240*Math.sin(frame/70)} r="42" fill="url(#stage-energy)"/>
+          <path d="M100 610 H900" stroke={palette.line} strokeWidth="3"/>
+        </>
+      ) : isCity && stage === "route" ? (
+        <>
+          {cityBuildings.map((b,i)=><g key={i}><rect x={b.x} y={b.y+45} width={b.w} height={b.h-45} rx="4" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="2"/><circle cx={b.x+45} cy={b.y+15} r="24" fill={palette.accent} fillOpacity="0.6"/></g>)}
+          <path d={"M80 575 C160 490 240 540 320 470 S470 420 540 465 S700 350 780 390 S860 315 930 280"} fill="none" stroke={alt} strokeWidth="11" strokeLinecap="round" strokeDasharray="18 15" strokeDashoffset={-frame*2.2}/>
+          <circle cx={530+Math.sin(frame/20)*10} cy="465" r="18" fill={alt} stroke={palette.background} strokeWidth="5"/>
+        </>
+      ) : isCity ? (
+        <>
+          <path d="M80 600 H920" stroke={palette.line} strokeWidth="3"/>
+          {cityBuildings.map((b,i)=><g key={i}><rect x={b.x} y={b.y} width={b.w} height={b.h} rx="4" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="2"/><path d={"M"+(b.x+12)+" "+(b.y+24)+" h60 M"+(b.x+12)+" "+(b.y+55)+" h60"} stroke={palette.accent2} strokeWidth="4" opacity="0.45"/></g>)}
+          <path d="M120 560 C290 490 340 520 480 455 S740 440 880 350" fill="none" stroke={main} strokeWidth="7" strokeDasharray="14 18" strokeDashoffset={-frame*2}/>
+        </>
+      ) : family === "artificial-intelligence" && stage === "input" ? (
+        <>
+          {[0,1,2,3].map(i=><g key={i} transform={"translate("+(80+i*220)+" "+(190+(i%2)*90)+")"}><rect width="160" height="170" rx="18" fill="url(#stage-surface)" stroke={i%2?palette.accent:palette.accent2} strokeWidth="3"/>{Array.from({length:4},(_,j)=><path key={j} d={"M25 "+(42+j*30)+" h"+(80+(j%2)*28)} stroke={palette.line} strokeWidth="8" strokeLinecap="round"/>)}</g>)}
+          {[0,1,2].map(i=><path key={i} d={"M"+(210+i*220)+" 280 h35 l-12 -12 m12 12 l-12 12"} fill="none" stroke={alt} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>)}
+        </>
+      ) : family === "artificial-intelligence" && stage === "human" ? (
+        <>
+          <circle cx="500" cy="215" r="65" fill="url(#stage-energy)"/>
+          <path d="M375 525 C380 365 425 315 500 315 S620 365 625 525Z" fill="url(#stage-surface)" stroke={palette.accent} strokeWidth="5"/>
+          <circle cx="500" cy="215" r="106" fill="none" stroke={palette.line} strokeWidth="3" strokeDasharray="7 13" strokeDashoffset={-frame}/>
+          {nodes.slice(0,5).map((n,i)=><g key={i}><path d={"M"+n.x+" "+n.y+" L"+(360+i*56)+" 340"} stroke={palette.line} strokeWidth="3" strokeDasharray="7 10"/><circle cx={n.x} cy={n.y} r="10" fill={palette.accent2}/></g>)}
+        </>
+      ) : family === "artificial-intelligence" && stage === "feedback" ? (
+        <>
+          <circle cx="500" cy="340" r="125" fill="url(#stage-surface)" stroke={palette.accent} strokeWidth="5"/>
+          <circle cx="500" cy="340" r="70" fill="none" stroke={palette.accent2} strokeWidth="4" strokeDasharray="10 12" strokeDashoffset={-frame*1.6}/>
+          {nodes.map((n,i)=><g key={i}><path d={"M"+n.x+" "+n.y+" L500 340"} stroke={palette.line} strokeWidth="3"/><circle cx={n.x} cy={n.y} r={n.r} fill={i%2?palette.accent:palette.accent2}/></g>)}
+          <path d="M625 390 C730 475 690 550 600 555 M620 535 L600 555 L628 565" fill="none" stroke={alt} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" strokeDashoffset={-frame}/>
+        </>
+      ) : family === "artificial-intelligence" && stage === "output" ? (
+        <>
+          <rect x="70" y="250" width="210" height="160" rx="18" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="3"/>
+          <path d="M280 330 H430 M415 312 L435 330 L415 348" stroke={palette.accent} strokeWidth="5" fill="none"/>
+          <rect x="440" y="210" width="220" height="240" rx="24" fill="url(#stage-surface)" stroke={palette.accent2} strokeWidth="4"/>
+          {[0,1,2,3].map(i=><g key={i}><rect x="475" y={255+i*42} width="150" height="12" rx="6" fill={palette.line}/><rect x="475" y={255+i*42} width={(92+i*13)*progress} height="12" rx="6" fill={palette.accent}/></g>)}
+          <path d="M660 330 H775" stroke={alt} strokeWidth="5" strokeDasharray="11 14" strokeDashoffset={frame*2}/>
+          <circle cx="835" cy="330" r="54" fill={alt} fillOpacity="0.22" stroke={alt} strokeWidth="4"/>
+          <path d="M810 330 l18 18 l35 -41" fill="none" stroke={alt} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round"/>
+        </>
+      ) : family === "artificial-intelligence" && stage === "edge" ? (
+        <>
+          {nodes.map((n,i)=><g key={i}><path d={"M500 350 L"+n.x+" "+n.y} stroke={i%2?palette.accent:palette.line} strokeWidth="3" strokeDasharray="10 12"/><circle cx={n.x} cy={n.y} r={n.r} fill={i===3?main:(i%2?palette.accent:palette.accent2)}/></g>)}
+          <circle cx="500" cy="350" r="210" fill="none" stroke={palette.line} strokeWidth="3" strokeDasharray="6 14"/>
+        </>
+      ) : family === "artificial-intelligence" ? (
+        <>
+          {nodes.map((n,i)=><g key={i}>{nodes.slice(i+1).map((p,j)=><path key={j} d={"M"+n.x+" "+n.y+" L"+p.x+" "+p.y} stroke={palette.line} strokeWidth="2" opacity="0.5"/>)}<circle cx={n.x} cy={n.y} r={n.r+2*pulse} fill={i%2?palette.accent:palette.accent2}/></g>)}
+          <circle cx="500" cy="350" r={185+Math.sin(frame/18)*8} fill="none" stroke={palette.accent} strokeWidth="3" strokeDasharray="8 16" strokeDashoffset={-frame*1.7}/>
+        </>
+      ) : family === "solar-energy" && stage === "source" ? (
+        <>
+          <circle cx="200" cy="180" r="80" fill="url(#stage-energy)"/>
+          {Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return <path key={i} d={"M"+(200+Math.cos(a)*98)+" "+(180+Math.sin(a)*98)+" L"+(200+Math.cos(a)*128)+" "+(180+Math.sin(a)*128)} stroke={alt} strokeWidth="5" strokeLinecap="round"/>;})}
+          <path d={"M270 260 L430 390 H560"} fill="none" stroke={alt} strokeWidth="8" strokeDasharray="14 16" strokeDashoffset={-frame*2} strokeLinecap="round"/>
+          <path d="M450 400 L765 335 L910 540 L570 600Z" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="4"/>
+          {Array.from({length:4},(_,i)=><path key={i} d={"M"+(480+i*65)+" "+(393-i*13)+" L"+(605+i*71)+" "+(590-i*12)} stroke={palette.accent} strokeWidth="3"/>)}
+        </>
+      ) : family === "solar-energy" && stage === "storage" ? (
+        <>
+          <rect x="390" y="150" width="220" height="390" rx="28" fill="url(#stage-surface)" stroke={palette.accent} strokeWidth="5"/>
+          <rect x="450" y="120" width="100" height="32" rx="8" fill={palette.line}/>
+          {[0,1,2,3].map(i=><rect key={i} x="425" y={200+i*78} width="150" height="55" rx="10" fill={i<Math.floor(frame/18)%5?alt:palette.line} opacity={0.65+0.2*pulse}/>)}
+          <path d="M260 340 H365 M635 340 H740" stroke={palette.accent2} strokeWidth="6" strokeDasharray="13 16" strokeDashoffset={-frame*2}/>
+          <circle cx="220" cy="340" r="52" fill="url(#stage-energy)"/><circle cx="780" cy="340" r="52" fill={palette.accent} fillOpacity="0.22" stroke={palette.accent} strokeWidth="4"/>
+        </>
+      ) : family === "solar-energy" && stage === "current" ? (
+        <>
+          {[0,1,2,3].map(i=><g key={i} transform={"translate("+(55+i*240)+" 240)"}><rect width="185" height="225" rx="16" fill="url(#stage-surface)" stroke={i===1?alt:palette.line} strokeWidth={i===1?5:3}/><path d="M45 80 h95 M45 115 h70 M45 150 h110" stroke={palette.line} strokeWidth="8" strokeLinecap="round"/><circle cx="92" cy="42" r="12" fill={i===1?alt:main}/></g>)}
+          {[0,1,2].map(i=><path key={i} d={"M"+(240+i*240)+" 350 h38 l-14 -14 m14 14 l-14 14"} fill="none" stroke={alt} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>)}
+        </>
+      ) : family === "solar-energy" && stage === "demand" ? (
+        <>
+          <path d="M100 560 H920 M100 170 V560" stroke={palette.line} strokeWidth="3"/>
+          <path d="M100 475 C220 460 260 355 370 390 S520 490 620 330 S790 245 920 180" fill="none" stroke={palette.accent} strokeWidth="6" strokeDasharray="1000" strokeDashoffset={1000*(1-progress)}/>
+          <path d="M100 420 C230 410 300 450 390 430 S560 345 660 400 S800 430 920 350" fill="none" stroke={alt} strokeWidth="6" strokeDasharray="1000" strokeDashoffset={1000*(1-progress)}/>
+          {Array.from({length:7},(_,i)=><circle key={i} cx={100+i*136} cy={450-Math.sin(i*1.3+frame/25)*90} r="8" fill={main}/>)}
+        </>
+      ) : family === "solar-energy" && stage === "trade" ? (
+        <>
+          {[0,1,2].map(i=><g key={i}><rect x={120+i*285} y="230" width="220" height="250" rx="18" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="3"/><circle cx={230+i*285} cy="305" r="35" fill={i===1?main:alt} fillOpacity="0.2" stroke={i===1?main:alt} strokeWidth="4"/><path d={"M"+(170+i*285)+" 380 h120 M"+(170+i*285)+" 420 h"+(70+i*18)} stroke={palette.line} strokeWidth="8" strokeLinecap="round"/></g>)}
+        </>
+      ) : family === "solar-energy" ? (
+        <>
+          <circle cx="160" cy="230" r="58" fill="url(#stage-energy)"/>
+          <path d="M230 240 H375 M355 220 L375 240 L355 260" stroke={alt} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          <path d="M405 260 L625 210 L770 405 L545 450Z" fill="url(#stage-surface)" stroke={palette.line} strokeWidth="4"/>
+          {Array.from({length:4},(_,i)=><path key={i} d={"M"+(430+i*45)+" "+(252-i*10)+" L"+(565+i*48)+" "+(443-i*11)} stroke={main} strokeWidth="3"/>)}
+          <path d="M770 405 H870 V540 H770Z" fill="url(#stage-surface)" stroke={palette.accent} strokeWidth="4"/>
+          <path d="M795 470 h50 M820 445 v50" stroke={alt} strokeWidth="5" strokeLinecap="round"/>
+        </>
+      ) : (
+        <>
+          {nodes.map((n,i)=><g key={i}><path d={"M"+n.x+" "+n.y+" C"+(n.x+50)+" "+(n.y-40)+" "+(n.x+80)+" "+(n.y+50)+" "+(n.x+120)+" "+n.y} stroke={palette.line} strokeWidth="3" fill="none" strokeDasharray="8 12" strokeDashoffset={-frame}/><circle cx={n.x} cy={n.y} r={n.r} fill={i%2?palette.accent:palette.accent2}/></g>)}
+          <circle cx="500" cy="350" r={185+Math.sin(frame/18)*8} fill="none" stroke={palette.accent} strokeWidth="3" strokeDasharray="8 16"/>
+        </>
+      )}
+    </svg>
+  );
+};
+
 const LayoutGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; frame: number; vertical: boolean; typography: MotionVideoProps["typography"]; rtl: boolean; visualFamily: NonNullable<MotionVideoProps["visualFamily"]> }> = ({ scene, palette, frame, vertical, typography, rtl, visualFamily }) => {
+  if (visualFamily !== "general" && !["hero", "editorial", "quote", "outro"].includes(scene.layout)) {
+    return <TopicSceneGraphic scene={scene} family={visualFamily} palette={palette} frame={frame} />;
+  }
   switch (scene.layout) {
     case "hero":
       return <TopicHeroGraphic family={visualFamily} palette={palette} frame={frame} />;

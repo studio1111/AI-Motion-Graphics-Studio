@@ -3,6 +3,15 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
 
+test("topic-aware scene graphics remain wired into the Remotion composition",async()=>{
+  const motion=await readFile(new URL("../src/production/MotionVideo.tsx",import.meta.url),"utf8");
+  assert.match(motion,/const TopicSceneGraphic:/);
+  assert.match(motion,/isCity && stage === "flow"/);
+  assert.match(motion,/family === "artificial-intelligence" && stage === "feedback"/);
+  assert.match(motion,/family === "solar-energy" && stage === "storage"/);
+  assert.match(motion,/return <TopicSceneGraphic scene=\{scene\} family=\{visualFamily\}/);
+});
+
 test("manual workflow defaults to local narration without enabling paid AI",async()=>{
   const workflow=await readFile(new URL("../.github/workflows/produce-video.yml",import.meta.url),"utf8");
   const paidBlock=workflow.match(/allow_paid_ai:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
