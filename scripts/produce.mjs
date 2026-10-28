@@ -494,7 +494,7 @@ export function validateVoiceGeneration(mode,voice){
  if(!voice||voice.status!=="generated"){
   const status=String(voice?.status||"missing");
   const generated=Number.isInteger(voice?.generatedScenes)?voice.generatedScenes:0;
-  return ["Narration was requested but was not fully generated (status: "+status+"; generated scenes: "+generated+"). Refusing to deliver a silent or partially narrated video. Fix the voice engine or explicitly set --voice off for music-only output."];
+  const diagnostics=Array.isArray(voice?.warnings)&&voice.warnings.length?" Details: "+voice.warnings.slice(0,4).map(item=>String(item).slice(0,280)).join(" | ").slice(0,1200):"";return ["Narration was requested but was not fully generated (status: "+status+"; generated scenes: "+generated+"). Refusing to deliver a silent or partially narrated video. Fix the voice engine or explicitly set --voice off for music-only output."+diagnostics];
  }
  return [];
 }
