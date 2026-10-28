@@ -143,3 +143,18 @@ Eight additional entries were inspected at page/prompt level. These are **L1 onl
 - [Dub promo video](https://prompt-motion.com/steventey-0d20e4): product UI and chart tags suggest product-specific narrative; use charts only with verified data.
 
 No creator's full prompt is copied into this studio's recipe library. The recipes are original syntheses. This review remains page-level evidence, not a claim that the referenced videos were watched.
+
+
+## Cross-category Prompt Motion review: 2026-10-28
+
+Eight more entry pages broadened the sample beyond product UI. All remain **L1** because the linked videos were not directly watched; their pages/prompts were reviewed and attributed as P014–P021.
+
+- [Claude motion designer showreel](https://prompt-motion.com/stephanlivera-df17a2) and [Bold kinetic type showreel](https://prompt-motion.com/shneural-2abdfa): generic showreel requests need a real motion system, a few signature moves, a pacing arc and readable holds. Do not infer a complete design from the generic prompt alone.
+- [Derivative concept explainer](https://prompt-motion.com/linearuncle-5d2bae): combine a precise concept, a worked example, progressive diagrams and narration; independently validate mathematics.
+- [Recipe process animation](https://prompt-motion.com/ror-fly-9950f1): animate from initial state to finished state, revealing components and quantities at the moment of use.
+- [Pelican riding a bicycle animation challenge](https://prompt-motion.com/axtonliu-0b861d): use silhouette, anatomy, object contact, shadows and temporal continuity as a character-animation evaluation rubric.
+- [TypingMind logo reveal](https://prompt-motion.com/tdinh-me-815acb): build anticipation through staged reveal while preserving the supplied logo geometry and final legibility.
+- [UGC ad generator promo](https://prompt-motion.com/twoclipping-6dd14e): specify real UI moments, owned footage, licensed music, fixed segment durations and beat-aware edit points before rendering.
+- [History of AI timeline](https://prompt-motion.com/kloss-xyz-fe0c31): add fact-checked event selection, source citations, chronology validation and clear labels for illustrative reconstructions.
+
+The reviewed prompts range from deliberately broad one-line requests to detailed shot/beat/build specifications. The studio's portable recipes are original abstractions of transferable craft, not copied creator text. Prompt Motion pages currently expose posters and text to the scraper, not directly playable video assets, and TubeLab/TubeAlfred searches returned HTTP 402 for insufficient credits; therefore no full-video or timestamped review is claimed.
