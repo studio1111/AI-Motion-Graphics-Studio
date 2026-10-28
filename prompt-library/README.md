@@ -17,6 +17,10 @@ A standalone copy-and-paste prompt kit for any text AI assistant or creative/vid
 - `../docs/PROMPT_MOTION_PATTERN_STUDY.md` and `../research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md`: reference findings and limitations.
 - `../scripts/prompt-library.mjs`: search, show and export commands.
 
+## Persian quick start
+
+For Persian step-by-step instructions, see [PERSIAN_QUICK_START.md](PERSIAN_QUICK_START.md).
+
 ## Browser interface
 
 From the repository root, run `python -m http.server 8765` and open `http://localhost:8765/prompt-library/`. Search or filter the catalog, select one recipe, optionally add a specialist master prompt and a scene template, then copy the full prompt or download it as Markdown. The page uses local files and does not call an AI API. It must be served over HTTP rather than opened directly as `file://` because it fetches local prompt files.
