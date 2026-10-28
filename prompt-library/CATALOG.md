@@ -1,4 +1,4 @@
-# Prompt Catalog: 50 Ready-to-Use Motion Styles
+# Prompt Catalog: 70 Ready-to-Use Motion Styles
 
 Use this human-readable catalog to choose a style, then copy the full master prompt and the matching structured recipe from `MASTER_PROMPT.md` and `prompts.json`, or run `npm run prompts:show -- <id>` to compose a ready-to-copy prompt.
 
@@ -569,3 +569,247 @@ These are original, tool-agnostic recipes. Each one includes visual language, mo
 ## General rule
 
 Do not blindly combine every style. Select one primary visual grammar, then borrow at most one supporting technique when it improves the story. Keep the hook clear, the text readable, the sound intentional, and every factual claim verifiable.
+
+
+# Advanced recipe additions: 51-70
+
+## product-ui
+
+### Continuous Product UI State Morph (product-ui-state-morph)
+- **Duration:** 15-45s
+- **Visual language:** One recognizable UI component transforms through a deliberate sequence of useful states on a calm, high-contrast canvas. Keep its identity, geometry and interaction logic legible while surrounding context changes only when needed.
+- **Motion:** Use deterministic, time-based springs with controlled overshoot. Morph one component at a time, animate leading and trailing edges separately for elastic indicators, and make clicks, drags and state changes causally visible. Close the loop only when the opening state can be matched exactly.
+- **Typography:** Use one contemporary UI typeface with clear hierarchy for labels, values and controls. Keep text inside stable containers and give outgoing and incoming labels separate timing windows.
+- **Color:** Warm neutral canvas, near-black components, off-white surfaces and at most one accent color. Reserve state colors for meaning, not decoration.
+- **Sound:** Use quiet click, confirm, drag and transition cues. Analyze or measure transient peaks before placing sounds; lower music under labels.
+- **Story beats:** Introduce the component; transform it through 6-10 states; show one meaningful interaction; resolve the final state into the opening state for a seamless loop.
+- **Avoid:** Random transitions, ornamental glow, excessive bounce, overlapping labels, fake interaction, hidden state changes and an unverified claim that the UI is functional.
+
+## showreel
+
+### Beat-Driven Motion Designer Showreel (beat-driven-showreel)
+- **Duration:** 15-30s
+- **Visual language:** Build the entire reel around one visual thesis, such as a dot becoming a glyph, a chart, a material and a final wordmark. Every technique should advance that idea instead of appearing as an unrelated effects demo.
+- **Motion:** Choose a tempo that fits the brand, map scene changes to a beat grid, give each bar one signature move and use match-movement transitions. Reserve the strongest transformation for the last full bar, then hold the end title long enough to read.
+- **Typography:** One display face plus a restrained mono or sans-serif metadata face. Keep every word deliberate, aligned to the scene grid, and away from the action during dense movement.
+- **Color:** One primary palette with no more than three main hues plus neutrals. Reuse the same accent as a visual thread through every technique.
+- **Sound:** Build a kick/snare or pulse framework, restrained risers and a distinctive sound for the core transformation. Make sound design support motion rather than mask it.
+- **Story beats:** Hook; establish thesis; demonstrate three to five techniques that transform into each other; deliver one payoff; end on a clear title or logo.
+- **Avoid:** Random motion sampler, unrelated stock transitions, constant maximum intensity, flash frames, gratuitous camera shake and a finale that has no relationship to the opening.
+
+## photo-essay
+
+### Cinematic Photo Journey (cinematic-photo-journey)
+- **Duration:** 20-90s
+- **Visual language:** Treat still photographs as windows into a coherent place, person or idea. Build depth using foreground, subject and background layers, careful crop changes, directional light and a consistent photographic mood.
+- **Motion:** Use slow parallax, deliberate push-ins, lateral camera moves, masking and occasional match cuts. Every camera move should reveal new information; let emotionally important images breathe instead of moving every layer continuously.
+- **Typography:** Use restrained editorial titles, photo credits when required, and minimal captions in high-contrast safe areas. Avoid covering faces or the focal point.
+- **Color:** Derive a restrained palette from the selected photography. Maintain consistent contrast and skin tones while allowing one intentional chapter shift.
+- **Sound:** Pair a modest musical arc with location ambience, cloth or paper textures and occasional deliberate silence. Do not add faux camera sounds to every move.
+- **Story beats:** Establish place and mood; introduce human or thematic detail; increase proximity or contrast; reveal the central image; end with a quiet visual echo.
+- **Avoid:** Random Ken Burns moves, repeated zooms, parallax that breaks anatomy, invented documentary context, unlicensed photography and text competing with the image.
+
+## data-storytelling
+
+### Verified Data Reveal (verified-data-burst)
+- **Duration:** 20-75s
+- **Visual language:** Turn a small set of source-verified facts into a visual argument. Each chart, number and label earns its place; the viewer should understand what changed, compared with what, and over what period.
+- **Motion:** Reveal context before the headline number, establish axes and units before animating data, then use sorting, range highlighting, annotations and one focused comparison. Animate the chart and its labels from the same data model.
+- **Typography:** Large figures carry the headline, with readable units and source notes. Keep category labels stable during sorting and never rely on color alone to distinguish series.
+- **Color:** Neutral analytical base with a consistent highlight for the key measure. Use separate series colors only where they improve decoding and keep semantic mappings consistent.
+- **Sound:** Use quiet ticks or pulses for key changes, a low-key score and silence when a number needs attention. Do not make volume imply statistical significance.
+- **Story beats:** Question; source and baseline; reveal the trend; test a meaningful comparison; state the careful takeaway with source attribution.
+- **Avoid:** Truncated or deceptive axes, interpolated missing values presented as fact, unlabelled units, unsupported causation, tiny sources and invented data.
+
+## typography
+
+### Typography Transforms into Architecture (type-to-architecture)
+- **Duration:** 12-35s
+- **Visual language:** Begin with a bold typographic statement, then let its stems, counters and baselines become beams, walls, streets or a spatial diagram. The 3D world must retain a visible relationship to the original word.
+- **Motion:** Use a controlled camera push, extrusion, split-depth planes and perspective reveal. Transition through shared edges and silhouettes; keep the word readable before it becomes structure and reassemble it for the closing mark.
+- **Typography:** Choose a robust display face with simple geometry. Set deliberate line breaks and avoid complex letterforms if their contours must become architectural components.
+- **Color:** Use a dark or paper-like base, a single material accent and controlled lighting. Separate the typographic silhouette from the environment by value contrast.
+- **Sound:** Use low mechanical resonance, paper-like typography snaps and restrained spatial ambience. Place the main materialization on a clear musical accent.
+- **Story beats:** Readable word; first edge extrudes; letters form a navigable structure; camera reveals the larger pattern; structure resolves back to a final word or message.
+- **Avoid:** Arbitrary letter deformation, unreadable perspective text, random flying blocks, physically inconsistent lighting and geometry unrelated to the message.
+
+## technical-explainer
+
+### Exploded Process and Assembly Explainer (process-explainer)
+- **Duration:** 30-120s
+- **Visual language:** Make an invisible or complicated process understandable by showing its parts, order and relationships. Use a consistent exploded-view diagram with clear spatial anchors, numbered stages and restrained material detail.
+- **Motion:** Move parts along readable paths, pause at important assemblies, use highlight sweeps only to point at meaningful connections, and keep camera orientation stable until a new viewpoint is explained.
+- **Typography:** Use concise numbered steps, labels with leader lines and units where necessary. Maintain hierarchy between part names, functions and the current process stage.
+- **Color:** Neutral technical base, separate functional components with a small semantic palette, and reserve a bright accent for the active part.
+- **Sound:** Use precise clicks, fasteners, airflow or material-specific textures sparingly. Narration should identify purpose before each complex movement.
+- **Story beats:** Show the final object or outcome; disassemble into understandable groups; explain each stage in causal order; reassemble; restate the benefit or core mechanism.
+- **Avoid:** Parts moving without causal explanation, impossible connections, labels detaching from objects, overlong technical lists and visual complexity that hides the mechanism.
+
+## documentary
+
+### Editorial Archive and Documentary Collage (editorial-archive)
+- **Duration:** 30-120s
+- **Visual language:** Combine documentary photography, paper textures, maps, marginal notes and carefully chosen typography as a coherent archive. Make source, date and context visible whenever a historic item contributes to a factual claim.
+- **Motion:** Use registration shifts, paper reveals, trackable parallax and controlled layer rearrangement. Give archival evidence a stable hold before transitions; distinguish actual documents from visual reconstructions.
+- **Typography:** Use one editorial face plus a legible caption face. Keep dates, names, translations and source credits crisp and on screen long enough to read.
+- **Color:** Aged paper and ink tones can be balanced with one modern signal color. Preserve contrast and avoid artificially aging evidence in ways that misrepresent its origin.
+- **Sound:** Use gentle paper, room tone and a restrained documentary score. Avoid bombastic hits on every factual reveal.
+- **Story beats:** Introduce the question; surface a key document or image; connect multiple pieces of evidence; clarify what they show and do not show; close with a grounded takeaway.
+- **Avoid:** Unlicensed archive imagery, fabricated documents passed off as real, misleading date treatments, illegible footnotes and a collage that obscures chronology.
+
+## science
+
+### Cinematic Science Cutaway (cinematic-science-cutaway)
+- **Duration:** 30-90s
+- **Visual language:** Move between an intuitive macro metaphor and a carefully labelled mechanism view. Use cinematic atmosphere to invite curiosity, but keep explanatory structures scientifically defensible.
+- **Motion:** Use controlled scale changes, sectional cutaways, highlighted pathways and staged reveals. Make each zoom establish a meaningful change in scale rather than imply a literal camera journey when none exists.
+- **Typography:** Use simple labels, units and direction cues. Distinguish measured facts from explanatory metaphors and keep qualifiers next to the claim they qualify.
+- **Color:** Use a calm dark or neutral base and a small functional palette for structures, flows and boundaries. Maintain the same semantic color for the same entity.
+- **Sound:** Mix subtle environmental tones with precise reveal accents. Keep narration intelligible and avoid using cinematic booms to suggest unsupported danger.
+- **Story beats:** Pose a question; offer a familiar-scale analogy; reveal the mechanism; identify a key interaction; summarize the supported conclusion and uncertainty.
+- **Avoid:** Pseudo-scientific labels, inconsistent scale, unsupported molecular detail, misleading arrows and metaphors presented as direct observation.
+
+## brand
+
+### Brand-Safe Kinetic Identity Lockup (brand-kinetic-lockup)
+- **Duration:** 5-15s
+- **Visual language:** Build a concise identity sequence from the brand's own geometry, spacing and visual principles. The final logo or wordmark must remain faithful to supplied assets.
+- **Motion:** Use a clear reveal mechanism, one signature transition, and a deliberate final lockup. Motion may transform surrounding shapes but must not distort official logo proportions or re-time a wordmark into an unreadable state.
+- **Typography:** Use supplied brand fonts when licensed and available. Respect logo clear space, minimum size and capitalization; treat the final lockup as a protected asset.
+- **Color:** Use the approved brand palette and contrast requirements. If no palette is supplied, choose a temporary palette and label it as a proposal, not official brand guidance.
+- **Sound:** Use one memorable sonic signature, aligned to the logo reveal, with a clean tail and optional silent variant.
+- **Story beats:** Build anticipation; establish a recognizable brand motif; reveal the official identity; hold the final lockup; provide a clean cutdown ending.
+- **Avoid:** Redrawing logos from memory, invented fonts presented as official, unauthorized color changes, excessive distortion and a final frame too short to identify.
+
+## abstract
+
+### Seamless Shape Morphing Loop (seamless-shape-loop)
+- **Duration:** 8-20s
+- **Visual language:** One shape or small family of shapes passes through a clearly designed sequence of states. The composition should feel like one continuous thought with a stable visual center.
+- **Motion:** Define the loop as a time function, match first and last frame geometry, position and velocity, and derive all motion from explicit time. Use smooth closed-form easing or springs instead of hidden state or browser timers.
+- **Typography:** If type appears, keep it stable during the core morph and separate entry/exit timing from the transforming container.
+- **Color:** Use two to four coherent colors with one accent that travels through the transformation. Avoid changing the entire palette arbitrarily at every state.
+- **Sound:** Build a measured loop with no audible seam. Place transition sounds on the motion grid and keep the final audio tail compatible with the opening.
+- **Story beats:** Introduce base form; traverse four to seven designed states; reach a visual peak; return along a meaningful inverse path; match the opening precisely.
+- **Avoid:** A single-frame pop at the loop point, accumulated floating-point drift, CSS transitions that cannot be evaluated at arbitrary time, overlapping text and random particle confetti.
+
+## product-ui
+
+### Liquid Glass Interface Showcase (liquid-glass-interface)
+- **Duration:** 10-30s
+- **Visual language:** Use glass-like surfaces as a selective material language around one useful interface. Transparency, refraction and highlight should clarify hierarchy instead of turning the UI into a vague decorative surface.
+- **Motion:** Reveal a small set of controls through clean depth shifts, selective refraction and controlled elastic response. Keep text and key controls in crisp planes; use stable lighting directions and avoid changing material properties randomly.
+- **Typography:** Use a clear UI face with strong luminance contrast behind or beside glass layers. Important instructions and values must stay readable without depending on blur-heavy panes.
+- **Color:** Use a quiet dark or light base, neutral translucent surfaces and one controlled accent. Check contrast on the most transparent part of each panel.
+- **Sound:** Use restrained glass taps and soft interface tones, distinct from ordinary button clicks. Leave space for narration or product copy.
+- **Story beats:** Show the core task; introduce the glass layer as a functional control; demonstrate one interaction; reveal the practical benefit; settle on a clean product view.
+- **Avoid:** Glass everywhere, invisible controls, glitter reflections, distorted text, physically inconsistent refraction and effects that conceal functionality.
+
+## product-film
+
+### Precision Mechanical Macro Film (precision-mechanical-macro)
+- **Duration:** 10-45s
+- **Visual language:** Explore a precision object through macro details, machining texture, controlled reflections and interlocking geometry. Make each close-up reveal a meaningful craft or functional detail.
+- **Motion:** Use slow macro tracks, rack-focus-like transitions, rotation around a consistent axis and match cuts between related circular or linear forms. Movement should communicate tolerance, weight and assembly.
+- **Typography:** Use minimal technical labels, material names or dimensions only when verified. Pair a compact mono face with a refined display face for brand messaging.
+- **Color:** Use deep shadow, brushed metal, warm specular highlights and a controlled brand accent. Keep materials distinct through roughness and highlight behavior.
+- **Sound:** Layer precise mechanical ticks, metal resonance and low-frequency movement with restrained music. Avoid exaggerated impacts that make a delicate object feel heavy.
+- **Story beats:** Reveal silhouette; move into signature mechanism; show craft/detail; connect the mechanism to the user benefit; close with product and brand.
+- **Avoid:** Impossible reflections, surface detail that changes between shots, fake macro depth, label clutter and a camera move that hides the product.
+
+## collage
+
+### Bold Cutout and Mixed-Media Collage (bold-cutout-collage)
+- **Duration:** 15-60s
+- **Visual language:** Combine photographed objects, printed textures, cut-paper shapes and graphic type into an intentional editorial composition. Materials should have a clear hierarchy and a consistent tactile identity.
+- **Motion:** Use paper-tear reveals, registered layer shifts, pinned rotations, fast scale changes and deliberate stop-motion-like steps. Transition between scenes by passing one recurring cutout or color field across the frame.
+- **Typography:** Mix a bold editorial title with short captions. Keep type on a stable paper layer unless the lettering itself is the visual subject.
+- **Color:** Select a tight print-inspired palette and let texture vary within it. Maintain strong contrast between foreground cutouts and the background.
+- **Sound:** Use paper, scissors, tape, stamps and dry percussion as tactile accents, with a purposeful musical rhythm.
+- **Story beats:** Introduce the central object or phrase; layer supporting ideas; create one surprising scale or material switch; gather the pieces into a clear conclusion.
+- **Avoid:** Unrelated stock cutouts, excessive grain on every layer, noisy collage edges, illegible text and unlicensed imagery.
+
+## product-ui
+
+### Narrative Dashboard Product Story (narrative-dashboard)
+- **Duration:** 20-60s
+- **Visual language:** Tell one product story through a realistic workflow: starting problem, key data or task, meaningful interaction, resulting state and benefit. The UI should behave consistently like a coherent product, not a gallery of unrelated screens.
+- **Motion:** Keep a stable cursor path, use scroll or camera movement only when it reveals information, and animate values only when the underlying event explains the change. Hold the user-relevant result after the transition.
+- **Typography:** Use realistic sizes and spacing. Prioritize labels, figures, status states and empty/error states. Avoid decorative microcopy that cannot be read.
+- **Color:** Honor the actual product palette when available. Use state colors consistently and provide shape, icon or text cues in addition to color.
+- **Sound:** Use authentic interaction cues sparingly and lower music during important information. Avoid adding a click for every cursor movement.
+- **Story beats:** State the user's problem; show the initial dashboard; perform the key action; reveal a truthful outcome; close with the product value proposition.
+- **Avoid:** Invented analytics, inconsistent navigation, impossible interactions, cursor teleportation and rapid zooms that make the workflow hard to follow.
+
+## maps
+
+### Human-Scale Map and Geographic Journey (human-scale-map)
+- **Duration:** 20-90s
+- **Visual language:** Move from a broad geographic context to a human-scale route, neighborhood or historical connection. Keep geography oriented and labels tied to real locations.
+- **Motion:** Use deliberate zoom stages, route drawing, locational callouts and transitions along a stable north/orientation convention. Give the audience enough time to establish where each place is.
+- **Typography:** Label places with accurate spelling and consistent hierarchy. Use concise dates, distances and time zones where needed; avoid dense labels at world scale.
+- **Color:** Use base-map neutrals, one route or featured-region color and a restrained terrain/water distinction. Do not let palette changes imply political boundaries or categories that are not in the data.
+- **Sound:** Use gentle travel motion, location ambience and focused emphasis at key stops. Avoid literal whooshes on every zoom.
+- **Story beats:** Establish the wider map; locate the start; trace the journey or relationship; pause at key points; return to the overview for the takeaway.
+- **Avoid:** Misplaced coastlines, false borders, unexplained map projections, excessive map labels and exposing sensitive personal locations.
+
+## science
+
+### Careful Medical and Biological Mechanism Explainer (medical-mechanism)
+- **Duration:** 30-120s
+- **Visual language:** Explain a body system or biological mechanism with simplified but defensible diagrams, clear scale cues and careful separation between established evidence and illustrative metaphor.
+- **Motion:** Use staged cutaways, highlighted pathways and controlled zooms between scales. Keep anatomical relationships stable and show direction only when supported by the source.
+- **Typography:** Use plain-language labels, define technical terms and keep caveats next to relevant claims. Source notes must be readable and never buried in a final one-frame card.
+- **Color:** Choose an accessible, consistent semantic palette for structures and flows. Do not depend on red/blue conventions alone to imply a diagnosis or severity.
+- **Sound:** Keep narration calm and intelligible. Use quiet motion accents instead of alarms or dramatic sounds that suggest unwarranted danger.
+- **Story beats:** Ask the question; define the system; show the supported mechanism; clarify what is known and what varies; end with a source-backed summary.
+- **Avoid:** Personal diagnosis, treatment promises, fabricated tissue details, false certainty, fear-based effects and visual metaphors presented as direct observation.
+
+## editorial
+
+### Cinematic Before-and-After Comparison (cinematic-comparison)
+- **Duration:** 15-45s
+- **Visual language:** Compare two states using consistent framing, scale and conditions so the difference itself tells the story. Choose a visual motif that lets the viewer track exactly what changed.
+- **Motion:** Use split reveals, aligned wipes, synchronized labels, match-cut geometry and a final side-by-side hold. Keep cameras locked or explicitly compensate for framing changes.
+- **Typography:** Label each state and the comparison metric. Use concise text and avoid implying a causal relationship through the edit when only correlation is known.
+- **Color:** Preserve measurement integrity and neutral baseline colors. Use a highlight only for the relevant difference, not to make one side look artificially better.
+- **Sound:** Use a restrained transition cue and clear narration that explains the comparison criteria. Avoid triumphal or alarming sounds that bias interpretation.
+- **Story beats:** Define baseline; explain comparison conditions; reveal the change; inspect an important exception or limitation; summarize what the comparison does and does not show.
+- **Avoid:** Different scales without disclosure, hidden exclusions, unverified transformations, color manipulation and unsourced claims of causation.
+
+## event-brand
+
+### High-Contrast Event Opener (high-contrast-event-opener)
+- **Duration:** 10-30s
+- **Visual language:** Create a strong stage-scale opening built around a short message, a memorable material or graphic motif and a precise final event lockup. Use large-scale framing that remains readable from a distance.
+- **Motion:** Move from a minimal hook to a controlled escalation, use typography as the main spatial element and reserve the largest scale change for the payoff. End with a stable title card that can also serve as a stage hold.
+- **Typography:** Use a bold display face with generous spacing and a strong safe area. Limit each frame to one primary message plus essential event details.
+- **Color:** Use the event's approved brand palette or one proposed high-contrast scheme. Test projection contrast, black levels and visibility on large LED screens.
+- **Sound:** Build a clear audio arc with a deliberate drop before the reveal, strong but non-clipping impacts and a clean end for a live host transition.
+- **Story beats:** Visual hook; event theme; three escalating motifs or keywords; climax; event title/date/logo hold.
+- **Avoid:** Constant strobing, illegible tiny text, overlong preamble, unsafe flash rates, excessive camera shake and an abrupt audio cutoff.
+
+## music
+
+### Music-Led Shape and Sound Grammar (music-led-shape-grammar)
+- **Duration:** 15-60s
+- **Visual language:** Give a small set of graphic elements an explicit musical identity: kick drives scale, hi-hats drive small detail, bass controls mass or depth, and melody drives path or color. The visual language should be repeatable, not just audio-reactive noise.
+- **Motion:** Analyze transients and tempo first, then map each visual parameter to a limited audio feature. Use smoothing and thresholding so the scene responds musically rather than jittering at every sample.
+- **Typography:** Use sparse titles or lyric lines with predictable entry windows. Never sacrifice text legibility to uncontrolled waveform animation.
+- **Color:** Assign color to musical roles and preserve a coherent palette across sections. Reserve one accent for a major musical change.
+- **Sound:** Use the supplied licensed track or generated audio with documented rights. Keep peak levels controlled and check the final mix on headphones and phone speakers.
+- **Story beats:** Establish the visual beat; introduce the main motif; add one layer per musical section; build to the strongest musical change; resolve into a clear ending or loop.
+- **Avoid:** Unsmoothed frequency spikes, random scale flicker, audio clipping, syncopation without intentionality and a waveform that hides the main composition.
+
+## documentary
+
+### Voiceover-First Information-Rich Explainer (voiceover-first-explainer)
+- **Duration:** 45-180s
+- **Visual language:** Design the film around a clear spoken argument, using visual metaphor, evidence, diagrams and purposeful motion to make each idea easier to understand. Avoid showing a new scene merely because the narration continues.
+- **Motion:** Create a timecoded narration script, then stage visuals to key phrases, pauses and claim boundaries. Use faster transitions for setup and slower holds for difficult ideas or numbers.
+- **Typography:** Show only the phrase or data point that matters at that moment. Keep line length short, use readable captions and protect source notes from competing motion.
+- **Color:** Choose a stable palette and assign repeatable colors to concepts, data categories and chapter changes. Avoid changing visual language on every sentence.
+- **Sound:** Prioritize clean voice intelligibility, consistent loudness, respectful music ducking and purposeful silence. Place SFX on meaningful actions and transitions.
+- **Story beats:** Cold open; define the question; build a chain of evidence or reasoning; address the most important caveat; land one memorable conclusion.
+- **Avoid:** Narration that merely reads on-screen text, overscripted density, visual stock montages without causal links, unsupported facts and music masking speech.
+
