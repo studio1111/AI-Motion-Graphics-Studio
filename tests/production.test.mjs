@@ -257,3 +257,13 @@ test("kinetic title animation splits titles into words rather than one literal b
     "title words must be split on whitespace so each word can animate independently"
   );
 });
+
+test("caption segmentation wraps exceptionally long unbroken tokens without overflowing mobile lines", () => {
+  const segments = splitCaptionSegments("X".repeat(100), 44);
+  assert.ok(segments.length >= 3, "long tokens must be split into readable chunks");
+  for (const segment of segments) {
+    for (const line of segment.split("\\n")) {
+      assert.ok(Array.from(line).length <= 44, "no caption line may exceed the configured character limit");
+    }
+  }
+});
