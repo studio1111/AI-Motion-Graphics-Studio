@@ -134,7 +134,7 @@ export function parseArgs(argv=process.argv.slice(2),env=process.env){
 export function safeSlug(value){const slug=String(value||"motion-video").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-+|-+$/g,"").slice(0,48);return slug||"motion-video";}
 export function detectTopicVisualFamily(topic){
  const text=String(topic||"").toLowerCase();
- if(/(city|cities|urban|heat island|heat moves|heatwave|hotter|شهر|شهری|گرما|جزیره گرمایی)/i.test(text))return "city-heat";
+ if(/(\\b(?:city|cities|urban|heat island|heat moves|heatwave|hotter)\\b|شهر|شهری|گرما|جزیره گرمایی)/i.test(text))return "city-heat";
  if(/(artificial intelligence|machine learning|neural network|\bai\b|robot|هوش مصنوعی|یادگیری ماشین|شبکه عصبی|ربات)/i.test(text))return "artificial-intelligence";
  if(/(solar|photovoltaic|renewable energy|wind power|electricity|power grid|خورشید|خورشیدی|برق|انرژی|نیروگاه|باد)/i.test(text))return "solar-energy";
  if(/(climate|global warming|carbon|emissions|ecosystem|environment|اقلیم|گرمایش جهانی|کربن|انتشار گاز|محیط زیست|بوم‌سازگان)/i.test(text))return "climate";
