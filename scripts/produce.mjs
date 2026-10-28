@@ -251,45 +251,66 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
  else result.status="failed";
  return result;
 }
-async function writeBed(path,seconds){
- const rate=24000,count=Math.floor(Math.max(5,Math.min(600,seconds))*rate),bytes=count*4,b=Buffer.alloc(44+bytes);b.write("RIFF",0);b.writeUInt32LE(36+bytes,4);b.write("WAVE",8);b.write("fmt ",12);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(2,22);b.writeUInt32LE(rate,24);b.writeUInt32LE(rate*4,28);b.writeUInt16LE(4,32);b.writeUInt16LE(16,34);b.write("data",36);b.writeUInt32LE(bytes,40);const tau=Math.PI*2;
- for(let i=0;i<count;i++){const t=i/rate,fade=Math.max(0,Math.min(1,t/2.8,(seconds-t)/3.2)),swell=0.55+0.24*Math.sin(tau*0.055*t)+0.12*Math.sin(tau*0.083*t+1.8),pulse=Math.pow(Math.max(0,Math.sin(tau*0.125*t)),5),tone=(Math.sin(tau*55*t)*0.32+Math.sin(tau*82.41*t+0.35)*0.18+Math.sin(tau*110*t+0.8)*0.11+pulse*Math.sin(tau*440*t)*0.04)*swell*fade*0.2;b.writeInt16LE(Math.round(tone*32767),44+i*4);b.writeInt16LE(Math.round(tone*(0.94+0.04*Math.sin(tau*0.02*t))*32767),46+i*4);}
- await writeFile(path,b);
-}
-function srtTime(sec){const m=Math.round(Math.max(0,sec)*1000);const h=Math.floor(m/3600000),mi=Math.floor(m%3600000/60000),s=Math.floor(m%60000/1000),ms=m%1000;return [h,mi,s].map(v=>String(v).padStart(2,"0")).join(":")+","+String(ms).padStart(3,"0");}
-export function splitCaptionSegments(text,maxChars=44){
- const words=String(text||"").trim().split(/\s+/).filter(Boolean);
- if(!words.length)return [];
- const lines=[];let line="";
- for(const word of words){
-  const next=line?line+" "+word:word;
-  if(line&&next.length>maxChars){lines.push(line);line=word;}else line=next;
+export function createProceduralBedWav(seconds, styleId = "cinematic-documentary") {
+ const duration = Math.max(5, Math.min(600, Number(seconds) || 5));
+ const rate = 24000;
+ const count = Math.floor(duration * rate);
+ const bytes = count * 4;
+ const b = Buffer.alloc(44 + bytes);
+ b.write("RIFF", 0); b.writeUInt32LE(36 + bytes, 4); b.write("WAVE", 8);
+ b.write("fmt ", 12); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(2, 22);
+ b.writeUInt32LE(rate, 24); b.writeUInt32LE(rate * 4, 28); b.writeUInt16LE(4, 32); b.writeUInt16LE(16, 34);
+ b.write("data", 36); b.writeUInt32LE(bytes, 40);
+ const tau = Math.PI * 2;
+ const bpm = styleId === "editorial-kinetic-type" || styleId === "vertical-social" ? 106
+  : styleId === "character-2d" ? 112
+  : styleId === "maps-timeline" || styleId === "tactile-collage" ? 84
+  : styleId === "data-journalism" ? 98 : 92;
+ const beatSeconds = 60 / bpm;
+ const chords = [
+  [45, 48, 52, 55], // A minor 7
+  [41, 45, 48, 52], // F major 7
+  [48, 52, 55, 59], // C major 7
+  [43, 47, 50, 53]  // G dominant color
+ ].map(notes => notes.map(note => 440 * Math.pow(2, (note - 69) / 12)));
+ const toSample = (value) => Math.max(-0.92, Math.min(0.92, value));
+ for (let i = 0; i < count; i++) {
+  const t = i / rate;
+  const fade = Math.max(0, Math.min(1, t / 2.8, (duration - t) / 3.2));
+  const slowSwell = 0.78 + 0.12 * Math.sin(tau * 0.045 * t) + 0.07 * Math.sin(tau * 0.071 * t + 1.3);
+  const barIndex = Math.floor(t / (beatSeconds * 4));
+  const chord = chords[barIndex % chords.length];
+  const beatPosition = t % beatSeconds;
+  const halfBeat = beatSeconds / 2;
+  const stepIndex = Math.floor(t / halfBeat);
+  const stepPosition = t % halfBeat;
+  const pluckFrequency = chord[(stepIndex + Math.floor(stepIndex / 8)) % chord.length] * 2;
+  const pad =
+   Math.sin(tau * chord[0] * t) * 0.12 +
+   Math.sin(tau * chord[1] * t + 0.12) * 0.075 +
+   Math.sin(tau * chord[2] * t + 0.31) * 0.065 +
+   Math.sin(tau * chord[3] * t + 0.6) * 0.035 +
+   Math.sin(tau * chord[2] * 1.003 * t) * 0.025;
+  const sub = Math.sin(tau * chord[0] * 0.5 * t) * (0.11 + 0.03 * Math.sin(tau * 0.03 * t));
+  const strongBeat = Math.floor(t / beatSeconds) % 4 === 0;
+  const kickEnvelope = Math.exp(-beatPosition * 22);
+  const kick = Math.sin(tau * (58 * beatPosition - 15 * beatPosition * beatPosition)) * kickEnvelope * (strongBeat ? 0.085 : 0.025);
+  const pluck = Math.sin(tau * pluckFrequency * stepPosition) * Math.exp(-stepPosition * 7.5) * 0.048;
+  const shimmer = Math.sin(tau * (pluckFrequency * 2) * stepPosition) * Math.exp(-stepPosition * 18) * 0.009;
+  const accent = (stepIndex % 2 === 1 ? Math.sin(tau * 6400 * stepPosition) * Math.exp(-stepPosition * 55) * 0.009 : 0);
+  const texture = Math.sin(tau * 173 * t + Math.sin(tau * 0.07 * t)) * 0.018;
+  const mono = (pad * 0.82 + sub + kick + pluck + shimmer + accent + texture) * slowSwell * fade;
+  const left = toSample(mono + Math.sin(tau * 0.17 * t) * 0.006 * fade);
+  const right = toSample(mono * (0.96 + 0.025 * Math.sin(tau * 0.13 * t)) + Math.sin(tau * 0.19 * t + 0.5) * 0.006 * fade);
+  b.writeInt16LE(Math.round(left * 32767), 44 + i * 4);
+  b.writeInt16LE(Math.round(right * 32767), 46 + i * 4);
  }
- if(line)lines.push(line);
- const segments=[];
- for(let i=0;i<lines.length;i+=2)segments.push([lines[i],lines[i+1]].filter(Boolean).join("\n"));
- return segments;
+ return b;
 }
-function makeSrt(scenes,fps){
- let cursor=0,index=1;const rows=[];
- for(const s of scenes){
-  const sceneFrames=s.durationInFrames;
-  const spokenFrames=Math.min(sceneFrames,s.audioDurationInFrames||sceneFrames);
-  const segments=splitCaptionSegments(s.narration);
-  const wordCounts=segments.map(v=>v.split(/\s+/).filter(Boolean).length);
-  const totalWords=wordCounts.reduce((a,b)=>a+b,0)||1;
-  let offset=0;
-  for(let i=0;i<segments.length;i++){
-   const start=cursor+Math.round(spokenFrames*offset/totalWords);
-   offset+=wordCounts[i];
-   const end=cursor+(i===segments.length-1?spokenFrames:Math.round(spokenFrames*offset/totalWords));
-   rows.push(index+++"\n"+srtTime(start/fps)+" --> "+srtTime(Math.max(start+1,end)/fps)+"\n"+segments[i]+"\n");
-  }
-  cursor+=sceneFrames;
- }
- return rows.join("\n");
+async function writeBed(path, seconds, styleId) {
+ await writeFile(path, createProceduralBedWav(seconds, styleId));
 }
-function timedScenes(scenes,fps){let cursor=0;return scenes.map(s=>{const start=cursor,end=start+s.durationInFrames;cursor=end;return {...s,startFrame:start,endFrame:end,startSeconds:Number((start/fps).toFixed(3)),endSeconds:Number((end/fps).toFixed(3))};});}
+
 export function sampleTimes(durationSeconds){
  const duration=Number(durationSeconds);
  if(!Number.isFinite(duration)||duration<=0)return [];
@@ -329,7 +350,7 @@ export async function produce(options,env=process.env){
  await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
  let voice={status:"not_attempted",engine:null,generatedScenes:0,warnings:[]};if(options.planOnly)voice.status="not_run_plan_only";else voice=await makeVoice(plan.scenes,language,options.voice,runId,fps,warnings);
  const hasVoice=plan.scenes.some(s=>s.audioSrc);if(!hasVoice){const frames=allocateFrames(plan.scenes,targetFrames,fps);plan.scenes=plan.scenes.map((s,i)=>({...s,durationInFrames:frames[i]}));}
- const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;if(!options.planOnly){const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});await writeBed(join(assets,"procedural-ambient-bed.wav"),actualDuration);audioBedSrc="generated/"+runId+"/procedural-ambient-bed.wav";}
+ const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;if(!options.planOnly){const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});await writeBed(join(assets,"procedural-ambient-bed.wav"),actualDuration,styleId);audioBedSrc="generated/"+runId+"/procedural-ambient-bed.wav";}
  const props={topic,title:plan.title,subtitle:plan.subtitle||"",language,styleId,fps,width:size.width,height:size.height,durationInFrames:totalFrames,palette:preset.palette,typography:preset.typography,captionsEnabled:hasVoice,scenes:plan.scenes,...(audioBedSrc?{audioBedSrc}:{})};
  await writeFile(join(dir,"props.json"),JSON.stringify(props,null,2)+"\n");await writeFile(join(dir,"voiceover.txt"),plan.scenes.map(s=>s.narration||"").filter(Boolean).join("\n\n")+"\n");await writeFile(join(dir,"captions.srt"),makeSrt(plan.scenes,fps));await writeFile(join(dir,"storyboard-timed.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,fps,width:size.width,height:size.height,durationInFrames:totalFrames,durationSeconds:actualDuration,scenes:timedScenes(plan.scenes,fps)},null,2)+"\n");
  const manifest={runId,createdAt:new Date().toISOString(),brief:briefRecord,selectedStyle:{id:styleId,label:preset.label,palette:preset.palette,typography:preset.typography},contentMode:plan.contentMode,research,ai,voice,audioBed:options.planOnly?"not_generated":"locally_synthesized_procedural_ambient_bed",render:{status:options.planOnly?"NOT_RUN":"PENDING",composition:"MotionVideo"},output:{runDirectory:dir,videoPath:null},warnings};await writeFile(join(dir,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");

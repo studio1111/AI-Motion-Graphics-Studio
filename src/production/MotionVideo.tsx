@@ -28,6 +28,11 @@ const rgba = (hex: string, alpha: number) => {
 
 const isRtlLanguage = (language: string) => /^(fa|ar|ur|he)(-|$)/i.test(language);
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+const fitMotionFontSize = (text: string, base: number, minimum: number) => {
+  const length = Array.from(String(text || "")).length;
+  const scale = length <= 28 ? 1 : length <= 42 ? 0.9 : length <= 58 ? 0.8 : length <= 78 ? 0.7 : 0.6;
+  return Math.max(minimum, Math.round(base * scale));
+};
 const splitCaptionSegments = (text: string, maxChars = 44) => {
   const words = String(text || "").trim().split(/\s+/).filter(Boolean);
   const lines: string[] = [];
@@ -225,14 +230,10 @@ const SceneText: React.FC<{
   const rise = spring({ frame, fps, config: { damping: 18, stiffness: 105, mass: 0.9 } });
   const opacity = interpolate(frame, [0, 8, 20], [0, 0.35, 1], clamp);
   const titleY = interpolate(rise, [0, 1], [58, 0], clamp);
-  const titleLength = Array.from(scene.title || "").length;
-  const titleScale = titleLength <= 24 ? 1 : titleLength <= 36 ? 0.9 : titleLength <= 48 ? 0.8 : titleLength <= 64 ? 0.7 : 0.62;
-  const titleSize = Math.max(vertical ? 42 : 48, (vertical ? 76 : 92) * titleScale);
+  const titleSize = fitMotionFontSize(scene.title, vertical ? 76 : 92, vertical ? 42 : 48);
   const titleAlign = vertical ? "center" : rtl ? "right" : "left";
   const titleWidth = "100%";
-  const bodyLength = Array.from(scene.body || "").length;
-  const bodyScale = bodyLength <= 100 ? 1 : bodyLength <= 180 ? 0.92 : 0.82;
-  const bodySize = (vertical ? 30 : 28) * bodyScale;
+  const bodySize = fitMotionFontSize(scene.body, vertical ? 30 : 28, vertical ? 18 : 19);
   const titleWords = scene.title.trim().split(/\\s+/).filter(Boolean);
 
   return (
@@ -513,8 +514,8 @@ const QuoteGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; frame
   return (
     <div style={{ position: "relative", padding: "9% 7%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", borderLeft: "3px solid " + palette.accent, transform: "translateX(" + (rtl ? -x : x) + "px)" }}>
       <div style={{ fontSize: 118, lineHeight: 0.7, color: palette.accent, fontFamily: typography.display }}>“</div>
-      <div dir={rtl ? "rtl" : "auto"} style={{ color: palette.foreground, fontFamily: typography.display, fontSize: 54, lineHeight: 1.08, fontWeight: 700, textWrap: "balance" as CSSProperties["textWrap"] }}>{scene.title}</div>
-      {scene.body ? <div dir={rtl ? "rtl" : "auto"} style={{ marginTop: 25, color: palette.muted, fontFamily: typography.body, fontSize: 24, lineHeight: 1.5 }}>{scene.body}</div> : null}
+      <div dir={rtl ? "rtl" : "auto"} style={{ color: palette.foreground, fontFamily: typography.display, fontSize: fitMotionFontSize(scene.title, 54, 30), lineHeight: 1.08, fontWeight: 700, textWrap: "balance" as CSSProperties["textWrap"] }}>{scene.title}</div>
+      {scene.body ? <div dir={rtl ? "rtl" : "auto"} style={{ marginTop: 25, color: palette.muted, fontFamily: typography.body, fontSize: fitMotionFontSize(scene.body, 24, 17), lineHeight: 1.5 }}>{scene.body}</div> : null}
     </div>
   );
 };
@@ -552,8 +553,8 @@ const LayoutGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; fram
       return (
         <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", position: "relative", padding: "5%" }}>
           <div style={{ fontFamily: typography.mono, color: palette.accent, fontSize: 19, letterSpacing: 4 }}>TAKE THE IDEA WITH YOU</div>
-          <div dir={rtl ? "rtl" : "auto"} style={{ fontFamily: typography.display, color: palette.foreground, fontSize: vertical ? 68 : 84, fontWeight: 800, lineHeight: 1.02, marginTop: 26, textWrap: "balance" as CSSProperties["textWrap"] }}>{scene.title}</div>
-          {scene.body ? <div dir={rtl ? "rtl" : "auto"} style={{ maxWidth: 720, marginTop: 24, color: palette.muted, fontFamily: typography.body, fontSize: 25, lineHeight: 1.45 }}>{scene.body}</div> : null}
+          <div dir={rtl ? "rtl" : "auto"} style={{ fontFamily: typography.display, color: palette.foreground, fontSize: fitMotionFontSize(scene.title, vertical ? 68 : 84, vertical ? 38 : 44), fontWeight: 800, lineHeight: 1.02, marginTop: 26, textWrap: "balance" as CSSProperties["textWrap"] }}>{scene.title}</div>
+          {scene.body ? <div dir={rtl ? "rtl" : "auto"} style={{ maxWidth: 720, marginTop: 24, color: palette.muted, fontFamily: typography.body, fontSize: fitMotionFontSize(scene.body, 25, 17), lineHeight: 1.45 }}>{scene.body}</div> : null}
           <div style={{ marginTop: 34, width: 90, height: 3, background: palette.accent2, transform: "scaleX(" + interpolate(frame, [0, 24], [0, 1], clamp) + ")" }} />
         </div>
       );
@@ -562,9 +563,9 @@ const LayoutGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; fram
       return (
         <div style={{ height: "100%", width: "100%", padding: "6%", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: "9%", right: "3%", fontFamily: typography.display, fontSize: vertical ? 100 : 180, color: rgba(palette.accent, 0.12), fontWeight: 900, transform: "translateX(" + interpolate(frame, [0, 80], [50, -40], clamp) + "px)" }}>MOTION</div>
-          <div dir={rtl ? "rtl" : "auto"} style={{ position: "relative", fontFamily: typography.display, fontWeight: 800, fontSize: vertical ? 72 : 104, lineHeight: 0.97, color: palette.foreground, maxWidth: "94%", textWrap: "balance" as CSSProperties["textWrap"] }}>{scene.title}</div>
+          <div dir={rtl ? "rtl" : "auto"} style={{ position: "relative", fontFamily: typography.display, fontWeight: 800, fontSize: fitMotionFontSize(scene.title, vertical ? 72 : 104, vertical ? 38 : 48), lineHeight: 0.97, color: palette.foreground, maxWidth: "94%", textWrap: "balance" as CSSProperties["textWrap"] }}>{scene.title}</div>
           <div style={{ width: "36%", minWidth: 100, height: 4, marginTop: 26, background: palette.accent, transform: "scaleX(" + interpolate(frame, [0, 22], [0, 1], clamp) + ")", transformOrigin: rtl ? "right" : "left" }} />
-          {scene.body ? <div dir={rtl ? "rtl" : "auto"} style={{ fontFamily: typography.body, color: palette.muted, fontSize: vertical ? 25 : 28, lineHeight: 1.45, marginTop: 24, maxWidth: 840 }}>{scene.body}</div> : null}
+          {scene.body ? <div dir={rtl ? "rtl" : "auto"} style={{ fontFamily: typography.body, color: palette.muted, fontSize: fitMotionFontSize(scene.body, vertical ? 25 : 28, vertical ? 16 : 18), lineHeight: 1.45, marginTop: 24, maxWidth: 840 }}>{scene.body}</div> : null}
         </div>
       );
   }

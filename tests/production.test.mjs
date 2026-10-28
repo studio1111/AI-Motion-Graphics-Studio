@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { allocateFrames, buildLocalPlan, chooseStyle, normalizePlan, parseArgs, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, normalizePlan, parseArgs, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
 
 test("local fallback creates eight scenes and varies visual layouts",()=>{
   const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
@@ -91,6 +91,25 @@ test("output slug is path-safe",()=>{
   assert.ok(slug.length>0&&slug.length<=48);
   assert.ok(!slug.includes("/")&&!slug.includes("\\"));
   assert.equal(safeSlug("***"),"motion-video");
+});
+
+test("procedural music bed is valid stereo PCM with a varied, non-silent waveform",()=>{
+  const wav=createProceduralBedWav(5,"scientific-2-5d");
+  assert.equal(wav.toString("ascii",0,4),"RIFF");
+  assert.equal(wav.toString("ascii",8,12),"WAVE");
+  assert.equal(wav.readUInt16LE(22),2);
+  assert.equal(wav.readUInt32LE(24),24000);
+  assert.equal(wav.readUInt16LE(34),16);
+  assert.equal(wavDuration(wav),5);
+  let peak=0;
+  const sampled=new Set();
+  for(let offset=44;offset<wav.length;offset+=80){
+    const sample=wav.readInt16LE(offset);
+    peak=Math.max(peak,Math.abs(sample));
+    sampled.add(sample);
+  }
+  assert.ok(peak>500,"music bed should not be silent");
+  assert.ok(sampled.size>100,"music bed should contain a changing signal, not a flat DC offset");
 });
 
 test("QC samples interior frames rather than exact start and midpoint cuts",()=>{
