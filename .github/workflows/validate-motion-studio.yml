@@ -27,12 +27,12 @@ jobs:
           node-version: 20
       - name: Install pinned dependencies
         run: npm install --no-audit --no-fund
+      - name: Validate skills and production engine
+        run: npm run validate
       - name: Install media tools and readable system fonts
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-liberation2 fonts-noto-core
-      - name: Validate skills and production engine
-        run: npm run validate
       - name: Syntax-check and exercise the production CLI
         run: |
           node --check scripts/produce.mjs
