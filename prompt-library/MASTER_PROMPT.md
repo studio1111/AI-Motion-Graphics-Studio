@@ -41,6 +41,9 @@ G. Editing/compositing notes: layer order, key moments, transitions, typography 
 H. Quality-control checklist: factual review, spelling, timing, legibility, motion consistency, audio peaks, captions, aspect ratio, render and export settings.
 I. Final negative prompt / failure-prevention list.
 
+## Cross-tool prompt modules
+For specialist direction, choose the matching section in `ADVANCED_MASTER_PROMPTS.md`; for individual shots, select one template from `SCENE_PROMPT_TEMPLATES.md`. Reference-based decisions should be checked against `REFERENCE_ANALYSIS_WORKBOOK.md` and the relevant source-linked synthesis. Preserve an honest separation between source observations, interpretation, planned work and verified output.
+
 ## Final self-review
 Score each from 1-5: concept clarity, hook, narrative progression, visual variety, typography, motion specificity, color coherence, sound design, accessibility, factual integrity and finish. If any critical category is below 4, revise before delivery. Explain any unavoidable tradeoff.
 
