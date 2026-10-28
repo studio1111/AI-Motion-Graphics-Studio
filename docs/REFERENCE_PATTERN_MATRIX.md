@@ -116,3 +116,16 @@ These are trade/agency viewpoints, not a comprehensive scientific census. Use th
 ## How this matrix should evolve
 
 For each new batch, link each pattern to the relevant reference IDs, label direct observations versus inference, and add counterexamples. Promote a rule to “validated” only after varied creators, languages, genres and L2/L3 evidence support it. The current reference catalog holds 100 public video candidates: 55 L0 metadata-only entries and 45 L1 article-supported entries, with zero L2/L3 full-video reviews confirmed; the 1,000-reference study remains unfinished.
+
+
+## Prompt Motion entry-page review: 2026-10-28
+
+**Evidence limitation:** the following five Prompt Motion entry pages and their displayed prompt/skill descriptions were inspected. The linked videos were not watched in full, so these are L1 source-page observations and hypotheses, not L2/L3 visual findings.
+
+- [Shape morphing through UI states — zero (@twoclipping)](https://prompt-motion.com/twoclipping-5cba86) — the published direction describes one UI object transforming across multiple states rather than cutting between unrelated objects. Studio hypothesis: use persistent object identity, semantically meaningful state changes, controlled spring motion, beat-aware events and a seamless loop when the brief benefits from it. Do not use springs on every project by default.
+- [Engraving-style brand ad — Leon Lin](https://prompt-motion.com/lexnlin-038035) — the prompt description calls for graphic marks layered over editorial imagery and rapid variation in image scale. Studio hypothesis: create an original mixed-media language using rights-cleared imagery, drawn overlays and varied scale, while preserving enough holds for readability.
+- [Recursion explained through changing genres — Ethan Mollick](https://prompt-motion.com/emollick-8661a8) — the prompt frames one abstract concept through contrasting visual genres. Studio hypothesis: keep the underlying concept consistent while changing visual metaphors to reveal different facets, with transitions that communicate why each genre shift occurs.
+- [TasteSkill dashboard showcase — Leon Lin](https://prompt-motion.com/lexnlin-f9b3bd8) — the listed skill emphasizes art direction, real imagery and in-browser checks. Studio hypothesis: make the design system explicit and add a visual-inspection gate instead of trusting generic dashboard defaults. The linked repository has not been independently audited or installed.
+- [Product launch film built from real product components — Anthony Riera](https://prompt-motion.com/anthonyriera-9b1b2a) — the listed skill describes interviewing for the product story and using real product components in a Remotion film. Studio hypothesis: gather product truth and brand assets before storyboarding, then validate the rendered film against actual product UI. This is a research lead, not an installed dependency.
+
+These examples were added to `research/references.jsonl` as P001–P005 with creator/source attribution and L1 evidence. The full 1,000-reference study remains incomplete.
