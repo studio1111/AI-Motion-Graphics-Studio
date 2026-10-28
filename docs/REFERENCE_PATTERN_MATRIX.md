@@ -163,3 +163,24 @@ The reviewed prompts range from deliberately broad one-line requests to detailed
 ## Sampled video spot-check: P001
 
 One linked X video was sampled at approximately 1, 5, 10–15, 20 and 25–28 seconds (about 29 seconds total). It showed a warm off-white canvas, bold central brand elements, liquid-glass/photo UI transitions, a framed-print end sequence and a loop back toward the opening. This is a sampled visual spot-check, not a continuous end-to-end watch; it remains L1, not L2/L3. The other reviewed pages expose posters and prompt text but no directly playable video asset through the scraper. TubeLab and TubeAlfred searches returned HTTP 402 for insufficient credits, and further Firecrawl live-browser checks were blocked by exhausted credits.
+
+
+## Prompt Motion prompt-study synthesis: 2026-10-28
+
+Sources: [What 230 real AI motion prompts show](https://prompt-motion.com/blog/ai-motion-graphics-prompts), [How to prompt an AI launch video](https://prompt-motion.com/blog/ai-launch-video-prompts), [Why AI motion graphics look AI-made](https://prompt-motion.com/blog/make-ai-motion-graphics-look-less-ai), [the rewritten showreel prompt](https://prompt-motion.com/templates/showreel), and [one shape-morph example](https://prompt-motion.com/twoclipping-5cba86). These are source-published findings and page/prompt reviews, not an independent full watch of all videos.
+
+- The published gallery study reports 233 entries from 216 creators, 230 with prompts, a median prompt length of 26 words, and a middle half spanning 18-36 words. It also reports 94 launch videos, 78 showreels and 27 explainers. A small subset of 19 prompts longer than 100 words received a higher median like count than prompts of 26 words or fewer, but the article explicitly notes confounds and the small sample. The studio should not equate prompt length or likes with quality; instead, test whether each instruction resolves a production decision.
+- A recurring weak baseline is the broad request to make a dynamic short motion reel. The improved showreel prompt adds five concrete controls: one named concept, continuous transformations rather than unrelated cuts, a limited type and color system, a consistent camera language, beat-structured escalation, and a first-frame/last-frame loop. Our adaptation allows a runtime-appropriate tempo instead of hard-coding every project to one BPM.
+- The shape-morph example ties interface states to one persistent object, maps UI transitions to a beat grid, derives animation from deterministic time, measures audio peaks, renders subframes for motion blur, and checks key frames before full rendering. Translate this into a technical acceptance checklist for code-based scenes: time-seek determinism, no hidden state, readable text inside morphing containers, consistent component identity, and loop-frame validation only when a loop is requested.
+- The anti-pattern article distinguishes design intention from a pile of effects: name the causal relationship between moving elements, maintain one recurring visual identity, synchronize related diagrams and moving objects, and test legibility at key moments. Put those constraints directly into prompts and frame-level QA, not only into descriptive style labels.
+- For product launches, prompt quality rises when the request says what product truth to show and how the viewer should understand it, rather than merely asking for polish. Require product facts, audience problem, feature-to-benefit mapping, verified UI states, a clear ending and a source/asset plan.
+
+### Engineering implications
+
+1. Every recipe now includes a visual language, motion grammar, typography, color system, sound design, story beats, anti-patterns and adaptation guidance.
+2. The production workflow requests a beat map and storyboard before implementation, then a frame-sampling pass and targeted repair before final export.
+3. Deterministic scene functions and explicit transitions are preferred for code-based rendering; audio features must be measured and smoothed, not guessed or jittered.
+4. The recipe library uses original syntheses, not copied creator-authored prompts. Source attribution, asset licensing, factuality and actual tool availability remain explicit gates.
+5. Popularity signals and the source's stated sample should be treated as directional research, not proof that one style or prompt will work universally.
+
+Evidence limitation: Prompt Motion article pages and selected example pages were reviewed. The existing catalog records 21 Prompt Motion entries at L1 and one approximate sampled video spot-check, but it does not claim 21 complete end-to-end video watches or timestamped L3 analyses. Firecrawl and third-party video research tools returned insufficient-credit errors during this session, so no further full-video coverage is claimed.
