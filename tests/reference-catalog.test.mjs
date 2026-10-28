@@ -69,3 +69,13 @@ test("structured seed catalog preserves the honest current progress toward 1,000
   assert.equal(report.remainingUniqueReferences,906);
   assert.deepEqual(report.validationErrors,[]);
 });
+
+
+test("committed reference progress report is reproducible from the structured catalog",async()=>{
+  const module=await import("../scripts/reference-catalog.mjs");
+  const {readFile}=await import("node:fs/promises");
+  const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
+  const saved=JSON.parse(await readFile(new URL("../docs/REFERENCE_PROGRESS.json",import.meta.url),"utf8"));
+  const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
+  assert.deepEqual(saved,module.analyzeReferenceCatalog(records,{generatedAt:saved.generatedAt}));
+});
