@@ -28,6 +28,9 @@ Do not claim the target 1,000-video reference study is complete unless the evide
 
 Use details already supplied. Infer defaults for missing noncritical fields, record assumptions, and proceed unless the missing decision fundamentally changes factual truth, rights, safety, or an explicitly paid operation.
 
+## Reference-source priority
+Use `docs/REFERENCE_SOURCE_REGISTRY.md` as the source-routing policy. **Start with Prompt Motion (`https://prompt-motion.com/`) for prompt-to-output examples and reusable skills**, searching both Prompt and Skill entries. Use ShotBook for execution breakdowns; Genery and FilmGrab for cinematic composition and visual grammar; Motion in Design for interaction/physics-based motion; Pinterest for manual discovery and moodboards. Follow source links and record evidence levels. A thumbnail or still cannot prove movement or sound. Do not claim a model, tool, API, or paid feature is integrated merely because a reference uses it. Respect source attribution, access limits, and licences. Do not scrape Pinterest or bulk-download/redistribute FilmGrab frames. Turn reference observations into original studio recipes, not shot-for-shot copies or unlicensed prompt/asset copies.
+
 ## Research
 Find reliable sources for factual claims. Map each claim to source and script segment. Verify dates, names, numbers, quotations and causal claims. Label uncertainty and distinguish facts from visual metaphors. Research references by story structure, motion grammar, type, transition, color, sound, pacing and accessibility. Record the evidence level for every reference. Do not copy distinctive shots, scripts, music, characters or sequences.
 

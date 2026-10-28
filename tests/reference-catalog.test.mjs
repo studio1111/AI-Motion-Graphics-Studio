@@ -59,14 +59,14 @@ test("structured seed catalog preserves the honest current progress toward 1,000
   const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
   const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
   const report=module.analyzeReferenceCatalog(records);
-  assert.equal(report.inputRecords,100);
-  assert.equal(report.uniqueCanonicalReferences,100);
-  assert.equal(report.eligibleUniqueReferences,94);
+  assert.equal(report.inputRecords,105);
+  assert.equal(report.uniqueCanonicalReferences,105);
+  assert.equal(report.eligibleUniqueReferences,99);
   assert.equal(report.evidenceLevelCounts.L0,55);
-  assert.equal(report.evidenceLevelCounts.L1,45);
+  assert.equal(report.evidenceLevelCounts.L1,50);
   assert.equal(report.evidenceLevelCounts.L2,0);
   assert.equal(report.evidenceLevelCounts.L3,0);
-  assert.equal(report.remainingUniqueReferences,906);
+  assert.equal(report.remainingUniqueReferences,901);
   assert.deepEqual(report.validationErrors,[]);
 });
 
@@ -78,4 +78,40 @@ test("committed reference progress report is reproducible from the structured ca
   const saved=JSON.parse(await readFile(new URL("../docs/REFERENCE_PROGRESS.json",import.meta.url),"utf8"));
   const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
   assert.deepEqual(saved,module.analyzeReferenceCatalog(records,{generatedAt:saved.generatedAt}));
+});
+
+
+test("Prompt Motion is the primary reference source and source-specific access rules are documented",async()=>{
+  const {readFile}=await import("node:fs/promises");
+  const registry=await readFile(new URL("../docs/REFERENCE_SOURCE_REGISTRY.md",import.meta.url),"utf8");
+  const skill=await readFile(new URL("../.claude/skills/reference-research/SKILL.md",import.meta.url),"utf8");
+  const master=await readFile(new URL("../prompts/MOTION_GRAPHICS_MASTER_PROMPT.md",import.meta.url),"utf8");
+  assert.match(registry,/Priority 1: Prompt Motion/);
+  assert.match(registry,/https:\/\/prompt-motion\.com\//);
+  assert.match(registry,/Priority 2: ShotBook/);
+  assert.match(registry,/Priority 3: Genery/);
+  assert.match(registry,/Priority 4: Motion in Design/);
+  assert.match(registry,/Priority 5: FilmGrab/);
+  assert.match(registry,/Priority 6: Pinterest/);
+  assert.match(registry,/do not build an automated scraper/i);
+  assert.match(skill,/Prompt Motion.*primary source/i);
+  assert.match(master,/Start with Prompt Motion/i);
+});
+
+
+test("Prompt Motion references preserve attribution and never claim the linked videos were watched",async()=>{
+  const {readFile}=await import("node:fs/promises");
+  const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
+  const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
+  const promptMotion=records.filter(record=>record.sourceSite==="Prompt Motion");
+  assert.equal(promptMotion.length,5);
+  assert.deepEqual(promptMotion.map(record=>record.id),["P001","P002","P003","P004","P005"]);
+  for(const record of promptMotion){
+    assert.ok(record.sourceEntryUrl.startsWith("https://prompt-motion.com/"));
+    assert.ok(record.originalSourceUrl);
+    assert.equal(record.evidenceLevel,"L1");
+    assert.equal(record.sourceReviewed,true);
+    assert.equal(record.watched,false);
+    assert.equal(record.timestampedAnalysis,false);
+  }
 });

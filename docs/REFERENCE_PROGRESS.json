@@ -1,35 +1,35 @@
 {
-  "generatedAt": "2026-10-28T07:55:50.431Z",
+  "generatedAt": "2026-10-28T08:15:00.000Z",
   "targetUniqueReferences": 1000,
-  "inputRecords": 100,
-  "uniqueCanonicalReferences": 100,
-  "eligibleUniqueReferences": 94,
+  "inputRecords": 105,
+  "uniqueCanonicalReferences": 105,
+  "eligibleUniqueReferences": 99,
   "duplicateCount": 0,
   "duplicates": [],
   "evidenceLevelCounts": {
     "L0": 55,
-    "L1": 45,
+    "L1": 50,
     "L2": 0,
     "L3": 0
   },
   "categoryCounts": {
     "documentary-editorial-explainers": 2,
-    "educational-science-explainers": 24,
-    "kinetic-typography": 14,
-    "product-tech-explainers": 9,
+    "educational-science-explainers": 25,
+    "kinetic-typography": 15,
+    "product-tech-explainers": 12,
     "2d-character-shape": 9,
     "data-viz-infographics": 12,
     "3d-2.5d-motion-design": 14,
     "brand-logo-motion": 5,
     "maps-timelines-history": 5
   },
-  "remainingUniqueReferences": 906,
+  "remainingUniqueReferences": 901,
   "quotaProgress": [
     {
       "category": "educational-science-explainers",
       "target": 200,
-      "current": 24,
-      "remaining": 176
+      "current": 25,
+      "remaining": 175
     },
     {
       "category": "documentary-editorial-explainers",
@@ -46,8 +46,8 @@
     {
       "category": "kinetic-typography",
       "target": 100,
-      "current": 14,
-      "remaining": 86
+      "current": 15,
+      "remaining": 85
     },
     {
       "category": "2d-character-shape",
@@ -70,8 +70,8 @@
     {
       "category": "product-tech-explainers",
       "target": 75,
-      "current": 9,
-      "remaining": 66
+      "current": 12,
+      "remaining": 63
     },
     {
       "category": "brand-logo-motion",

@@ -9,6 +9,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: cross-role production director prompt.
 - `prompts/PROFESSIONAL_PROMPT_PLAYBOOK.md`: original prompts for fourteen visual families, camera, motion, sound and repair.
 - `research/references.jsonl` and `docs/REFERENCE_PROGRESS.json`: evidence-aware reference catalog and 1,000-video study progress. Run `npm run research:catalog` to refresh the report.
+- `docs/REFERENCE_SOURCE_REGISTRY.md`: prioritized reference workflow led by Prompt Motion, plus ShotBook, Genery, Motion in Design, FilmGrab and Pinterest.
 - `docs/MOTION_STYLE_BIBLE.md`: twelve motion-design families.
 - `docs/STYLE_PRESET_CATALOG.md`: concrete palettes, font roles, motion, sound and anti-patterns.
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.

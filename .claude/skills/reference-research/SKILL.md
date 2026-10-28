@@ -4,7 +4,7 @@ description: Discover, deduplicate and analyze public motion-graphics references
 ---
 # Reference Research
 
-Read `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`.
+Read `docs/REFERENCE_SOURCE_REGISTRY.md` first, then `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`. Prompt Motion (`https://prompt-motion.com/`) is the primary source for prompt/skill-to-output research. Inspect both Prompt and Skill entries before broad discovery where relevant.
 
 ## Evidence levels
 - L0: search result, metadata, source listing or thumbnail only.
@@ -28,3 +28,11 @@ After each 100 records, refresh the pattern matrix. Promote a method into a gene
 - Refresh the integrity and quota report with `npm run research:catalog`; the generated report is `docs/REFERENCE_PROGRESS.json`.
 - Keep related-article evidence separate from evidence about the linked video. A related article must not upgrade a video to L1 unless it actually describes that reference.
 - Never mark a reference L2/L3 unless the review fields required by the catalog validator are true.
+
+## Source-specific routing
+- Prompt Motion first for published motion prompts, skills, and examples; turn observed craft into an original reusable recipe, preserve attribution, and verify reuse terms.
+- ShotBook for technique/execution breakdowns and tutorial leads.
+- Genery for cinematic frame, effects, and moodboard references.
+- Motion in Design for interaction, physics-based motion, and polished GSAP timing; respect paid asset licensing.
+- FilmGrab for cinematography stills only; never treat stills as evidence of motion/audio or bulk-download/redistribute them.
+- Pinterest for manual discovery and links to original sources; do not scrape or bulk-download.
