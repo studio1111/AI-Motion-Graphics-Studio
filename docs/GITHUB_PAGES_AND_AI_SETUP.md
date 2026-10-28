@@ -6,7 +6,7 @@ The static Persian UI lives in `site/`. The Pages workflow deploys it from GitHu
 
 `https://studio1111.github.io/AI-Motion-Graphics-Studio/`
 
-If this is the first deployment, check **Settings → Pages** and ensure the site is allowed to deploy with GitHub Actions. The workflow requests Pages enablement, but organization policies may still require an administrator to allow it.
+Before the first deployment, open **Settings → Pages** in the repository and set **Build and deployment → Source** to **GitHub Actions**. This one-time setting cannot be enabled by the workflow's restricted token in this repository. Then rerun the Pages workflow from **Actions → Deploy Motion Studio Pages → Run workflow** if the automatic deployment already failed.
 
 The site can assemble and download a `brief.json` file and copy a local CLI command. It intentionally does not ask for API keys and does not send the brief to a third-party service. The GitHub Actions page is opened separately because a static Pages site cannot securely read repository secrets or trigger privileged workflow runs without a separate authenticated backend or a user-provided GitHub token.
 
