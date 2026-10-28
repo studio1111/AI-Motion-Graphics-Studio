@@ -2,6 +2,9 @@
 
 Analyze a public motion-graphics video as a production researcher, not merely by summarizing the topic. Extract transferable craft rules. Do not recreate a creator's sequence shot-for-shot.
 
+## 0. If the reference comes from Prompt Motion (priority source)
+Record whether the entry is a Prompt or Skill, its creator, original post/repository, named model/tool, and whether the exact prompt/skill is actually published. Compare the prompt's stated intent with the visible result. Extract its structure (brief, constraints, scene plan, timing, typography, camera, transitions, sound, implementation and QA), then create a studio-owned variant with a different concept, story, composition, assets and motion choices. Keep verbatim creator text only when its publication and applicable reuse terms permit it; otherwise paraphrase the craft method and attribute the source. A model named by a reference is not automatically available in this project.
+
 ## 1. Declare evidence before conclusions
 Choose one evidence level:
 - **L0:** title, thumbnail or metadata only.
