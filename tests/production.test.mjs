@@ -311,3 +311,9 @@ test("long-form renders require a topic-specific storyboard instead of stretchin
   assert.deepEqual(validateRuntimePlan({contentMode:"ai_generated"},3600),[]);
   assert.deepEqual(validateRuntimePlan({contentMode:"conceptual_template"},3600,{planOnly:true}),[]);
 });
+
+
+test("Remotion renders captions through the same tested wrapping helper as the production CLI",async()=>{
+  const motion=await readFile(new URL("../src/production/MotionVideo.tsx",import.meta.url),"utf8");
+  assert.match(motion,/from ["']\.\/captions\.mjs["']/,"the renderer must use the shared tested caption segmenter");
+});
