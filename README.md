@@ -44,3 +44,7 @@ The former “Why is the sky blue?” example remains removed. MotionDemo is smo
 ## Local narration engines
 
 The production workflow can now generate Persian/Farsi narration locally via `persian-speech` / Mana-Persian-Piper, and uses Pocket TTS for supported non-Persian languages. The Persian package lists its runtime/model distribution as MIT and its Mana-TTS corpus as CC0: [package](https://pypi.org/project/persian-speech/1.1.3/), [voice model](https://huggingface.co/MahtaFetrat/Mana-Persian-Piper), [dataset card](https://huggingface.co/datasets/MahtaFetrat/Mana-TTS). First synthesis downloads model weights; no weights are committed to the repository. The `generate_voice` option is enabled by default in the production workflow. WhisperX remains a future transcription route, not an installed dependency.
+
+
+### Topic-aware local storyboards
+When paid research/LLM access is not enabled, the local fallback now includes dedicated eight-scene conceptual storylines for city heat, artificial intelligence and solar energy in English and Persian. These are deliberately marked `conceptual_topic_template` and identify where real-world claims need sources; they are not a substitute for a researched factual script.

@@ -35,6 +35,29 @@ test("topic visual classifier selects a safe, relevant illustration family",()=>
   for(const [topic,expected] of cases)assert.equal(detectTopicVisualFamily(topic),expected,topic);
 });
 
+test("known-topic local fallback uses a coherent, localized eight-scene narrative",()=>{
+  const en=buildLocalPlan({topic:"How heat moves through a city",language:"en",styleId:"scientific-2-5d",totalFrames:360,fps:30});
+  assert.equal(en.contentMode,"conceptual_topic_template");
+  assert.equal(en.scenes[0].title,"How heat moves through a city");
+  assert.equal(en.scenes[1].title,"Sunlight meets the street");
+  assert.match(en.scenes[2].narration,/conceptual model/i);
+  assert.equal(en.scenes[6].title,"Find a cooler route");
+  assert.equal(en.scenes.length,8);
+  assert.equal(en.scenes.reduce((sum,s)=>sum+s.durationInFrames,0),360);
+  const fa=buildLocalPlan({topic:"گرما در شهر چگونه حرکت می‌کند",language:"fa",styleId:"scientific-2-5d",totalFrames:360,fps:30});
+  assert.equal(fa.contentMode,"conceptual_topic_template");
+  assert.equal(fa.scenes[0].title,"گرما در شهر چگونه حرکت می‌کند");
+  assert.equal(fa.scenes[1].title,"نور خورشید به خیابان می‌رسد");
+  assert.match(fa.scenes[2].narration,/مدل مفهومی/);
+  assert.equal(fa.scenes.length,8);
+  assert.equal(fa.scenes.reduce((sum,s)=>sum+s.durationInFrames,0),360);
+  const ai=buildLocalPlan({topic:"Artificial intelligence and neural networks",language:"en",styleId:"scientific-2-5d",totalFrames:360,fps:30});
+  assert.equal(ai.scenes[1].title,"Signals become examples");
+  assert.match(ai.scenes[3].narration,/not automatically correct/i);
+  const solar=buildLocalPlan({topic:"How solar energy becomes electricity",language:"fa",styleId:"scientific-2-5d",totalFrames:360,fps:30});
+  assert.equal(solar.scenes[1].title,"نور به سلول‌ها می‌رسد");
+});
+
 test("local fallback creates eight scenes and varies visual layouts",()=>{
   const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
   assert.equal(plan.scenes.length,8);
