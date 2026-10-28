@@ -59,14 +59,14 @@ test("structured seed catalog preserves the honest current progress toward 1,000
   const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
   const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
   const report=module.analyzeReferenceCatalog(records);
-  assert.equal(report.inputRecords,105);
-  assert.equal(report.uniqueCanonicalReferences,105);
-  assert.equal(report.eligibleUniqueReferences,99);
+  assert.equal(report.inputRecords,121);
+  assert.equal(report.uniqueCanonicalReferences,121);
+  assert.equal(report.eligibleUniqueReferences,114);
   assert.equal(report.evidenceLevelCounts.L0,55);
-  assert.equal(report.evidenceLevelCounts.L1,50);
+  assert.equal(report.evidenceLevelCounts.L1,66);
   assert.equal(report.evidenceLevelCounts.L2,0);
   assert.equal(report.evidenceLevelCounts.L3,0);
-  assert.equal(report.remainingUniqueReferences,901);
+  assert.equal(report.remainingUniqueReferences,886);
   assert.deepEqual(report.validationErrors,[]);
 });
 
@@ -104,8 +104,8 @@ test("Prompt Motion references preserve attribution and never claim the linked v
   const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
   const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
   const promptMotion=records.filter(record=>record.sourceSite==="Prompt Motion");
-  assert.equal(promptMotion.length,5);
-  assert.deepEqual(promptMotion.map(record=>record.id),["P001","P002","P003","P004","P005"]);
+  assert.equal(promptMotion.length,21);
+  assert.deepEqual(promptMotion.map(record=>record.id),["P001","P002","P003","P004","P005","P006","P007","P008","P009","P010","P011","P012","P013","P014","P015","P016","P017","P018","P019","P020","P021"]);
   for(const record of promptMotion){
     assert.ok(record.sourceEntryUrl.startsWith("https://prompt-motion.com/"));
     assert.ok(record.originalSourceUrl);
