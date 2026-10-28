@@ -44,6 +44,26 @@ Source: [Moonb, “Animated explainer videos: 12 examples across 8 styles”](ht
 
 **Cautions:** these are secondary article observations. Before adopting a recipe as a validated rule, inspect the original video, record timestamps and scene transitions, and check counterexamples. The article’s advice that motion graphics should reveal a meaningful change is a useful review question, not proof that these examples all succeed at it.
 
+## Thirteen additional examples: article-level evidence only
+
+Source: [B2W Production, “19 Best Motion Graphics Video Examples & Samples: Learn How Top Brands Captivate”](https://www.b2w.tv/blog/best-motion-graphics-videos), published 9 October 2026 and updated October 2026. The article descriptions and linked targets support candidate notes R068–R080. None of these videos has been watched as part of this studio’s direct review; the notes below are hypotheses, not independently proven performance findings.
+
+| Reference | Technique described by the source | Hypothesis to test in the original video |
+|---|---|---|
+| R068 Align | Office footage with 2D infographic overlays | Live-action context may anchor interface overlays in a recognizable problem. |
+| R069 GoCanvas | Photographic cutouts and a before/after workflow | Clear visual contrast can explain a process improvement without a long feature list. |
+| R070 Wingtra | Field footage transitioning to 3D hardware and labels | A live-to-render handoff may explain both user setting and product components. |
+| R071 Aiven | Product interface, textured ground and restrained colors | Full-frame UI should carry concrete information while design texture supports hierarchy. |
+| R072 AWS GovCloud | Orange-led flat infographic, labels and statistics | A stable color anchor can keep complex cloud-service explanations coherent. |
+| R073 Tezos | Logo transformation into a large 3D cube metaphor | Geometry can embody the system being explained instead of acting as random decoration. |
+| R074 Calm Health | Soft wave-like forms merging into a human figure and app view | Slower organic transitions may suit a calm emotional brief better than hard cuts. |
+| R075 Northwestern Mutual | A marble moving across layered floating platforms | A single object can personify a complicated journey when its motion has causal meaning. |
+| R076 HUYGENS Flower | Isometric canals, traveling petals and product reveal | A traveling motif can link stages into one continuous story world. |
+| R077 Volvo 360c | Geometric infographics for future mobility | A future-facing concept benefits from a metaphor that remains legible as the timeline changes. |
+| R078 IBM illustration system | Grid progression from basic shapes to richer forms | Show the construction rules behind a design system, not only the final illustrations. |
+| R079 Adobe Type | Everyday objects and mixed-media typography history | Material changes can create transitions while narration moves through history. |
+| R080 MITRE | Character-led narration plus changing network diagrams | A human guide and supporting systems diagram may balance trust with precision. |
+
 ## Transferable production rules
 
 1. **Choose media by the idea.** Do not make every film 3D. For a software walkthrough, show the real interface when available; for inaccessible internals or abstract concepts, use clear diagrams or original animation.
@@ -66,4 +86,4 @@ These are trade/agency viewpoints, not a comprehensive scientific census. Use th
 
 ## How this matrix should evolve
 
-For each new batch, link each pattern to the relevant reference IDs, label direct observations versus inference, and add counterexamples. Promote a rule to “validated” only after varied creators, languages, genres and L2/L3 evidence support it. The current reference catalog holds 67 public video candidates: 55 L0 metadata-only entries and 12 L1 article-supported entries, with zero L2/L3 full-video reviews confirmed; the 1,000-reference study remains unfinished.
+For each new batch, link each pattern to the relevant reference IDs, label direct observations versus inference, and add counterexamples. Promote a rule to “validated” only after varied creators, languages, genres and L2/L3 evidence support it. The current reference catalog holds 80 public video candidates: 55 L0 metadata-only entries and 25 L1 article-supported entries, with zero L2/L3 full-video reviews confirmed; the 1,000-reference study remains unfinished.

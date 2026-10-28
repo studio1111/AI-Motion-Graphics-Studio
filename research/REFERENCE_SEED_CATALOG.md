@@ -83,6 +83,28 @@ Source: [Moonb, “Animated explainer videos: 12 examples across 8 styles”](ht
 
 These are candidate references and article-derived notes, not yet direct observations. Promote any to L2 only after watching the full video; promote to L3 only after recording timestamps, selected frames and the associated design/motion/audio evidence.
 
+## Batch C: 13 motion-graphics examples described in an October 2026 industry article
+
+Source: [B2W Production, “19 Best Motion Graphics Video Examples & Samples: Learn How Top Brands Captivate”](https://www.b2w.tv/blog/best-motion-graphics-videos), published 9 October 2026 and updated October 2026. These are L1 article-supported entries: the article descriptions and linked targets were reviewed, but this studio has not watched the underlying videos. These are discovery candidates, not independent quality assessments.
+
+| ID | Reference | Intended category | Evidence | Observation to verify during a future full-video review |
+|---|---|---|---|---|
+| R068 | [Align: Workplace Technology Explained Through Motion Infographics](https://www.youtube.com/watch?v=x_guUl_bS5I) | Live action + 2D infographic | L1 | Article describes office footage paired with hologram-style overlays, labels and animated text to connect workplace problems to a product. |
+| R069 | [GoCanvas: Transforming Paperwork Pains into Digital Productivity](https://www.youtube.com/watch?v=_9P_ekKW9Fo) | Before/after SaaS explainer | L1 | Article describes photographic cutouts mixed with 2D elements and a transition from paper-heavy work to a digital workflow. |
+| R070 | [Wingtra: Workplace-to-product explainer](https://www.youtube.com/watch?v=rZrN0ELBAeI) | Live action + 3D product | L1 | Article describes field footage, 2D warning marks, 3D equipment renders and labels explaining a ground kit. |
+| R071 | [Aiven: Data infrastructure explainer](https://www.youtube.com/watch?v=TD5Ot6EwYic) | Software UI / tech explainer | L1 | Article describes interface views, textured backgrounds and restrained color to make data services understandable. |
+| R072 | [Amazon AWS GovCloud explainer](https://www.youtube.com/watch?v=aAAI2G36Mmg) | 2D corporate infographic | L1 | Article describes an orange-led palette with statistics, icons, labels and service relationships. |
+| R073 | [Tezos: A Better Blockchain](https://player.vimeo.com/video/652121209) | Abstract 3D geometric metaphor | L1 | Article describes a logo-to-cube transformation and moving geometric blocks as a blockchain metaphor. |
+| R074 | [Calm Health program announcement](https://player.vimeo.com/video/783042395) | Calm 2.5D / organic forms | L1 | Article describes two flowing forms merging toward a person-like figure, followed by a phone/app reveal. |
+| R075 | [Northwestern Mutual: High Net Worth](https://player.vimeo.com/video/787004467) | 3D conceptual metaphor | L1 | Article describes a marble moving across layered floating platforms to express complexity and control. |
+| R076 | [HUYGENS: Flower](https://player.vimeo.com/video/240129599) | Isometric 2D brand story | L1 | Article describes petals traveling through stylized canals and paper boats before revealing a beauty product. |
+| R077 | [Volvo 360c Concept](https://player.vimeo.com/video/312002183) | Concept / mobility infographic | L1 | Article describes geometric patterns and infographic animation framing future travel. |
+| R078 | [IBM Design Language: Illustration](https://player.vimeo.com/video/438225660) | Brand illustration system | L1 | Article describes a design-grid tour where simple shapes evolve from basic to complex and abstract to literal. |
+| R079 | [Adobe: Type](https://player.vimeo.com/video/641175031) | Kinetic typography / mixed media | L1 | Article describes typography-history storytelling through everyday objects and varied visual media. |
+| R080 | [MITRE financial clarity explainer](https://www.youtube.com/watch?v=DEj_FHcZero) | Character-led data explainer | L1 | Article describes a CFO character speaking over network diagrams and infographics that change with the explanation. |
+
+These entries are article-supported rather than video-reviewed. Upgrade them to L2 only after watching the full original; upgrade to L3 only when timestamped scene observations and selected-frame evidence have been recorded.
+
 ## Written sources reviewed
 | Source | Evidence | Transferable use | Limitation |
 |---|---|---|---|

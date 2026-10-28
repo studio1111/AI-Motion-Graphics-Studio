@@ -1,7 +1,7 @@
 # Motion Graphics Research and Benchmark Plan
 
-## Current status: 2026-10-27
-The 1,000-video study is incomplete. The public reference catalog contains 67 video candidates (R001–R067): 55 L0 metadata-only candidates and 12 L1 candidates with example-specific secondary descriptions from a reviewed article. The 12 source videos have not been watched by this project; no L2 or L3 full-video reviews are claimed. TubeLab and TubeAlfred returned HTTP 402 for insufficient credits; those specific searches did not execute. A separate public web review of [Moonb’s 24 September 2026 article](https://www.moonb.io/blog/animated-explainer-video) added a varied set of examples as L1 candidates only.
+## Current status: 2026-10-28
+The 1,000-video study is incomplete. The public reference catalog contains 80 video candidates (R001–R080): 55 L0 metadata-only entries and 25 L1 article-supported entries. None of the 25 L1-linked videos has been watched as part of this studio’s direct review; no L2 or L3 full-video reviews are claimed. TubeLab and TubeAlfred returned HTTP 402 for insufficient credits; those specific searches did not execute. Public reviews of [Moonb’s 24 September 2026 article](https://www.moonb.io/blog/animated-explainer-video) and [B2W Production’s 9 October 2026 article](https://www.b2w.tv/blog/best-motion-graphics-videos) added example candidates only.
 
 Firecrawl article scraping reviewed three 2026 reports from the same publisher, summarized in `docs/REFERENCE_PATTERN_MATRIX.md`: a reported 100-video UI animation study, 74 B2B tech demos, and 95 enterprise AI launch videos. These are secondary article-level findings, not this project's own video-by-video reviews. The samples may overlap and must not be summed as unique references. Their CSV/JSON dataset links returned HTTP 410, so row-level data was not imported.
 
