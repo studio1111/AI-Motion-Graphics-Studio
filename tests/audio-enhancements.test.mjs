@@ -10,6 +10,7 @@ import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { buildMusicPrompt, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { getMusicBedGain, getVoiceFadeEnvelope } from "../src/production/audio-mix.mjs";
 import { buildNarrationEnhancementFilter, getEnhancedNarrationPath } from "../src/production/voice-processing.mjs";
+import { extendFinalSceneToTarget } from "../src/production/narration-timing.mjs";
 import { parseArgs } from "../scripts/produce.mjs";
 
 test("audio master targets creator-friendly loudness and includes restrained voice clarity processing", () => {
@@ -123,4 +124,29 @@ test("enhanced narration output uses a distinct WAV path on every platform", () 
   assert.equal(getEnhancedNarrationPath("voice-01.wav"), "voice-01.enhanced.wav");
   assert.equal(getEnhancedNarrationPath("/tmp/generated/voice-02.WAV"), "/tmp/generated/voice-02.enhanced.wav");
   assert.throws(() => getEnhancedNarrationPath("voice-03.mp3"), /WAV file path/i);
+});
+
+test("short narrated renders extend the final scene to the requested runtime without slowing voice", () => {
+  const scenes = [
+    { id: "scene-1", durationInFrames: 500, audioDurationInFrames: 467 },
+    { id: "outro", durationInFrames: 1100, audioDurationInFrames: 1067 }
+  ];
+  const result = extendFinalSceneToTarget(scenes, 1800);
+  assert.equal(result.totalFrames, 1800);
+  assert.equal(result.addedFrames, 200);
+  assert.equal(result.scenes[1].durationInFrames, 1300);
+  assert.equal(result.scenes[1].audioDurationInFrames, 1067);
+  assert.equal(result.scenes[1].outroHoldFrames, 200);
+  assert.equal(scenes[1].durationInFrames, 1100, "The helper must not mutate the caller's storyboard.");
+});
+
+test("runtime helper never trims narration when spoken scenes exceed the target", () => {
+  const scenes = [
+    { id: "scene-1", durationInFrames: 1200, audioDurationInFrames: 1167 },
+    { id: "outro", durationInFrames: 700, audioDurationInFrames: 667 }
+  ];
+  const result = extendFinalSceneToTarget(scenes, 1800);
+  assert.equal(result.totalFrames, 1900);
+  assert.equal(result.addedFrames, 0);
+  assert.equal(result.scenes[1].durationInFrames, 700);
 });
