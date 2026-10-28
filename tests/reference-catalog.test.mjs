@@ -112,6 +112,7 @@ test("Prompt Motion references preserve attribution and never claim the linked v
     assert.equal(record.evidenceLevel,"L1");
     assert.equal(record.sourceReviewed,true);
     assert.equal(record.watched,false);
-    assert.equal(record.timestampedAnalysis,false);\n    if(record.id==="P001"){assert.equal(record.sampledVisualReview,true);assert.deepEqual(record.spotCheckTimestampsSeconds,[1,5,10,15,20,25,28]);}
+    assert.equal(record.timestampedAnalysis,false);
+    if(record.id==="P001"){assert.equal(record.sampledVisualReview,true);assert.deepEqual(record.spotCheckTimestampsSeconds,[1,5,10,15,20,25,28]);}
   }
 });
