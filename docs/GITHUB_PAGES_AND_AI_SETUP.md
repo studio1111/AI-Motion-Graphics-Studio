@@ -26,7 +26,7 @@ The workflow uses GitHub-hosted runner compute. GitHub Actions usage and AI prov
 - The API key is supplied through `secrets.ANTHROPIC_API_KEY` at job runtime and is not written to the site or artifacts.
 - The production workflow validates duration (5–600 seconds), uses quoted arguments, pins project dependencies with `npm ci`, runs the repository validation suite, and prepares Remotion's browser before rendering.
 - Without the AI secret, the workflow warns and the engine falls back to its local storyboard path. Local fallback is not equivalent to researched, topic-specific AI writing.
-- The default voice is `off` for reproducible first-run rendering. Choose `auto` only after the runner has the required language-specific TTS engine installed and tested.
+- The default voice is `edge-tts`: the workflow installs `edge-tts==7.3.1` and uses its online neural voices. It requires network access to the voice service. `auto` selects the local language-specific engine and may require additional setup; `off` disables narration.
 - Artifacts are retained for 14 days. A failed render can still upload diagnostics when available.
 - GitHub Pages is a static frontend, not a secure backend. Do not add a PAT or API key to local storage, query strings, JavaScript, or client-side form fields.
 
