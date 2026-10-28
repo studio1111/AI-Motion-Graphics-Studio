@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-10-28T08:15:00.000Z",
+  "generatedAt": "2026-10-28T13:00:00.000Z",
   "targetUniqueReferences": 1000,
-  "inputRecords": 105,
-  "uniqueCanonicalReferences": 105,
-  "eligibleUniqueReferences": 99,
+  "inputRecords": 113,
+  "uniqueCanonicalReferences": 113,
+  "eligibleUniqueReferences": 106,
   "duplicateCount": 0,
   "duplicates": [],
   "evidenceLevelCounts": {
     "L0": 55,
-    "L1": 50,
+    "L1": 58,
     "L2": 0,
     "L3": 0
   },
@@ -16,14 +16,14 @@
     "documentary-editorial-explainers": 2,
     "educational-science-explainers": 25,
     "kinetic-typography": 15,
-    "product-tech-explainers": 12,
+    "product-tech-explainers": 18,
     "2d-character-shape": 9,
     "data-viz-infographics": 12,
-    "3d-2.5d-motion-design": 14,
+    "3d-2.5d-motion-design": 15,
     "brand-logo-motion": 5,
     "maps-timelines-history": 5
   },
-  "remainingUniqueReferences": 901,
+  "remainingUniqueReferences": 894,
   "quotaProgress": [
     {
       "category": "educational-science-explainers",
@@ -58,8 +58,8 @@
     {
       "category": "3d-2.5d-motion-design",
       "target": 100,
-      "current": 14,
-      "remaining": 86
+      "current": 15,
+      "remaining": 85
     },
     {
       "category": "maps-timelines-history",
@@ -70,8 +70,8 @@
     {
       "category": "product-tech-explainers",
       "target": 75,
-      "current": 12,
-      "remaining": 63
+      "current": 18,
+      "remaining": 57
     },
     {
       "category": "brand-logo-motion",
