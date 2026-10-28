@@ -284,3 +284,30 @@ test("master production prompt covers duration-adaptive storytelling and origina
     "1,000-video"
   ]) assert.ok(prompt.toLowerCase().includes(required.toLowerCase()),`master prompt should cover ${required}`);
 });
+
+test("production CLI supports long-form runtimes beyond ten minutes up to one hour",()=>{
+  assert.equal(parseArgs(["--duration","601"],{}).duration,601);
+  assert.equal(parseArgs(["--duration","3600"],{}).duration,3600);
+  assert.throws(()=>parseArgs(["--duration","3601"],{}),/5 and 3600 seconds/);
+  const plan=buildLocalPlan({topic:"Long-form story",language:"en",styleId:"cinematic-documentary",totalFrames:601*30,fps:30});
+  assert.equal(plan.scenes.reduce((sum,scene)=>sum+scene.durationInFrames,0),601*30);
+  assert.equal(wavDuration(createProceduralBedWav(601,"cinematic-documentary")),601,"the score must not silently truncate long-form audio at ten minutes");
+});
+
+
+test("storyboard validator accepts long-form chapter plans without allowing unbounded scene counts",()=>{
+  const plan=buildLocalPlan({topic:"Long-form chapters",language:"en",styleId:"cinematic-documentary",totalFrames:3600*30,fps:30});
+  plan.scenes=Array.from({length:24},(_,i)=>({...plan.scenes[i%8],id:`scene-${String(i+1).padStart(2,"0")}`}));
+  assert.deepEqual(validateStoryboard(plan),[]);
+  plan.scenes=Array.from({length:121},(_,i)=>({...plan.scenes[i%8],id:`scene-${String(i+1).padStart(3,"0")}`}));
+  assert.ok(validateStoryboard(plan).some(error=>/4-120 scenes/.test(error)));
+});
+
+
+test("long-form renders require a topic-specific storyboard instead of stretching the generic fallback",async()=>{
+  const {validateRuntimePlan}=await import("../scripts/produce.mjs");
+  assert.equal(typeof validateRuntimePlan,"function");
+  assert.match(validateRuntimePlan({contentMode:"conceptual_template"},601)[0],/long-form.*topic-specific storyboard/i);
+  assert.deepEqual(validateRuntimePlan({contentMode:"ai_generated"},3600),[]);
+  assert.deepEqual(validateRuntimePlan({contentMode:"conceptual_template"},3600,{planOnly:true}),[]);
+});
