@@ -14,7 +14,7 @@ on:
         options: [fa, en, de, es, fr, it, pt, nl]
         default: fa
       duration:
-        description: Target duration in seconds
+        description: Target duration in seconds (5 to 3,600; one hour max)
         required: true
         type: number
         default: 90
@@ -66,7 +66,7 @@ permissions:
 jobs:
   produce:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     env:
       MOTION_TOPIC: ${{ inputs.topic }}
       MOTION_STUDIO_LANGUAGE: ${{ inputs.language }}
