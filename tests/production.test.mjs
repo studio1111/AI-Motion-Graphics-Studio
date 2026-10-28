@@ -267,3 +267,12 @@ test("caption segmentation wraps exceptionally long unbroken tokens without over
     }
   }
 });
+
+
+test("production CLI supports long-form runtimes beyond ten minutes up to one hour",()=>{
+  assert.equal(parseArgs(["--duration","601"],{}).duration,601);
+  assert.equal(parseArgs(["--duration","3600"],{}).duration,3600);
+  assert.throws(()=>parseArgs(["--duration","3601"],{}),/5 and 3600 seconds/);
+  const plan=buildLocalPlan({topic:"Long-form story",language:"en",styleId:"cinematic-documentary",totalFrames:601*30,fps:30});
+  assert.equal(plan.scenes.reduce((sum,scene)=>sum+scene.durationInFrames,0),601*30);
+});
