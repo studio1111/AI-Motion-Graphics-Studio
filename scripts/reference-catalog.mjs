@@ -82,6 +82,7 @@ export function parseSeedCatalog(markdown, captureDate = "2026-10-28") {
       category,
       evidenceLevel,
       sourceReviewed: evidenceLevel === "L1",
+      relatedArticleReviewed: /related article/i.test(evidenceText + " " + notes),
       transcriptReviewed: false,
       watched: false,
       timestampedAnalysis: false,
