@@ -59,9 +59,9 @@ export const DEFAULT_MOTION_VIDEO_PROPS: MotionVideoProps = {
     accent: "#F04D35", accent2: "#D9C35B", panel: "#25252B", line: "#55535B"
   },
   typography: {
-    display: "Barlow Condensed, Liberation Sans, sans-serif",
-    body: "Source Sans 3, Liberation Sans, sans-serif",
-    mono: "IBM Plex Mono, Liberation Mono, monospace"
+    display: "Barlow Condensed, DejaVu Sans Condensed, Liberation Sans, sans-serif",
+    body: "Source Sans 3, DejaVu Sans, Liberation Sans, sans-serif",
+    mono: "IBM Plex Mono, DejaVu Sans Mono, Liberation Mono, monospace"
   },
   captionsEnabled: false,
   scenes: [
