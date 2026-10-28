@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { access } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
+import { resolve } from "node:path";
 
 const providers = [
   { id: "firecrawl", env: "FIRECRAWL_API_KEY", paid: true, role: "source research and page extraction" },
@@ -29,7 +30,7 @@ export async function buildReadinessReport(env = process.env, cwd = process.cwd(
       configured = Boolean(String(env[provider.env] || "").trim());
       status = !configured ? "missing_credentials" : provider.paid && !paidAllowed ? "blocked_paid_gate" : "credentials_present_not_connectivity_tested";
     } else if (provider.binary) {
-      configured = await pathAvailable(new URL(provider.binary, `file://${cwd.replace(/\\/g, "/").replace(/\/$/, "")}/`).pathname);
+      configured = await pathAvailable(resolve(cwd, provider.binary));
       status = configured ? "binary_present_not_render_tested" : "binary_missing";
     } else if (provider.command) {
       configured = commandAvailable(provider.command);
