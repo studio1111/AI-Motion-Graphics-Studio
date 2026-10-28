@@ -101,3 +101,18 @@ MOTION_STUDIO_EDGE_VOICE=en-US-AriaNeural MOTION_STUDIO_EDGE_RATE=-6% npm run pr
 ```
 
 Edge TTS is an online service: narration text is sent to the service and network/service availability is not guaranteed. Use `--voice auto` for the existing local engine path. The Edge TTS client is optional and must be installed in the same environment that runs the production CLI.
+
+
+## Opus 5.5 community motion-reference library
+
+The studio can search and inspect the public prompt collection from [yihui-dev/awesome-opus5-5-videos](https://github.com/yihui-dev/awesome-opus5-5-videos) and optionally attach one reference to a Claude-generated storyboard. The catalog is fetched from the upstream repository and cached locally after sync; the renderer does not execute upstream code. Use references as creative direction only: the storyboard remains original and is constrained to supported layouts, factual sources, and available tools.
+
+```sh
+npm run opus55:sync
+npm run opus55:search -- typography
+npm run opus55:list
+npm run opus55:show -- twoclipping-402193
+npm run produce -- --topic "The future of science" --language en --duration 60 --style cinematic-documentary --opus55-reference twoclipping-402193 --allow-paid-ai --plan-only
+```
+
+The upstream repository declares the MIT License for its software and dataset. Keep its attribution and license notice when redistributing copied material; prompts and linked creator posts remain attributed to their respective authors. Reference-based AI storyboard generation requires explicit `--allow-paid-ai` and configured provider credentials. Without that opt-in, the normal local fallback remains active and the selected reference is recorded for traceability but not treated as implemented motion.
