@@ -4,7 +4,7 @@ description: Discover, deduplicate and analyze public motion-graphics references
 ---
 # Reference Research
 
-Read `docs/REFERENCE_SOURCE_REGISTRY.md` first, then `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`. Prompt Motion (`https://prompt-motion.com/`) is the primary source for prompt/skill-to-output research. Inspect both Prompt and Skill entries before broad discovery where relevant.
+Read `docs/REFERENCE_SOURCE_REGISTRY.md` first, then `docs/PROMPT_MOTION_PATTERN_STUDY.md`, `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`. When translating findings into production prompts, cross-check `prompt-library/MASTER_PROMPT.md`, `prompt-library/ADVANCED_MASTER_PROMPTS.md`, `prompt-library/SCENE_PROMPT_TEMPLATES.md` and the matching recipe in `prompt-library/prompts.json`. Prompt Motion (`https://prompt-motion.com/`) is the primary source for prompt/skill-to-output research. Inspect both Prompt and Skill entries before broad discovery where relevant.
 
 ## Evidence levels
 - L0: search result, metadata, source listing or thumbnail only.
