@@ -199,7 +199,7 @@ test("browser prompt-library page exposes accessible search, composition, copy a
 
 test("browser prompt composer keeps its client-side script valid and locally portable", () => {
   const html = fs.readFileSync(path.join(root, "prompt-library", "index.html"), "utf8");
-  const scriptMatch = html.match(/<script>([\\s\\S]*?)<\\/script>/i);
+  const scriptMatch = html.match(/<script>([\s\S]*?)<\/script>/i);
   assert.ok(scriptMatch, "browser prompt library needs its client-side application script");
   assert.doesNotThrow(() => new Function(scriptMatch[1]), "inline browser script must parse");
   for (const asset of [
@@ -211,5 +211,5 @@ test("browser prompt composer keeps its client-side script valid and locally por
     'Download .md',
     'prefers-reduced-motion'
   ]) assert.ok(html.includes(asset), `browser prompt library missing expected capability: ${asset}`);
-  assert.doesNotMatch(scriptMatch[1], /\\.innerHTML\\s*=/i, "recipe content should be inserted as text, not executable HTML");
+  assert.doesNotMatch(scriptMatch[1], /\.innerHTML\s*=/i, "recipe content should be inserted as text, not executable HTML");
 });
