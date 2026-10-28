@@ -129,3 +129,17 @@ For each new batch, link each pattern to the relevant reference IDs, label direc
 - [Product launch film built from real product components — Anthony Riera](https://prompt-motion.com/anthonyriera-9b1b2a) — the listed skill describes interviewing for the product story and using real product components in a Remotion film. Studio hypothesis: gather product truth and brand assets before storyboarding, then validate the rendered film against actual product UI. This is a research lead, not an installed dependency.
 
 These examples were added to `research/references.jsonl` as P001–P005 with creator/source attribution and L1 evidence. The full 1,000-reference study remains incomplete.
+
+
+## Additional Prompt Motion entry-page review: 2026-10-28
+
+Eight additional entries were inspected at page/prompt level. These are **L1 only**: the linked motion videos were not watched or timestamp-analyzed. The entries are captured as P006–P013 with creator attribution, source URLs, category, model as named by the page, and original adaptation notes. The detailed page prompts demonstrate a useful production principle: exact frame ranges, camera trajectories, motion constraints, transition rules, palette exclusions, input requirements and beat maps are more actionable than a vague request to “make it dynamic.”
+
+- [Photo print app launch film](https://prompt-motion.com/twoclipping-221cab): one continuous 2D transformation chain, beat-aware changes, real UI and photo inputs. Adaptation: use the same principle of visual continuity with an original sequence and legibility holds.
+- [Landing page 3D scroll](https://prompt-motion.com/twoclipping-d89be5): specified camera path, speed, focal plane, lift-off elements and exact ending. Adaptation: formalize camera path and speed envelope, and animate elements only as the camera reaches them.
+- [Enxovaly baby app promo](https://prompt-motion.com/gabrielbuzziv-4ff0c6), [Travel visa service promo](https://prompt-motion.com/thismacapital-dfba20), and [Distilbook product video](https://prompt-motion.com/ajith-io-c52e09): broad showreel-style prompts are weak as standalone briefs. Studio adaptation adds product research, audience problem, narrative beats, visual system, continuity locks and QA.
+- [Launch video remake comparison](https://prompt-motion.com/notdwd-c2037d): frame ranges, beat mapping, palette bans and cursor choreography are explicit. Adaptation: represent motion timing as testable production instructions, not mood words.
+- [Cinetic skill launch film](https://prompt-motion.com/lexnlin-6161a6): a workflow/skill lead, not a visual style sample. Repository not audited or installed.
+- [Dub promo video](https://prompt-motion.com/steventey-0d20e4): product UI and chart tags suggest product-specific narrative; use charts only with verified data.
+
+No creator's full prompt is copied into this studio's recipe library. The recipes are original syntheses. This review remains page-level evidence, not a claim that the referenced videos were watched.
