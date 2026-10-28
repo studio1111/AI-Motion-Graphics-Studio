@@ -592,7 +592,7 @@ const TopicHeroGraphic: React.FC<{ family: NonNullable<MotionVideoProps["visualF
           <path d="M0 622 L1000 622" stroke={palette.foreground} strokeOpacity="0.23" strokeWidth="3" />
           <path d="M45 590 C170 554 260 605 394 576 S700 558 950 592" fill="none" stroke={palette.accent} strokeWidth="5" strokeDasharray="16 12" strokeDashoffset={-frame * 1.4} strokeLinecap="round" />
           {[0,1,2,3,4].map(i => <circle key={i} cx={95+i*200} cy={578+Math.sin(frame/22+i)*8} r="7" fill={i%2?palette.accent2:palette.accent} />)}
-        </> : family === "artificial-intelligence" ? (
+        </>) : family === "artificial-intelligence" ? (
         <>
           <circle cx="500" cy="350" r="270" fill="url(#topic-halo)" />
           {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => {
