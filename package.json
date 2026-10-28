@@ -14,7 +14,8 @@
     "prompts:list": "node scripts/prompt-library.mjs list",
     "prompts:search": "node scripts/prompt-library.mjs search",
     "prompts:show": "node scripts/prompt-library.mjs show",
-    "prompts:master": "node scripts/prompt-library.mjs master"
+    "prompts:master": "node scripts/prompt-library.mjs master",
+    "prompts:export": "node scripts/prompt-library.mjs export"
   },
   "dependencies": {
     "@remotion/cli": "4.0.539",
