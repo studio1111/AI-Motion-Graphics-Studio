@@ -37,12 +37,12 @@ jobs:
         run: |
           node --check scripts/produce.mjs
           npm run produce -- --topic "CLI orchestration regression" --language en --duration 20 --style auto --aspect-ratio 16:9 --voice off --plan-only
+      - name: Ensure Remotion browser
+        run: npx remotion browser ensure
       - name: Produce and technically verify an end-to-end video
         run: |
           npm run produce -- --topic "How heat moves through a city" --language en --duration 12 --style scientific-2-5d --aspect-ratio 16:9 --voice off --output-dir out/e2e
           node -e 'const fs=require("node:fs");const path=require("node:path");const runs=fs.readdirSync("out/e2e",{withFileTypes:true}).filter(e=>e.isDirectory()).map(e=>e.name);if(runs.length!==1)throw new Error("Expected exactly one end-to-end run folder, found "+runs.length);const report=JSON.parse(fs.readFileSync(path.join("out/e2e",runs[0],"qc-report.json"),"utf8"));if(report.status!=="TECHNICAL_PASS_CREATIVE_REVIEW_PENDING")throw new Error("Expected technical QC pass, got "+report.status);console.log("End-to-end MP4 passed technical QC; creative/audio review remains explicitly pending.");'
-      - name: Ensure Remotion browser
-        run: npx remotion browser ensure
       - name: Prepare render directory
         run: mkdir -p out
       - name: Render generic smoke test
