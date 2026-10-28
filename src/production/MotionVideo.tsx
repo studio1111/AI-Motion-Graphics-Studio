@@ -216,10 +216,10 @@ const SceneText: React.FC<{
   const rise = spring({ frame, fps, config: { damping: 18, stiffness: 105, mass: 0.9 } });
   const opacity = interpolate(frame, [0, 8, 20], [0, 0.35, 1], clamp);
   const titleY = interpolate(rise, [0, 1], [58, 0], clamp);
-  const titleSize = fitMotionFontSize(scene.title, vertical ? 76 : 92, vertical ? 42 : 48);
+  const titleSize = fitMotionFontSize(scene.title, vertical ? 84 : 104, vertical ? 44 : 52);
   const titleAlign = vertical ? "center" : rtl ? "right" : "left";
   const titleWidth = "100%";
-  const bodySize = fitMotionFontSize(scene.body, vertical ? 30 : 28, vertical ? 18 : 19);
+  const bodySize = fitMotionFontSize(scene.body, vertical ? 32 : 30, vertical ? 20 : 21);
   const titleWords = scene.title.trim().split(/\s+/).filter(Boolean);
 
   return (
@@ -243,8 +243,8 @@ const SceneText: React.FC<{
           fontFamily: typography.display,
           fontSize: titleSize,
           lineHeight: 0.99,
-          fontWeight: 800,
-          letterSpacing: rtl ? 0 : -2.6,
+          fontWeight: 850,
+          letterSpacing: rtl ? 0 : -1.8,
           color: palette.foreground,
           textWrap: "balance" as CSSProperties["textWrap"],
           overflowWrap: "anywhere"
