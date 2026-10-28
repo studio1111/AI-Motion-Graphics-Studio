@@ -9,6 +9,7 @@ import {
 import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { buildMusicPrompt, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { getMusicBedGain, getVoiceFadeEnvelope } from "../src/production/audio-mix.mjs";
+import { buildNarrationEnhancementFilter } from "../src/production/voice-processing.mjs";
 
 test("audio master targets creator-friendly loudness and includes restrained voice clarity processing", () => {
   assert.equal(TARGET_LOUDNESS_LUFS, -16);
@@ -97,4 +98,14 @@ test("voice fades are brief and music ducks smoothly around narration", () => {
   assert.ok(during < before);
   assert.ok(during < after);
   assert.ok(before > 0 && after > 0);
+});
+
+test("narration enhancement chain controls rumble, intelligibility, dynamics and peaks", () => {
+  const filter = buildNarrationEnhancementFilter();
+  assert.match(filter, /highpass=f=70/);
+  assert.match(filter, /equalizer=f=180/);
+  assert.match(filter, /equalizer=f=3200/);
+  assert.match(filter, /acompressor=/);
+  assert.match(filter, /loudnorm=I=-20:TP=-3:LRA=7/);
+  assert.match(filter, /alimiter=limit=0\.92/);
 });
