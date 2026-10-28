@@ -11,7 +11,9 @@ Inspect the repository and existing instructions, then read:
 4. `docs/MOTION_DESIGN_SYSTEM.md` for craft/accessibility rules.
 5. `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md` for stages, manifest and quality gates.
 6. `prompts/STYLE_RECIPE_LIBRARY.md` for scene-level prompt recipes.
-7. `docs/REFERENCE_PATTERN_MATRIX.md` and `docs/RESEARCH_AND_BENCHMARK_PLAN.md` for research evidence and limitations.
+7. `docs/REFERENCE_PATTERN_MATRIX.md`, `docs/PROMPT_MOTION_PATTERN_STUDY.md`, `research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md` and `docs/RESEARCH_AND_BENCHMARK_PLAN.md` for research evidence and limitations.
+8. `prompt-library/MASTER_PROMPT.md` and `prompt-library/CATALOG.md` for the universal prompt and the 96-style catalog.
+9. `prompt-library/ADVANCED_MASTER_PROMPTS.md` for specialist director prompts, `prompt-library/SCENE_PROMPT_TEMPLATES.md` for shot-level prompts, and `prompt-library/PRODUCTION_WORKFLOW_PACK.md` for staged execution.
 8. `prompt-library/MASTER_PROMPT.md` and the closest style from `prompt-library/prompts.json` for a portable, copy-ready recipe.
 9. `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md` before extracting craft lessons from a reference.
 10. `prompt-library/PRODUCTION_WORKFLOW_PACK.md` to drive story, storyboard, motion, sound, rendering and QC as distinct passes.
@@ -33,6 +35,9 @@ Use details already supplied. Infer defaults for missing noncritical fields, rec
 
 ## Reference-source priority
 Use `docs/REFERENCE_SOURCE_REGISTRY.md` as the source-routing policy. **Start with Prompt Motion (`https://prompt-motion.com/`) for prompt-to-output examples and reusable skills**, searching both Prompt and Skill entries. Use ShotBook for execution breakdowns; Genery and FilmGrab for cinematic composition and visual grammar; Motion in Design for interaction/physics-based motion; Pinterest for manual discovery and moodboards. Follow source links and record evidence levels. A thumbnail or still cannot prove movement or sound. Do not claim a model, tool, API, or paid feature is integrated merely because a reference uses it. Respect source attribution, access limits, and licences. Do not scrape Pinterest or bulk-download/redistribute FilmGrab frames. Turn reference observations into original studio recipes, not shot-for-shot copies or unlicensed prompt/asset copies.
+
+## Use the portable prompt system
+Choose one primary recipe and no more than two supporting techniques. Pass the selected recipe to the production CLI with `--prompt-recipe <recipe-id>`. Select a specialist master prompt and a scene template appropriate to the task. For text-to-video specify a visible action, framing, camera path and temporal progression. For image-to-video preserve the input frame's fixed elements and direct only the intended motion. For deterministic renders define frame/timing functions, transitions, exact text and proof-frame QC. Iterate against observed defects, changing only a few variables at a time. Never claim recipe-specific effects are rendered if the current renderer cannot implement them.
 
 ## Research
 Find reliable sources for factual claims. Map each claim to source and script segment. Verify dates, names, numbers, quotations and causal claims. Label uncertainty and distinguish facts from visual metaphors. Research references by story structure, motion grammar, type, transition, color, sound, pacing and accessibility. Record the evidence level for every reference. Do not copy distinctive shots, scripts, music, characters or sequences.
