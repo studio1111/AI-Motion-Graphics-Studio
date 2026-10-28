@@ -262,7 +262,7 @@ test("caption segmentation wraps exceptionally long unbroken tokens without over
   const segments = splitCaptionSegments("X".repeat(100), 44);
   assert.ok(segments.length >= 2, "long tokens must be split into readable chunks");
   for (const segment of segments) {
-    for (const line of segment.split("\\n")) {
+    for (const line of segment.split("\n")) {
       assert.ok(Array.from(line).length <= 44, "no caption line may exceed the configured character limit");
     }
   }
