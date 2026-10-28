@@ -11,7 +11,9 @@ Inspect the repository and existing instructions, then read:
 4. `docs/MOTION_DESIGN_SYSTEM.md` for craft/accessibility rules.
 5. `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md` for stages, manifest and quality gates.
 6. `prompts/STYLE_RECIPE_LIBRARY.md` for scene-level prompt recipes.
-7. `docs/REFERENCE_PATTERN_MATRIX.md` and `docs/RESEARCH_AND_BENCHMARK_PLAN.md` for research evidence and limitations.
+7. `docs/REFERENCE_PATTERN_MATRIX.md`, `docs/PROMPT_MOTION_PATTERN_STUDY.md` and `docs/RESEARCH_AND_BENCHMARK_PLAN.md` for research evidence and limitations.
+8. `prompt-library/MASTER_PROMPT.md` and `prompt-library/CATALOG.md` for the portable master prompt and 77 structured style recipes.
+9. `prompt-library/ADVANCED_MASTER_PROMPTS.md` for specialist directors and `prompt-library/SCENE_PROMPT_TEMPLATES.md` for copy-ready shot-level instructions.
 
 Do not claim the target 1,000-video reference study is complete unless the evidence catalog genuinely satisfies its criteria. Never treat metadata or an article as a full-video review.
 
@@ -30,6 +32,9 @@ Use details already supplied. Infer defaults for missing noncritical fields, rec
 
 ## Reference-source priority
 Use `docs/REFERENCE_SOURCE_REGISTRY.md` as the source-routing policy. **Start with Prompt Motion (`https://prompt-motion.com/`) for prompt-to-output examples and reusable skills**, searching both Prompt and Skill entries. Use ShotBook for execution breakdowns; Genery and FilmGrab for cinematic composition and visual grammar; Motion in Design for interaction/physics-based motion; Pinterest for manual discovery and moodboards. Follow source links and record evidence levels. A thumbnail or still cannot prove movement or sound. Do not claim a model, tool, API, or paid feature is integrated merely because a reference uses it. Respect source attribution, access limits, and licences. Do not scrape Pinterest or bulk-download/redistribute FilmGrab frames. Turn reference observations into original studio recipes, not shot-for-shot copies or unlicensed prompt/asset copies.
+
+## Use the portable prompt library
+Select one primary style recipe, then borrow at most two supporting techniques. Use the advanced master prompt that matches the production task and one scene template per shot. For text-to-video, state visible subject/action, composition, camera and temporal progression. For image-to-video, preserve the initial image's locked elements and specify only the intended motion. For code-based work, describe deterministic frame/time functions, exact text, easing and proof-frame QC. Iterate by diagnosing a specific failure and changing one or two variables. The recipe is direction, not proof that a model/tool can render the effect.
 
 ## Research
 Find reliable sources for factual claims. Map each claim to source and script segment. Verify dates, names, numbers, quotations and causal claims. Label uncertainty and distinguish facts from visual metaphors. Research references by story structure, motion grammar, type, transition, color, sound, pacing and accessibility. Record the evidence level for every reference. Do not copy distinctive shots, scripts, music, characters or sequences.
