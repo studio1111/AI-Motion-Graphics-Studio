@@ -50,6 +50,7 @@ Only the smoke-test renderer and validation workflow are currently verified in p
 The CLI at scripts/produce.mjs implements intake/defaults, style routing, a deterministic local storyboard fallback, optional Firecrawl discovery and Claude scene-plan generation after explicit paid-service opt-in, frame allocation, optional Pocket TTS for supported languages, procedural ambient audio, SRT creation, Remotion rendering, FFprobe checks, FFmpeg decoding and frame-sample extraction. The output folder includes the brief, source record, storyboard, timed storyboard, props, narration text, captions, manifest, QC report and MP4 when successful.
 
 ## Verified limits
+- When narration is requested, production now blocks before rendering if the selected local voice engine is missing, unsupported, or fails any scene. It writes `voice-status.json` and a `VOICE_GENERATION_FAILED` QC report instead of silently shipping a music-only or partially narrated result. Music-only output remains available through the explicit `--voice off` option.
 - A local fallback creates a conceptual template and explicitly warns that topic-specific factual research was not performed.
 - Firecrawl search results are candidates, not automatically verified claims. Claude is instructed not to invent data and source references are filtered against supplied/retrieved URLs.
 - Official Pocket TTS has no Persian model in its current published language list; the pipeline reports unsupported language instead of using a mismatched voice.
