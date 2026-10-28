@@ -351,9 +351,7 @@ export function createProceduralBedWav(seconds, styleId = "cinematic-documentary
 async function writeBed(path, seconds, styleId, transitionCues = []) {
  await writeFile(path, createProceduralBedWav(seconds, styleId, transitionCues));
 }
-async function writeBed(path, seconds, styleId) {
- await writeFile(path, createProceduralBedWav(seconds, styleId));
-}
+
 
 
 function srtTime(sec){const m=Math.round(Math.max(0,sec)*1000);const h=Math.floor(m/3600000),mi=Math.floor(m%3600000/60000),s=Math.floor(m%60000/1000),ms=m%1000;return [h,mi,s].map(v=>String(v).padStart(2,"0")).join(":")+","+String(ms).padStart(3,"0");}
