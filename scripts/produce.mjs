@@ -8,7 +8,7 @@ import { splitCaptionSegments } from "../src/production/captions.mjs";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { generateAceStepMusic, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { masterAudioVideo } from "../src/production/audio-mastering.mjs";
-import { buildNarrationEnhancementFilter } from "../src/production/voice-processing.mjs";
+import { buildNarrationEnhancementFilter, getEnhancedNarrationPath } from "../src/production/voice-processing.mjs";
 export { splitCaptionSegments };
 
 export const LAYOUTS = new Set(["hero","editorial","diagram","timeline","compare","data","particles","map","interface","quote","outro"]);
@@ -349,7 +349,7 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
    const w=engine.name+" failed on "+s.id+(r.timedOut?" (timeout).":": "+String(r.stderr||r.error||"unknown error").slice(-220));
    result.status="partial";result.warnings.push(w);warnings.push(w);continue;
   }
-  const enhancedFile=file.replace(/\\.wav$/i,".enhanced.wav");
+  const enhancedFile=getEnhancedNarrationPath(file);
   const ffmpeg=executable("ffmpeg")||"ffmpeg";
   const enhancement=await run(ffmpeg,["-y","-hide_banner","-loglevel","error","-i",file,"-af",buildNarrationEnhancementFilter(),"-ac","1","-ar","24000","-c:a","pcm_s16le",enhancedFile],Math.min(240000,engine.timeout));
   if(enhancement.code!==0){
