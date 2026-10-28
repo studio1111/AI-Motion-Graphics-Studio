@@ -72,7 +72,7 @@ Treat runtime as a storytelling constraint, not a fixed scene-count template. Th
 Determine scene count from narrative beats, spoken-word rate, visual complexity, reading time and actual narration duration. Estimate narration first, then use measured audio duration when available. Give dense charts and complex Persian captions more time than simple visual transitions. Use short generated-video shots for a single coherent action, but assemble as many shots and deterministic Remotion scenes as the story requires. Split long renders into resumable chapters or bounded jobs when the environment's time, memory or storage limits require it. Never promise an unlimited render when the runtime or compute budget imposes a limit.
 
 ## Prompt-engineering stack
-Read `prompts/PROFESSIONAL_PROMPT_PLAYBOOK.md` and `prompts/STYLE_RECIPE_LIBRARY.md`. Build a prompt packet rather than one overloaded prompt:
+Read `prompts/PROFESSIONAL_PROMPT_PLAYBOOK.md` and `prompts/STYLE_RECIPE_LIBRARY.md`. Select the right style family before writing scene prompts, and explicitly test Persian RTL shaping and mixed-script typography when relevant. Build a prompt packet rather than one overloaded prompt:
 1. **Film brief prompt:** audience, outcome, factuality, runtime, platform, emotional arc and constraints.
 2. **Research prompt:** claims, source quality, evidence gaps, dates, attribution and uncertainty.
 3. **Art-direction prompt:** lead style, optional accents, palette, type roles, composition, material, lighting and anti-patterns.
