@@ -267,3 +267,20 @@ test("caption segmentation wraps exceptionally long unbroken tokens without over
     }
   }
 });
+
+
+test("master production prompt covers duration-adaptive storytelling and original cross-style prompt recipes",async()=>{
+  const prompt=await readFile(new URL("../prompts/MOTION_GRAPHICS_MASTER_PROMPT.md",import.meta.url),"utf8");
+  for(const required of [
+    "Duration-adaptive planning",
+    "15 seconds",
+    "60 minutes",
+    "style family",
+    "original prompt",
+    "negative prompt",
+    "continuity",
+    "provider routing",
+    "Persian RTL",
+    "1,000-video"
+  ]) assert.ok(prompt.toLowerCase().includes(required.toLowerCase()),`master prompt should cover ${required}`);
+});
