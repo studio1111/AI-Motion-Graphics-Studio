@@ -54,3 +54,13 @@ For city-heat, artificial-intelligence and solar-energy topics, the local fallba
 ### High-quality English neural narration
 
 Install `edge-tts==7.3.1` in the same Python environment as the CLI, then use `--voice edge-tts`. The English default profile is `en-US-AriaNeural`, with rate, pitch and volume configurable through `MOTION_STUDIO_EDGE_RATE`, `MOTION_STUDIO_EDGE_PITCH` and `MOTION_STUDIO_EDGE_VOLUME`. This is online synthesis and sends narration text to Microsoft's service; `--voice auto` remains the local-first path. The pipeline still enhances, measures and masters the resulting audio, but real listening is required to judge voice naturalness and pronunciation.
+
+
+## Opus 5.5 community prompt references
+
+- `npm run opus55:sync` downloads and validates the upstream prompt catalog, then caches it under `research/opus55-videos.json`.
+- `npm run opus55:search -- <keyword>` searches creator, category, implementation tags, and prompt text.
+- `npm run opus55:show -- <slug>` prints one attributed reference.
+- `--opus55-reference <slug>` adds the selected reference as bounded, untrusted creative direction to the Claude storyboard request. It never executes reference code. Use `--allow-paid-ai` to opt into provider APIs.
+
+The upstream project is [yihui-dev/awesome-opus5-5-videos](https://github.com/yihui-dev/awesome-opus5-5-videos) and declares MIT licensing. See `docs/OPUS55_REFERENCE_INTEGRATION.md` for provenance, safety boundaries and examples.
