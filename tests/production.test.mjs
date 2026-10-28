@@ -391,3 +391,22 @@ test("style-aware camera choreography stays deterministic and within bounded mot
     assert.ok(Number.isFinite(pose.sweepX));
   }
 });
+
+test("Persian AI explainer local fallback fits a one-minute narration budget and tells a purposeful story", () => {
+  const plan = buildLocalPlan({
+    topic: "آینده هوش مصنوعی؛ فناوری‌ای که جهان را تغییر می‌دهد",
+    language: "fa",
+    styleId: "scientific-2-5d",
+    totalFrames: 1800,
+    fps: 30
+  });
+  assert.equal(plan.scenes.length, 8);
+  assert.equal(plan.scenes.reduce((sum, scene) => sum + scene.durationInFrames, 0), 1800);
+  const narration = plan.scenes.map(scene => scene.narration).join(" ");
+  const wordCount = narration.split(/\s+/).filter(Boolean).length;
+  assert.ok(wordCount <= 125, `Expected a concise Persian script for a 60-second film, got ${wordCount} words.`);
+  assert.match(narration, /پزشکی/);
+  assert.match(narration, /سوگیری/);
+  assert.match(narration, /آینده/);
+  assert.ok(plan.scenes.every(scene => scene.narration.length < 180), "No single narration scene should be a paragraph.");
+});
