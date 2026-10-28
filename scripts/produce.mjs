@@ -128,7 +128,7 @@ export function parseArgs(argv=process.argv.slice(2),env=process.env){
   if(!SUPPORTED_LANGUAGES.has(o.language))throw new Error("Language must be one of: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");
   if(!["auto","off","pocket-tts","persian-speech"].includes(o.voice))throw new Error("Voice must be auto, off, pocket-tts, or persian-speech.");
   if(!["16:9","9:16","1:1"].includes(o.aspectRatio))throw new Error("Aspect ratio must be 16:9, 9:16, or 1:1.");
-  if(!Number.isFinite(o.duration)||o.duration<5||o.duration>600)throw new Error("Duration must be between 5 and 600 seconds.");
+  if(!Number.isFinite(o.duration)||o.duration<5||o.duration>3600)throw new Error("Duration must be between 5 and 3600 seconds (one hour).");
   return o;
 }
 export function safeSlug(value){const slug=String(value||"motion-video").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-+|-+$/g,"").slice(0,48);return slug||"motion-video";}
@@ -335,7 +335,7 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
  return result;
 }
 export function createProceduralBedWav(seconds, styleId = "cinematic-documentary", transitionCues = []) {
- const duration = Math.max(5, Math.min(600, Number(seconds) || 5));
+ const duration = Math.max(5, Math.min(3600, Number(seconds) || 5));
  const rate = 24000;
  const count = Math.floor(duration * rate);
  const bytes = count * 4;
@@ -510,11 +510,11 @@ async function checkVideo(file,expected,dir){
  report.durationSeconds=duration;return report;
 }
 
-export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
+export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..3600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
 
 export async function produce(options,env=process.env){
  const warnings=[],runId=new Date().toISOString().replace(/[:.]/g,"-")+"-"+process.pid;let brief={};if(options.briefPath)brief=await readJson(resolve(options.briefPath));let sources=normalizeSources(brief.sources||brief.sourceUrls||[]);if(options.sourcesPath)sources=normalizeSources(sources.concat(normalizeSources(await readJson(resolve(options.sourcesPath)))));
- const topic=String(brief.topic||options.topic||"").trim();if(!topic)throw new Error("No topic supplied. Use --topic or --brief.");const language=String(brief.language||options.language||"fa").toLowerCase().split("-")[0],duration=Number(brief.durationSeconds||brief.duration||options.duration||90),ratio=String(brief.aspectRatio||options.aspectRatio||"16:9");if(!SUPPORTED_LANGUAGES.has(language))throw new Error("Unsupported language: "+language+". Supported languages: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");if(duration<5||duration>600||!Number.isFinite(duration))throw new Error("Duration must be 5-600 seconds.");if(!["16:9","9:16","1:1"].includes(ratio))throw new Error("Invalid aspect ratio.");
+ const topic=String(brief.topic||options.topic||"").trim();if(!topic)throw new Error("No topic supplied. Use --topic or --brief.");const language=String(brief.language||options.language||"fa").toLowerCase().split("-")[0],duration=Number(brief.durationSeconds||brief.duration||options.duration||90),ratio=String(brief.aspectRatio||options.aspectRatio||"16:9");if(!SUPPORTED_LANGUAGES.has(language))throw new Error("Unsupported language: "+language+". Supported languages: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");if(duration<5||duration>3600||!Number.isFinite(duration))throw new Error("Duration must be 5-3600 seconds (one hour).");if(!["16:9","9:16","1:1"].includes(ratio))throw new Error("Invalid aspect ratio.");
  const fps=30,targetFrames=Math.round(duration*fps),styleId=chooseStyle(brief.style||options.style,topic,ratio),preset=PRESETS[styleId],size=dimensions(ratio),dir=resolve(options.outputDir||"out",runId);await mkdir(dir,{recursive:true});
  const briefRecord={topic,language,targetDurationSeconds:duration,targetFrames,aspectRatio:ratio,width:size.width,height:size.height,fps,requestedStyle:brief.style||options.style,selectedStyle:styleId,selectedStyleLabel:preset.label,paidAPIsOptedIn:options.allowPaidAI,voiceMode:options.voice,createdAt:new Date().toISOString(),assumptions:["Unspecified noncritical choices use defaults.","Local fallback is a conceptual template, not a researched factual script."]};await writeFile(join(dir,"brief.json"),JSON.stringify(briefRecord,null,2)+"\n");
  let research={status:sources.length?"user_sources_not_verified":"not_performed",method:sources.length?"user-provided sources":"none",capturedAt:new Date().toISOString(),sources,warning:sources.length?"Source list captured; factual claims not independently verified.":"No research sources were supplied or retrieved."};
