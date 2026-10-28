@@ -277,3 +277,12 @@ test("production CLI supports long-form runtimes beyond ten minutes up to one ho
   assert.equal(plan.scenes.reduce((sum,scene)=>sum+scene.durationInFrames,0),601*30);
   assert.equal(wavDuration(createProceduralBedWav(601,"cinematic-documentary")),601,"the score must not silently truncate long-form audio at ten minutes");
 });
+
+
+test("storyboard validator accepts long-form chapter plans without allowing unbounded scene counts",()=>{
+  const plan=buildLocalPlan({topic:"Long-form chapters",language:"en",styleId:"cinematic-documentary",totalFrames:3600*30,fps:30});
+  plan.scenes=Array.from({length:24},(_,i)=>({...plan.scenes[i%8],id:`scene-${String(i+1).padStart(2,"0")}`}));
+  assert.deepEqual(validateStoryboard(plan),[]);
+  plan.scenes=Array.from({length:121},(_,i)=>({...plan.scenes[i%8],id:`scene-${String(i+1).padStart(3,"0")}`}));
+  assert.ok(validateStoryboard(plan).some(error=>/4-120 scenes/.test(error)));
+});
