@@ -9,7 +9,7 @@ import {
 import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { buildMusicPrompt, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { getMusicBedGain, getVoiceFadeEnvelope } from "../src/production/audio-mix.mjs";
-import { buildNarrationEnhancementFilter, getEnhancedNarrationPath } from "../src/production/voice-processing.mjs";
+import { buildNarrationEnhancementFilter, getEnhancedNarrationPath, buildEdgeTtsArgs, EDGE_TTS_VOICE_BY_LANGUAGE } from "../src/production/voice-processing.mjs";
 import { extendFinalSceneToTarget } from "../src/production/narration-timing.mjs";
 import { parseArgs } from "../scripts/produce.mjs";
 
@@ -120,10 +120,25 @@ test("CLI selects music engines explicitly and supports workflow configuration",
   assert.throws(() => parseArgs(["--music-engine", "arbitrary"], {}), /Music engine/);
 });
 
-test("enhanced narration output uses a distinct WAV path on every platform", () => {
+test("enhanced narration output accepts local WAV or neural MP3 input and always emits WAV", () => {
   assert.equal(getEnhancedNarrationPath("voice-01.wav"), "voice-01.enhanced.wav");
   assert.equal(getEnhancedNarrationPath("/tmp/generated/voice-02.WAV"), "/tmp/generated/voice-02.enhanced.wav");
-  assert.throws(() => getEnhancedNarrationPath("voice-03.mp3"), /WAV file path/i);
+  assert.equal(getEnhancedNarrationPath("/tmp/generated/voice-03.mp3"), "/tmp/generated/voice-03.enhanced.wav");
+  assert.throws(() => getEnhancedNarrationPath("voice-04.mp4"), /WAV or MP3/i);
+});
+
+test("Edge TTS creates safe argument arrays with a Persian neural narration profile", () => {
+  assert.equal(EDGE_TTS_VOICE_BY_LANGUAGE.fa, "fa-IR-FaridNeural");
+  const args = buildEdgeTtsArgs({ text: "سلام، این یک آزمون است.", outputPath: "/tmp/voice 01.mp3", language: "fa", env: {} });
+  assert.deepEqual(args, [
+    "--voice", "fa-IR-FaridNeural",
+    "--rate=-6%", "--pitch=+0Hz", "--volume=+0%",
+    "--text", "سلام، این یک آزمون است.",
+    "--write-media", "/tmp/voice 01.mp3", "--no-progress"
+  ]);
+  assert.throws(() => buildEdgeTtsArgs({ text: "x", outputPath: "x.mp3", language: "fa", env: { MOTION_STUDIO_EDGE_VOICE: "malicious;voice" } }), /voice identifier/i);
+  assert.throws(() => buildEdgeTtsArgs({ text: "x", outputPath: "x.mp3", language: "fa", env: { MOTION_STUDIO_EDGE_RATE: "+250%" } }), /rate/i);
+  assert.throws(() => buildEdgeTtsArgs({ text: "x", outputPath: "x.mp3", language: "fa", env: { MOTION_STUDIO_EDGE_PITCH: "+500Hz" } }), /pitch/i);
 });
 
 test("short narrated renders extend the final scene to the requested runtime without slowing voice", () => {
@@ -149,4 +164,10 @@ test("runtime helper never trims narration when spoken scenes exceed the target"
   assert.equal(result.totalFrames, 1900);
   assert.equal(result.addedFrames, 0);
   assert.equal(result.scenes[1].durationInFrames, 700);
+});
+
+test("CLI exposes the optional neural edge voice without changing private local auto mode", () => {
+  assert.equal(parseArgs([], {}).voice, "auto");
+  assert.equal(parseArgs(["--voice", "edge-tts"], {}).voice, "edge-tts");
+  assert.throws(() => parseArgs(["--voice", "unknown-engine"], {}), /Voice must be/);
 });
