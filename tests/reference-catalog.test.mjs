@@ -59,14 +59,14 @@ test("structured seed catalog preserves the honest current progress toward 1,000
   const jsonl=await readFile(new URL("../research/references.jsonl",import.meta.url),"utf8");
   const records=jsonl.trim().split(/\r?\n/).map(line=>JSON.parse(line));
   const report=module.analyzeReferenceCatalog(records);
-  assert.equal(report.inputRecords,105);
-  assert.equal(report.uniqueCanonicalReferences,105);
-  assert.equal(report.eligibleUniqueReferences,99);
+  assert.equal(report.inputRecords,113);
+  assert.equal(report.uniqueCanonicalReferences,113);
+  assert.equal(report.eligibleUniqueReferences,106);
   assert.equal(report.evidenceLevelCounts.L0,55);
-  assert.equal(report.evidenceLevelCounts.L1,50);
+  assert.equal(report.evidenceLevelCounts.L1,58);
   assert.equal(report.evidenceLevelCounts.L2,0);
   assert.equal(report.evidenceLevelCounts.L3,0);
-  assert.equal(report.remainingUniqueReferences,901);
+  assert.equal(report.remainingUniqueReferences,894);
   assert.deepEqual(report.validationErrors,[]);
 });
 
