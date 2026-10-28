@@ -76,3 +76,24 @@ test("portable library includes reference-analysis and production workflow packs
   assert.match(workflows, /Do not claim external tools are installed/i);
   assert.match(synthesis, /not a claim that every video in the gallery was watched/i);
 });
+
+
+test("CLI exports a portable prompt bundle filtered by category", () => {
+  const markdown = run(["export", "--category", "product-ui"]);
+  assert.equal(markdown.status, 0, markdown.stderr);
+  assert.match(markdown.stdout, /Universal Motion Graphics Master Prompt/);
+  assert.match(markdown.stdout, /Continuous Product UI State Morph/);
+  assert.doesNotMatch(markdown.stdout, /Verified Data Reveal/);
+
+  const json = run(["export", "--category", "product-ui", "--format", "json"]);
+  assert.equal(json.status, 0, json.stderr);
+  const parsed = JSON.parse(json.stdout);
+  assert.equal(parsed.category, "product-ui");
+  assert.ok(parsed.recipes.length > 0);
+  assert.equal(parsed.readyToCopyPrompts.length, parsed.recipes.length);
+  assert.match(parsed.readyToCopyPrompts[0].readyToCopyPrompt, /Universal Motion Graphics Master Prompt/);
+
+  const invalid = run(["export", "--category", "not-a-real-category"]);
+  assert.equal(invalid.status, 2);
+  assert.match(invalid.stderr, /Unknown prompt category/);
+});
