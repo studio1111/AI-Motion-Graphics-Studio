@@ -14,13 +14,50 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/STYLE_PRESET_CATALOG.md`: concrete palettes, font roles, motion, sound and anti-patterns.
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
-- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.\n- `prompt-library/`: standalone, tool-agnostic prompt suite with 50 reusable style recipes, six specialized master prompts, a browsable catalog and copy-ready CLI for any AI assistant.
+- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
+- `prompt-library/`: standalone, tool-agnostic prompt suite with 96 style recipes, six foundational and ten advanced master prompts, 15 scene templates, a 9-stage workflow pack, browser UI and copy-ready CLI.
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
+- `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`: repeatable evidence-aware rubric for analyzing reference pages and videos.
+- `prompt-library/index.html`: browser interface to search/filter styles, compose a master prompt with a specialist/scene module, copy it, or download Markdown.
+- `prompt-library/PERSIAN_QUICK_START.md`: راهنمای فارسی استفاده از کتابخانهٔ مستقل پرامپت‌ها.
+- `prompt-library/PRODUCTION_WORKFLOW_PACK.md`: copy-ready prompts for story, storyboard, motion, typography, audio, rendering and quality repair.
+- `prompt-library/ADVANCED_MASTER_PROMPTS.md`: ten detailed specialist directors for documentary, product, typography, data, T2V, I2V, audio, code, repair and QC.
+- `prompt-library/SCENE_PROMPT_TEMPLATES.md`: 15 reusable shot-level prompt templates.
+- `docs/PROMPT_MOTION_PATTERN_STUDY.md`: cross-tool motion patterns and honest evidence limits.
+- `research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md`: source-linked lessons from Prompt Motion research pages.
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
 - `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost caveats.
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
 
-## Portable prompt library\n\nUse the built-in prompt library with any AI assistant or creative tool:\n\n    npm run prompts:list\n    npm run prompts:search -- typography\n    npm run prompts:show -- kinetic-type\n    npm run prompts:show -- product-launch --format json\n    npm run prompts:master\n\nThe `show` command combines the universal master prompt with the selected style recipe. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.\n\n## Running the production engine
+## Portable prompt library
+
+### Browser prompt builder
+
+From the repository root, run `python -m http.server 8765`, then open `http://localhost:8765/prompt-library/` in a browser. The page loads the local recipe library, lets you search and filter styles, select an optional specialist master prompt and scene-level template, and copy or download the assembled prompt. If opened directly as a `file://` URL, browser fetch restrictions may block the data files, so serve the folder over HTTP.
+
+
+Use the built-in prompt library with any AI assistant or creative tool:
+
+    npm run prompts:list
+    npm run prompts:search -- typography
+    npm run prompts:show -- kinetic-type
+    npm run prompts:show -- product-launch --format json
+    npm run prompts:master
+    npm run prompts:export -- --category product-ui
+
+The `show` command combines the universal master prompt with the selected style recipe. The `export` command creates a self-contained Markdown or JSON bundle, optionally filtered by style category, for transfer into another AI environment. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.
+
+## Use a style recipe in the production engine
+
+List available recipe IDs with `npm run prompts:list`, then let the storyboarding pipeline use one of the 96 recipes:
+
+```sh
+npm run produce -- --topic "An idea worth explaining" --language en --duration 30 --style auto --prompt-recipe motion-design-showreel --plan-only
+```
+
+The selected recipe is recorded in the run's brief, storyboard, manifest, and QC report. With configured AI storyboard generation, its motion, typography, palette, sound, story-beat and anti-pattern directions are passed to the planner. The local fallback maps the recipe category to a supported preset and explicitly reports that advanced recipe-specific effects are not fully implemented by the fallback renderer.
+
+## Running the production engine
 
 Local install and validation:
 

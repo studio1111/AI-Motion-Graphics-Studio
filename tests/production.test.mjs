@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
-import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, validateVoiceGeneration, wavDuration } from "../scripts/produce.mjs";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, validateVoiceGeneration, wavDuration, produce, promptRecipeStyleHint } from "../scripts/produce.mjs";
 
 test("topic-aware scene graphics remain wired into the Remotion composition",async()=>{
   const motion=await readFile(new URL("../src/production/MotionVideo.tsx",import.meta.url),"utf8");
@@ -149,6 +151,60 @@ test("CLI accepts documented language codes and rejects unsupported ones",()=>{
   assert.equal(parseArgs(["--language","de-DE"],{}).language,"de");
   assert.equal(parseArgs(["--language","fa"],{}).language,"fa");
   assert.throws(()=>parseArgs(["--language","xx"],{}),/Language must be one of/);
+});
+
+
+test("portable prompt recipe option is normalized and mapped to supported presets", async () => {
+  const args = parseArgs(["--prompt-recipe", "Motion_Design_Showreel"], {});
+  assert.equal(args.promptRecipe, "motion-design-showreel");
+  assert.equal(promptRecipeStyleHint({category:"showreel"}, "16:9"), "procedural-generative");
+  assert.equal(promptRecipeStyleHint({category:"typography"}, "16:9"), "editorial-kinetic-type");
+  assert.equal(promptRecipeStyleHint({category:"data-storytelling"}, "16:9"), "data-journalism");
+  assert.equal(promptRecipeStyleHint({category:"product-ui"}, "9:16"), "vertical-social");
+  assert.equal(promptRecipeStyleHint({category:"not-in-the-map"}, "16:9"), "auto");
+  const library = JSON.parse(await readFile(new URL("../prompt-library/prompts.json", import.meta.url), "utf8"));
+  const categories = [...new Set(library.recipes.map((recipe) => recipe.category))];
+  for (const category of categories) {
+    const mapped = promptRecipeStyleHint({category}, "16:9");
+    assert.notEqual(mapped, "auto", `recipe category ${category} must map to an implemented preset`);
+    assert.equal(chooseStyle(mapped, "recipe category regression", "16:9"), mapped, `recipe category ${category} must target an implemented preset`);
+  }
+  assert.throws(() => parseArgs(["--prompt-recipe", "../unsafe"], {}), /lowercase recipe ID/);
+});
+
+test("production run records the selected recipe and states the local-rendering limitation", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "motion-prompt-recipe-"));
+  try {
+    const options = parseArgs([
+      "--topic", "A concept-led motion design showreel",
+      "--language", "en",
+      "--duration", "30",
+      "--style", "auto",
+      "--aspect-ratio", "16:9",
+      "--voice", "off",
+      "--prompt-recipe", "motion-design-showreel",
+      "--plan-only",
+      "--no-research",
+      "--output-dir", tempRoot
+    ], {});
+    const result = await produce(options, {});
+    assert.equal(result.manifest.selectedPromptRecipe.id, "motion-design-showreel");
+    assert.equal(result.manifest.selectedStyle.id, "procedural-generative");
+    assert.match(result.manifest.promptRecipeApplication, /not fully implemented by the local fallback/);
+    assert.ok(result.qc.warnings.some((warning) => /local fallback does not fully implement/.test(warning)));
+    const recipe = JSON.parse(await readFile(join(result.runDir, "prompt-recipe.json"), "utf8"));
+    assert.equal(recipe.id, "motion-design-showreel");
+    const storyboard = JSON.parse(await readFile(join(result.runDir, "storyboard.json"), "utf8"));
+    assert.equal(storyboard.promptRecipeId, "motion-design-showreel");
+    const brief = JSON.parse(await readFile(join(result.runDir, "brief.json"), "utf8"));
+    assert.equal(brief.styleSelectionSource, "prompt-recipe-category");
+    await assert.rejects(
+      produce({...options, promptRecipe:"not-a-real-recipe"}, {}),
+      /Unknown prompt recipe/
+    );
+  } finally {
+    await rm(tempRoot, {recursive:true, force:true});
+  }
 });
 
 test("output slug is path-safe",()=>{

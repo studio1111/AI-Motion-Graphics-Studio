@@ -11,7 +11,12 @@ Inspect the repository and existing instructions, then read:
 4. `docs/MOTION_DESIGN_SYSTEM.md` for craft/accessibility rules.
 5. `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md` for stages, manifest and quality gates.
 6. `prompts/STYLE_RECIPE_LIBRARY.md` for scene-level prompt recipes.
-7. `docs/REFERENCE_PATTERN_MATRIX.md` and `docs/RESEARCH_AND_BENCHMARK_PLAN.md` for research evidence and limitations.
+7. `docs/REFERENCE_PATTERN_MATRIX.md`, `docs/PROMPT_MOTION_PATTERN_STUDY.md`, `research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md` and `docs/RESEARCH_AND_BENCHMARK_PLAN.md` for research evidence and limitations.
+8. `prompt-library/MASTER_PROMPT.md` and `prompt-library/CATALOG.md` for the universal prompt and the 96-style catalog.
+9. `prompt-library/ADVANCED_MASTER_PROMPTS.md` for specialist director prompts, `prompt-library/SCENE_PROMPT_TEMPLATES.md` for shot-level prompts, and `prompt-library/PRODUCTION_WORKFLOW_PACK.md` for staged execution.
+8. `prompt-library/MASTER_PROMPT.md` and the closest style from `prompt-library/prompts.json` for a portable, copy-ready recipe.
+9. `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md` before extracting craft lessons from a reference.
+10. `prompt-library/PRODUCTION_WORKFLOW_PACK.md` to drive story, storyboard, motion, sound, rendering and QC as distinct passes.
 
 Do not claim the target 1,000-video reference study is complete unless the evidence catalog genuinely satisfies its criteria. Never treat metadata or an article as a full-video review.
 
@@ -30,6 +35,9 @@ Use details already supplied. Infer defaults for missing noncritical fields, rec
 
 ## Reference-source priority
 Use `docs/REFERENCE_SOURCE_REGISTRY.md` as the source-routing policy. **Start with Prompt Motion (`https://prompt-motion.com/`) for prompt-to-output examples and reusable skills**, searching both Prompt and Skill entries. Use ShotBook for execution breakdowns; Genery and FilmGrab for cinematic composition and visual grammar; Motion in Design for interaction/physics-based motion; Pinterest for manual discovery and moodboards. Follow source links and record evidence levels. A thumbnail or still cannot prove movement or sound. Do not claim a model, tool, API, or paid feature is integrated merely because a reference uses it. Respect source attribution, access limits, and licences. Do not scrape Pinterest or bulk-download/redistribute FilmGrab frames. Turn reference observations into original studio recipes, not shot-for-shot copies or unlicensed prompt/asset copies.
+
+## Use the portable prompt system
+Choose one primary recipe and no more than two supporting techniques. Pass the selected recipe to the production CLI with `--prompt-recipe <recipe-id>`. Select a specialist master prompt and a scene template appropriate to the task. For text-to-video specify a visible action, framing, camera path and temporal progression. For image-to-video preserve the input frame's fixed elements and direct only the intended motion. For deterministic renders define frame/timing functions, transitions, exact text and proof-frame QC. Iterate against observed defects, changing only a few variables at a time. Never claim recipe-specific effects are rendered if the current renderer cannot implement them.
 
 ## Research
 Find reliable sources for factual claims. Map each claim to source and script segment. Verify dates, names, numbers, quotations and causal claims. Label uncertainty and distinguish facts from visual metaphors. Research references by story structure, motion grammar, type, transition, color, sound, pacing and accessibility. Record the evidence level for every reference. Do not copy distinctive shots, scripts, music, characters or sequences.
@@ -84,7 +92,8 @@ Read `prompts/PROFESSIONAL_PROMPT_PLAYBOOK.md` and `prompts/STYLE_RECIPE_LIBRARY
 6. **Motion prompt:** start state, anticipation, action, follow-through, settle, easing, overlap, hold and transition out.
 7. **Sound prompt:** narrative function, energy curve, instrumentation/timbre, voice priority, transition cues, silence and mix targets.
 8. **Negative/repair prompt:** describe observable defects and required corrections; change one major variable per retry.
-8. **Negative prompt:** describe observable visual, motion, text, continuity and audio failure modes specific to the selected model; avoid generic keyword piles.\n9. **QC prompt:** compare the rendered artifact against the brief and scene acceptance criteria; report evidence, not impressions.
+8. **Negative prompt:** describe observable visual, motion, text, continuity and audio failure modes specific to the selected model; avoid generic keyword piles.
+9. **QC prompt:** compare the rendered artifact against the brief and scene acceptance criteria; report evidence, not impressions.
 
 ## Reference-guided originality
 Study public prompt guides and reference videos for transferable methods: clear subject/action, explicit camera framing and movement, controlled temporal scope, lighting, continuity, iterative refinement and purposeful sound. Useful starting points include the [Runway text-to-video prompting guide](https://help.runwayml.com/hc/en-us/articles/42460036199443-Text-to-Video-Prompting-Guide), [Runway camera-prompt guide](https://runway.com/resources/ai-camera-prompts), [Adobe Firefly prompt guide](https://helpx.adobe.com/uk/firefly/web/work-with-audio-and-video/work-with-video/writing-effective-text-prompts-for-video-generation.html), and [Remotion timing documentation](https://www.remotion.dev/docs/timing). These are method references, not a license to copy a creator's full prompt, distinctive composition, script, footage, character or soundtrack. Write original prompts from the project's own brief and record which general technique was adopted. Do not claim that a public prompt was tested in a provider unless it was actually run.
@@ -97,3 +106,10 @@ For every scene, produce structured fields: `scene_id`, `purpose`, `duration_sec
 
 ## Quality loop
 Score each rendered chapter/scene only from available evidence. Check first frame, visual hierarchy, motion readability, continuity, safe zones, text shaping, caption line lengths, audio intelligibility, transitions, render integrity and claim provenance. Prefer specific repair instructions such as “hold the chart until every axis label has been readable for at least 1.5 seconds” over vague instructions such as “make it more professional.” Keep a bounded repair count and report anything not reviewed as NOT_RUN. A technical render passing does not establish professional visual or audio quality.
+
+
+## Portable prompt-library integration
+
+Search the 70-recipe catalog with the prompt search command, then retrieve the complete combined master prompt with the prompt show command. Do not stop at a style label: select motion grammar, typography, palette, camera, sound and anti-patterns together. Use the production workflow pack sequentially, while batching independent research, asset-provenance checks and prompt drafting in parallel when they do not compete for the same mutable resource.
+
+For Prompt Motion findings, read the source-linked synthesis in the research directory. Its reported sample and popularity signals are descriptive, not universal laws. Distinguish correlation from causation. Treat text-only source pages as L1 evidence, direct full-video viewing as L2, and a genuine timecoded breakdown as L3. Never upgrade evidence by inference.

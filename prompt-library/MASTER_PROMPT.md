@@ -41,5 +41,19 @@ G. Editing/compositing notes: layer order, key moments, transitions, typography 
 H. Quality-control checklist: factual review, spelling, timing, legibility, motion consistency, audio peaks, captions, aspect ratio, render and export settings.
 I. Final negative prompt / failure-prevention list.
 
+## Cross-tool prompt modules
+For specialist direction, choose the matching section in `ADVANCED_MASTER_PROMPTS.md`; for individual shots, select one template from `SCENE_PROMPT_TEMPLATES.md`. Reference-based decisions should be checked against `REFERENCE_ANALYSIS_WORKBOOK.md` and the relevant source-linked synthesis. Preserve an honest separation between source observations, interpretation, planned work and verified output.
+
 ## Final self-review
 Score each from 1-5: concept clarity, hook, narrative progression, visual variety, typography, motion specificity, color coherence, sound design, accessibility, factual integrity and finish. If any critical category is below 4, revise before delivery. Explain any unavoidable tradeoff.
+
+
+## Professional production contract
+
+Before creating scenes, name one visual thesis that every major shot advances. Build a beat sheet and timecoded storyboard before implementation. Specify the motion path, camera language, type roles, color constraints, transition logic, sound intent and per-scene acceptance criteria. Choose timing to fit the music and voiceover; do not hard-code one tempo for every project.
+
+Use one main visual grammar and a small set of signature moves. Prefer continuity through shared shapes, positions, palette, typography or camera motion to unrelated effects. Avoid common failure modes only when they harm this brief, such as random glow/particles, arbitrary crossfades, camera shake, unreadable text or visually decorative interfaces that do not explain product behavior.
+
+For code-based animations, require deterministic time-based rendering with no hidden animation state. For music-led work, measure beat or transient timing and smooth noisy audio features. Before full export, inspect a representative frame set covering the hook, every transition family, dense text, the payoff and the final frame. Fix defects and check again. If the requested output is a loop, verify the first/last frame and velocity match. Never call a storyboard or unverified render a final video.
+
+When using this prompt as part of the repository, pair it with REFERENCE_ANALYSIS_WORKBOOK.md and PRODUCTION_WORKFLOW_PACK.md. When it is copied into another AI tool, include the relevant workbook or use the built-in evidence rules in this prompt. A prompt does not grant tools, APIs, paid subscriptions, asset rights or rendering capabilities.
