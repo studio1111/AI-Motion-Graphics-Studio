@@ -290,6 +290,14 @@ function makeSrt(scenes,fps){
  return rows.join("\n");
 }
 function timedScenes(scenes,fps){let cursor=0;return scenes.map(s=>{const start=cursor,end=start+s.durationInFrames;cursor=end;return {...s,startFrame:start,endFrame:end,startSeconds:Number((start/fps).toFixed(3)),endSeconds:Number((end/fps).toFixed(3))};});}
+export function sampleTimes(durationSeconds){
+ const duration=Number(durationSeconds);
+ if(!Number.isFinite(duration)||duration<=0)return [];
+ const clampTime=value=>Math.max(0,Math.min(Math.max(0,duration-0.1),value));
+ const candidates=[Math.min(0.5,duration/4),duration/2+Math.min(0.37,duration/10),Math.max(0,duration-Math.min(1,duration/4))];
+ return Array.from(new Set(candidates.map(value=>Number(clampTime(value).toFixed(2))));
+}
+
 async function checkVideo(file,expected,dir){
  const report={fileExists:"NOT_RUN",nonEmpty:"NOT_RUN",probe:"NOT_RUN",decode:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN",failures:[],metadata:null,sampledFrames:[]};let st;try{st=await stat(file);report.fileExists="PASS";report.nonEmpty=st.size?"PASS":"FAIL";report.fileSizeBytes=st.size;}catch{report.fileExists="FAIL";report.nonEmpty="FAIL";report.failures.push("Video file missing.");return report;}
  const probe=executable("ffprobe"),ffmpeg=executable("ffmpeg");if(!probe){report.probe="BLOCKED";report.failures.push("ffprobe is unavailable.");return report;}
@@ -297,7 +305,7 @@ async function checkVideo(file,expected,dir){
  const v=(d.streams||[]).find(s=>s.codec_type==="video"),a=(d.streams||[]).filter(s=>s.codec_type==="audio"),duration=Number(d.format?.duration||0),rate=String(v?.avg_frame_rate||v?.r_frame_rate||"0/1").split("/"),fps=rate.length===2?Number(rate[0])/Number(rate[1]):Number(rate[0]);
  report.metadata={codec:v?.codec_name||null,width:v?.width||null,height:v?.height||null,frameRate:v?.avg_frame_rate||v?.r_frame_rate||null,durationSeconds:duration,audioStreams:a.length,audioCodecs:a.map(x=>x.codec_name)};
  const ok=v?.codec_name==="h264"&&v.width===expected.width&&v.height===expected.height&&Math.abs(fps-expected.fps)<0.02&&duration>=expected.durationSeconds*0.9&&a.length>=(expected.audioExpected?1:0);report.probe=ok?"PASS":"FAIL";if(!ok)report.failures.push("MP4 metadata differs from expected properties.");
- if(ffmpeg){const dec=await run(ffmpeg,["-v","error","-i",file,"-f","null","-"],Math.max(120000,expected.durationSeconds*3000));report.decode=dec.code===0?"PASS":"FAIL";if(dec.code!==0)report.failures.push("Full-file decode failed.");const frameDir=join(dir,"frame-samples");await mkdir(frameDir,{recursive:true});let all=true;const times=Array.from(new Set([0,Math.max(0,duration/2),Math.max(0,duration-0.5)]));for(let i=0;i<times.length;i++){const frame=join(frameDir,"frame-"+String(i+1).padStart(2,"0")+".jpg");const r=await run(ffmpeg,["-y","-v","error","-ss",times[i].toFixed(2),"-i",file,"-frames:v","1","-q:v","3",frame],30000);if(r.code===0)report.sampledFrames.push({path:frame,second:Number(times[i].toFixed(2))});else all=false;}report.frameSamples=all&&report.sampledFrames.length?"PASS_EXTRACTED_NOT_VISUALLY_REVIEWED":"FAIL";}else{report.decode="BLOCKED";report.frameSamples="BLOCKED";report.failures.push("ffmpeg is unavailable.");}
+ if(ffmpeg){const dec=await run(ffmpeg,["-v","error","-i",file,"-f","null","-"],Math.max(120000,expected.durationSeconds*3000));report.decode=dec.code===0?"PASS":"FAIL";if(dec.code!==0)report.failures.push("Full-file decode failed.");const frameDir=join(dir,"frame-samples");await mkdir(frameDir,{recursive:true});let all=true;const times=sampleTimes(duration);for(let i=0;i<times.length;i++){const frame=join(frameDir,"frame-"+String(i+1).padStart(2,"0")+".jpg");const r=await run(ffmpeg,["-y","-v","error","-ss",times[i].toFixed(2),"-i",file,"-frames:v","1","-q:v","3",frame],30000);if(r.code===0)report.sampledFrames.push({path:frame,second:Number(times[i].toFixed(2))});else all=false;}report.frameSamples=all&&report.sampledFrames.length?"PASS_EXTRACTED_NOT_VISUALLY_REVIEWED":"FAIL";}else{report.decode="BLOCKED";report.frameSamples="BLOCKED";report.failures.push("ffmpeg is unavailable.");}
  report.durationSeconds=duration;return report;
 }
 

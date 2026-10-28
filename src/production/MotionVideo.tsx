@@ -59,59 +59,139 @@ const captionForFrame = (text: string, frame: number, spokenFrames: number) => {
   return segments[segments.length - 1];
 };
 
-const SceneBackdrop: React.FC<{ palette: MotionPalette; frame: number; index: number }> = ({ palette, frame, index }) => {
+const SceneBackdrop: React.FC<{ palette: MotionPalette; frame: number; index: number; styleId: string }> = ({ palette, frame, index, styleId }) => {
   const drift = interpolate(frame, [0, 150], [-2, 3], clamp);
   const spin = interpolate(frame, [0, 180], [0, index % 2 ? -16 : 19], clamp);
   const isLight = ["#F3F3EF", "#F7F1E4", "#EFE5D1", "#E9E3D4"].includes(palette.background.toUpperCase());
+  const editorial = styleId === "editorial-kinetic-type" || styleId === "swiss-modernist";
+  const paper = styleId === "tactile-collage";
+  const character = styleId === "character-2d";
+  const topographic = styleId === "maps-timeline";
+  const vertical = styleId === "vertical-social";
+  const data = styleId === "data-journalism";
+  const ringStyles = ["premium-3d-product", "scientific-2-5d", "procedural-generative", "cinematic-documentary", "hybrid-live-action"];
+  const background = paper
+    ? "linear-gradient(132deg, " + palette.background + " 0%, " + rgba(palette.accent2, 0.08) + " 100%)"
+    : editorial
+      ? "linear-gradient(90deg, " + palette.background + " 0%, " + palette.background + " 58%, " + rgba(palette.accent, 0.055) + " 58.1%, " + palette.background + " 58.25%, " + palette.background + " 100%)"
+      : character
+        ? "radial-gradient(ellipse at " + (76 + drift) + "% 18%, " + rgba(palette.accent2, 0.2) + " 0%, transparent 38%), " + palette.background
+        : styleId === "premium-3d-product"
+          ? "radial-gradient(ellipse at " + (68 + drift) + "% 19%, " + rgba(palette.accent2, 0.23) + " 0%, transparent 38%), radial-gradient(ellipse at 54% 88%, " + rgba(palette.accent, 0.1) + " 0%, transparent 47%), " + palette.background
+          : data
+            ? "linear-gradient(180deg, " + palette.background + " 0%, " + rgba(palette.panel, 0.58) + " 100%)"
+            : "radial-gradient(ellipse at " + (68 + drift) + "% " + (16 + index % 3 * 11) + "%, " + rgba(palette.accent, isLight ? 0.11 : 0.18) + " 0%, transparent 43%), linear-gradient(128deg, " + palette.background + " 0%, " + palette.background + " 58%, " + rgba(palette.accent2, isLight ? 0.05 : 0.08) + " 100%)";
+  const texture = topographic
+    ? "repeating-radial-gradient(ellipse at 72% 58%, transparent 0px, transparent 27px, " + rgba(palette.line, 0.38) + " 28px, transparent 30px)"
+    : paper
+      ? "repeating-linear-gradient(0deg, " + rgba(palette.foreground, 0.026) + " 0px, " + rgba(palette.foreground, 0.026) + " 1px, transparent 1px, transparent 5px), repeating-linear-gradient(90deg, " + rgba(palette.foreground, 0.016) + " 0px, " + rgba(palette.foreground, 0.016) + " 1px, transparent 1px, transparent 7px)"
+      : editorial
+        ? "linear-gradient(90deg, transparent 0%, transparent 11.9%, " + rgba(palette.line, 0.44) + " 12%, transparent 12.1%, transparent 87.9%, " + rgba(palette.line, 0.24) + " 88%, transparent 88.1%)"
+        : vertical
+          ? "linear-gradient(90deg, " + rgba(palette.accent, 0.15) + " 0%, transparent 2%, transparent 22%, " + rgba(palette.foreground, 0.055) + " 22.2%, transparent 22.5%, transparent 78%, " + rgba(palette.accent2, 0.08) + " 78.5%, transparent 79%)"
+          : "linear-gradient(" + spin + "deg, transparent 49.7%, " + rgba(palette.line, 0.22) + " 49.9%, transparent 50.1%), linear-gradient(90deg, " + rgba(palette.line, data ? 0.18 : 0.11) + " 1px, transparent 1px), linear-gradient(" + rgba(palette.line, data ? 0.18 : 0.11) + " 1px, transparent 1px)";
+  const textureSize = topographic ? "100% 100%" : paper ? "8px 8px, 13px 13px" : editorial || vertical ? "100% 100%" : "100% 100%, 84px 84px, 84px 84px";
+
   return (
-    <AbsoluteFill
-      style={{
-        background: "radial-gradient(ellipse at " + (68 + drift) + "% " + (16 + index % 3 * 11) + "%, " +
-          rgba(palette.accent, isLight ? 0.11 : 0.18) + " 0%, transparent 43%), linear-gradient(128deg, " +
-          palette.background + " 0%, " + palette.background + " 58%, " + rgba(palette.accent2, isLight ? 0.05 : 0.08) + " 100%)"
-      }}
-    >
+    <AbsoluteFill style={{ background }}>
       <AbsoluteFill
         style={{
-          backgroundImage:
-            "linear-gradient(" + spin + "deg, transparent 49.7%, " + rgba(palette.line, 0.22) +
-            " 49.9%, transparent 50.1%), linear-gradient(90deg, " + rgba(palette.line, 0.11) +
-            " 1px, transparent 1px), linear-gradient(" + rgba(palette.line, 0.11) +
-            " 1px, transparent 1px)",
-          backgroundSize: "100% 100%, 84px 84px, 84px 84px",
-          maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 92%)",
-          opacity: 0.62
+          backgroundImage: texture,
+          backgroundSize: textureSize,
+          maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.72), transparent 94%)",
+          opacity: paper ? 0.82 : editorial ? 0.78 : vertical ? 0.88 : 0.62
         }}
       />
-      <div
-        style={{
-          position: "absolute",
-          width: "52vw",
-          height: "52vw",
-          maxWidth: 1100,
-          maxHeight: 1100,
-          right: "-17%",
-          bottom: "-55%",
-          borderRadius: "50%",
-          border: "1px solid " + rgba(palette.accent, 0.24),
-          transform: "rotateX(64deg) rotateZ(" + spin + "deg)",
-          boxShadow: "0 0 90px " + rgba(palette.accent, 0.05)
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          width: "37vw",
-          height: "37vw",
-          maxWidth: 820,
-          maxHeight: 820,
-          right: "-8%",
-          bottom: "-43%",
-          borderRadius: "50%",
-          border: "1px solid " + rgba(palette.foreground, 0.11),
-          transform: "rotateX(64deg) rotateZ(" + -spin * 0.7 + "deg)"
-        }}
-      />
+      {character ? (
+        <div
+          style={{
+            position: "absolute",
+            width: "34vw",
+            height: "34vw",
+            maxWidth: 700,
+            maxHeight: 700,
+            left: "-11%",
+            top: "-21%",
+            borderRadius: "43% 57% 64% 36% / 44% 41% 59% 56%",
+            background: rgba(palette.accent, 0.1),
+            transform: "rotate(" + spin + "deg)"
+          }}
+        />
+      ) : null}
+      {editorial ? (
+        <div
+          style={{
+            position: "absolute",
+            left: "12%",
+            top: "15%",
+            width: 3,
+            height: "70%",
+            background: rgba(palette.accent, 0.48),
+            transform: "translateY(" + drift * 4 + "px)"
+          }}
+        />
+      ) : null}
+      {paper ? (
+        <div
+          style={{
+            position: "absolute",
+            right: "-2%",
+            top: "10%",
+            width: "27vw",
+            height: "36vh",
+            border: "1px solid " + rgba(palette.foreground, 0.16),
+            background: rgba(palette.panel, 0.26),
+            boxShadow: "12px 16px 0 " + rgba(palette.foreground, 0.035),
+            transform: "rotate(" + (index % 2 ? 3 : -2) + "deg)"
+          }}
+        />
+      ) : null}
+      {vertical ? (
+        <div
+          style={{
+            position: "absolute",
+            right: "4%",
+            bottom: "-28%",
+            width: "9%",
+            height: "76%",
+            background: rgba(palette.accent, 0.13),
+            transform: "rotate(9deg)"
+          }}
+        />
+      ) : null}
+      {ringStyles.includes(styleId) ? (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              width: "52vw",
+              height: "52vw",
+              maxWidth: 1100,
+              maxHeight: 1100,
+              right: "-17%",
+              bottom: "-55%",
+              borderRadius: "50%",
+              border: "1px solid " + rgba(palette.accent, 0.24),
+              transform: "rotateX(64deg) rotateZ(" + spin + "deg)",
+              boxShadow: "0 0 90px " + rgba(palette.accent, 0.05)
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              width: "37vw",
+              height: "37vw",
+              maxWidth: 820,
+              maxHeight: 820,
+              right: "-8%",
+              bottom: "-43%",
+              borderRadius: "50%",
+              border: "1px solid " + rgba(palette.foreground, 0.11),
+              transform: "rotateX(64deg) rotateZ(" + -spin * 0.7 + "deg)"
+            }}
+          />
+        </>
+      ) : null}
     </AbsoluteFill>
   );
 };
@@ -145,10 +225,15 @@ const SceneText: React.FC<{
   const rise = spring({ frame, fps, config: { damping: 18, stiffness: 105, mass: 0.9 } });
   const opacity = interpolate(frame, [0, 8, 20], [0, 0.35, 1], clamp);
   const titleY = interpolate(rise, [0, 1], [58, 0], clamp);
-  const titleSize = vertical ? 76 : 92;
+  const titleLength = Array.from(scene.title || "").length;
+  const titleScale = titleLength <= 24 ? 1 : titleLength <= 36 ? 0.9 : titleLength <= 48 ? 0.8 : titleLength <= 64 ? 0.7 : 0.62;
+  const titleSize = Math.max(vertical ? 42 : 48, (vertical ? 76 : 92) * titleScale);
   const titleAlign = vertical ? "center" : rtl ? "right" : "left";
-  const titleWidth = vertical ? "100%" : "78%";
-  const bodySize = vertical ? 30 : 28;
+  const titleWidth = "100%";
+  const bodyLength = Array.from(scene.body || "").length;
+  const bodyScale = bodyLength <= 100 ? 1 : bodyLength <= 180 ? 0.92 : 0.82;
+  const bodySize = (vertical ? 30 : 28) * bodyScale;
+  const titleWords = scene.title.trim().split(/\\s+/).filter(Boolean);
 
   return (
     <div
@@ -178,7 +263,27 @@ const SceneText: React.FC<{
           overflowWrap: "anywhere"
         }}
       >
-        {scene.title}
+        {titleWords.map((word, wordIndex) => {
+          const wordFrame = Math.max(0, frame - wordIndex * 2);
+          const wordOpacity = interpolate(wordFrame, [0, 8], [0, 1], clamp);
+          const wordY = interpolate(wordFrame, [0, 10], [18, 0], clamp);
+          return (
+            <React.Fragment key={word + "-" + wordIndex}>
+              <span
+                style={{
+                  display: "inline-block",
+                  maxWidth: "100%",
+                  opacity: wordOpacity,
+                  transform: "translateY(" + wordY + "px)",
+                  overflowWrap: "anywhere"
+                }}
+              >
+                {word}
+              </span>
+              {wordIndex < titleWords.length - 1 ? " " : ""}
+            </React.Fragment>
+          );
+        })}
       </div>
       {scene.body ? (
         <div
@@ -306,14 +411,14 @@ const CompareGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; fra
       {labels.map((label, idx) => {
         const h = interpolate(frame, [5 + idx * 7, 48 + idx * 7], [12, 90], clamp);
         return (
-          <div key={label} style={{ flex: 1, borderTop: "1px solid " + palette.line, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "22px 18px", background: "linear-gradient(180deg, " + rgba(palette.accent, 0.10 + idx * 0.03) + ", transparent 78%)" }}>
+          <div key={label} style={{ flex: 1, minWidth: 0, borderTop: "1px solid " + palette.line, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "22px 12px", background: "linear-gradient(180deg, " + rgba(palette.accent, 0.10 + idx * 0.03) + ", transparent 78%)", boxSizing: "border-box" }}>
             <div style={{ color: palette.muted, fontFamily: typography.mono, fontSize: 17 }}>0{idx + 1} / DIMENSION</div>
             <div style={{ height: "62%", display: "flex", alignItems: "flex-end", gap: 5 }}>
               {Array.from({ length: 5 }).map((_, bar) => (
                 <div key={bar} style={{ flex: 1, height: String(Math.max(12, Math.min(96, h - bar * 7 + ((idx + bar) % 3) * 5))) + "%", background: bar === 4 ? palette.accent2 : palette.accent, opacity: 0.25 + bar * 0.15 }} />
               ))}
             </div>
-            <div dir="auto" style={{ color: palette.foreground, fontFamily: typography.display, fontSize: 31, fontWeight: 700 }}>{label}</div>
+            <div dir="auto" style={{ minWidth: 0, color: palette.foreground, fontFamily: typography.display, fontSize: label.length > 12 ? 18 : label.length > 9 ? 23 : 30, fontWeight: 700, lineHeight: 1.06, overflowWrap: "anywhere", textWrap: "balance" as CSSProperties["textWrap"] }}>{label}</div>
           </div>
         );
       })}
@@ -393,7 +498,7 @@ const DataGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; frame:
           return (
             <div key={label} style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "stretch" }}>
               <div style={{ height: h + "%", background: idx === 1 ? palette.accent2 : palette.accent, transformOrigin: "bottom", minHeight: 8, opacity: 0.88 }} />
-              <div dir="auto" style={{ color: palette.foreground, fontSize: 19, fontFamily: typography.mono, marginTop: 16, marginBottom: 13, textAlign: "center" }}>{label}</div>
+              <div dir="auto" style={{ minWidth: 0, color: palette.foreground, fontSize: Math.max(13, Math.min(19, 210 / Math.max(1, label.length))), fontFamily: typography.mono, marginTop: 16, marginBottom: 13, textAlign: "center", overflowWrap: "anywhere", lineHeight: 1.12 }}>{label}</div>
             </div>
           );
         })}
@@ -487,13 +592,14 @@ const SceneView: React.FC<{
   const zoom = interpolate(frame, [0, 22], [0.95, 1], clamp);
   const clipPath = transition === "wipe" ? "inset(0 " + (100 - wipe) + "% 0 0)" : transition === "split" ? "inset(0 0 0 " + (50 * (1 - entrance)) + "%)" : "none";
   const margin = vertical ? "6%" : "7.5%";
-  const mainGraphicWidth = vertical ? "92%" : "53%";
+  const typographyLed = ["editorial", "quote", "outro"].includes(scene.layout);
+  const mainGraphicWidth = typographyLed ? "100%" : vertical ? "92%" : "53%";
   const textWidth = vertical ? "100%" : "43%";
   const horizontalTextAlign = rtl ? "flex-end" : "flex-start";
 
   return (
     <AbsoluteFill style={{ opacity }}>
-      <SceneBackdrop palette={palette} frame={frame} index={index} />
+      <SceneBackdrop palette={palette} frame={frame} index={index} styleId={props.styleId} />
       <AbsoluteFill style={{ clipPath, transform: transition === "scale" ? "scale(" + zoom + ")" : "none" }}>
         <div style={{ position: "absolute", top: 34, left: margin, right: margin, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -514,13 +620,15 @@ const SceneView: React.FC<{
             flexDirection: vertical ? "column" : "row",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: vertical ? 20 : 48
+            gap: typographyLed ? 0 : vertical ? 20 : 48
           }}
         >
-          <div style={{ width: textWidth, height: vertical ? "42%" : "100%", display: "flex", alignItems: "center", justifyContent: horizontalTextAlign, zIndex: 3 }}>
-            <SceneText scene={scene} palette={palette} typography={typography} rtl={rtl} vertical={vertical} frame={frame} fps={fps} />
-          </div>
-          <div style={{ width: mainGraphicWidth, height: vertical ? "47%" : "100%", minHeight: vertical ? 250 : undefined, position: "relative", zIndex: 2 }}>
+          {!typographyLed ? (
+            <div style={{ width: textWidth, height: vertical ? "42%" : "100%", display: "flex", alignItems: "center", justifyContent: horizontalTextAlign, zIndex: 3 }}>
+              <SceneText scene={scene} palette={palette} typography={typography} rtl={rtl} vertical={vertical} frame={frame} fps={fps} />
+            </div>
+          ) : null}
+          <div style={{ width: mainGraphicWidth, height: vertical && !typographyLed ? "47%" : "100%", minHeight: vertical ? 250 : undefined, position: "relative", zIndex: 2 }}>
             <LayoutGraphic scene={scene} palette={palette} frame={frame} vertical={vertical} typography={typography} rtl={rtl} />
           </div>
         </div>

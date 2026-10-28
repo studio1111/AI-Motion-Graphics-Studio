@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { allocateFrames, buildLocalPlan, chooseStyle, normalizePlan, parseArgs, safeSlug, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+import { allocateFrames, buildLocalPlan, chooseStyle, normalizePlan, parseArgs, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
 
 test("local fallback creates eight scenes and varies visual layouts",()=>{
   const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
@@ -91,6 +91,19 @@ test("output slug is path-safe",()=>{
   assert.ok(slug.length>0&&slug.length<=48);
   assert.ok(!slug.includes("/")&&!slug.includes("\\"));
   assert.equal(safeSlug("***"),"motion-video");
+});
+
+test("QC samples interior frames rather than exact start and midpoint cuts",()=>{
+  assert.deepEqual(sampleTimes(12),[0.5,6.37,11]);
+  for(const duration of [5,12,90]){
+    const times=sampleTimes(duration);
+    assert.equal(times.length,3);
+    assert.equal(new Set(times).size,3);
+    assert.ok(times.every(t=>t>0&&t<duration));
+    assert.notEqual(times[0],duration/2);
+    assert.notEqual(times[1],duration/2);
+  }
+  assert.deepEqual(sampleTimes(Number.NaN),[]);
 });
 
 test("WAV duration parser handles a minimal PCM header",()=>{
