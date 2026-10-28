@@ -158,3 +158,8 @@ Eight more entry pages broadened the sample beyond product UI. All remain **L1**
 - [History of AI timeline](https://prompt-motion.com/kloss-xyz-fe0c31): add fact-checked event selection, source citations, chronology validation and clear labels for illustrative reconstructions.
 
 The reviewed prompts range from deliberately broad one-line requests to detailed shot/beat/build specifications. The studio's portable recipes are original abstractions of transferable craft, not copied creator text. Prompt Motion pages currently expose posters and text to the scraper, not directly playable video assets, and TubeLab/TubeAlfred searches returned HTTP 402 for insufficient credits; therefore no full-video or timestamped review is claimed.
+
+
+## Sampled video spot-check: P001
+
+One linked X video was sampled at approximately 1, 5, 10–15, 20 and 25–28 seconds (about 29 seconds total). It showed a warm off-white canvas, bold central brand elements, liquid-glass/photo UI transitions, a framed-print end sequence and a loop back toward the opening. This is a sampled visual spot-check, not a continuous end-to-end watch; it remains L1, not L2/L3. The other reviewed pages expose posters and prompt text but no directly playable video asset through the scraper. TubeLab and TubeAlfred searches returned HTTP 402 for insufficient credits, and further Firecrawl live-browser checks were blocked by exhausted credits.
