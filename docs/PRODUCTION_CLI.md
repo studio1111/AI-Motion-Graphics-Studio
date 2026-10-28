@@ -33,7 +33,7 @@ When the `speech` executable from `persian-speech` is installed, `--voice auto` 
 3. Without available AI access, generates an eight-scene conceptual plan localized for `fa`, `en`, `de`, `es`, `fr`, `it`, `pt` or `nl`, with varied visual layouts and explicit warnings that factual research has not been performed. These local translations are template copy, not a topic-specific researched script.
 4. Allocates exact scene frames; if local TTS succeeds, scene durations respect measured speech and may extend beyond the target instead of truncating narration.
 5. Optionally creates voice WAVs using Persian Speech / Mana-Persian-Piper for Farsi, or Pocket TTS for its supported languages. If synthesis fails or a runtime is missing, the warning is preserved and rendering continues when possible.
-6. Creates an original soft procedural ambient WAV, Remotion props, storyboard timing, voiceover text and SRT captions.
+6. Creates an original procedural stereo score with style-sensitive tempo, chord movement and transition-synchronized sound cues, Remotion props, storyboard timing, voiceover text and SRT captions.
 7. Renders MP4, probes codec/dimensions/frame rate/duration/audio streams, decodes with FFmpeg and extracts frame samples.
 
 ## Outputs

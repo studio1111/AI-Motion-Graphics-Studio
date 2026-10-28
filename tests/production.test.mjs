@@ -1,6 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+
+test("manual workflow defaults to local narration without enabling paid AI",async()=>{
+  const workflow=await readFile(new URL("../.github/workflows/produce-video.yml",import.meta.url),"utf8");
+  const paidBlock=workflow.match(/allow_paid_ai:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
+  const voiceBlock=workflow.match(/generate_voice:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
+  assert.match(paidBlock,/default:\s*["']?false["']?/,"paid API access must be opt-in");
+  assert.match(voiceBlock,/default:\s*true/,"local narration should be on by default");
+  assert.match(workflow,/MOTION_STUDIO_ALLOW_PAID_API:\s*\$\{\{\s*inputs\.allow_paid_ai\s*\}\}/);
+  assert.match(workflow,/MOTION_STUDIO_VOICE:\s*\$\{\{[\s\S]*inputs\.generate_voice/);
+  assert.match(workflow,/inputs\.language\s*==\s*'fa'[\s\S]*persian-speech/i);
+  assert.match(workflow,/pocket-tts/i);
+});
 
 test("topic visual classifier selects a safe, relevant illustration family",()=>{
   const cases=[
