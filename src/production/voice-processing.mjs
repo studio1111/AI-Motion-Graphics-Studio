@@ -8,3 +8,11 @@ export function buildNarrationEnhancementFilter() {
     "alimiter=limit=0.92"
   ].join(",");
 }
+
+export function getEnhancedNarrationPath(inputPath) {
+  const source = String(inputPath || "");
+  if (!/\\.wav$/i.test(source)) {
+    throw new TypeError("Narration enhancement requires a WAV file path.");
+  }
+  return source.replace(/\\.wav$/i, ".enhanced.wav");
+}
