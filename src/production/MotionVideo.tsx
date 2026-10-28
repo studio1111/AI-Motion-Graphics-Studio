@@ -234,7 +234,7 @@ const SceneText: React.FC<{
   const titleAlign = vertical ? "center" : rtl ? "right" : "left";
   const titleWidth = "100%";
   const bodySize = fitMotionFontSize(scene.body, vertical ? 30 : 28, vertical ? 18 : 19);
-  const titleWords = scene.title.trim().split(/\\s+/).filter(Boolean);
+  const titleWords = scene.title.trim().split(/\s+/).filter(Boolean);
 
   return (
     <div
