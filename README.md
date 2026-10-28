@@ -35,6 +35,7 @@ Local install and validation:
 Build and render a 90-second video (the CLI accepts 5 seconds to 60 minutes; long-form rendering requires a valid topic-specific storyboard):
 
     npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
+npm run produce -- --topic "A concept-led motion design showreel" --language en --duration 30 --prompt-recipe motion-design-showreel --plan-only --voice off
 
 Set `--language` to `fa`, `en`, `de`, `es`, `fr`, `it`, `pt` or `nl`. The local fallback provides a localized eight-scene conceptual template for each of these languages; it does not invent factual statistics and is not a researched script. To generate a topic-specific storyboard with configured services, set ANTHROPIC_API_KEY and/or FIRECRAWL_API_KEY, then explicitly pass --allow-paid-ai. This switch can incur provider charges. Secrets alone do not enable those APIs.
 
