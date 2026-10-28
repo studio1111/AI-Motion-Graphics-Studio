@@ -29,15 +29,11 @@ export const EDGE_TTS_VOICE_BY_LANGUAGE = Object.freeze({
 });
 
 function boundedSignedValue(value, { label, suffix, minimum, maximum }) {
-  const escapedSuffix = suffix.replace(/[.*+?^${}()|[\]\\]/g, "\\  const match = String(value ?? "").trim().match(/^([+-])(\d{1,3})$/);
-  if (!match) throw new TypeError("Edge TTS " + label + " must be a signed integer followed by " + suffix + ".");
-  const magnitude = Number(match[2]);
-  const number = match[1] === "-" ? -magnitude : magnitude;
-  if (!Number.isInteger(number) || number < minimum || number > maximum) {
-    throw new RangeError("Edge TTS " + label + " must be between " + minimum + suffix + " and +" + maximum + suffix + ".");
-  }
-  return match[1] + magnitude + suffix;");
-  const match = String(value ?? "").trim().match(new RegExp("^([+-])(\\d{1,3})" + escapedSuffix + "$"));
+  const raw = String(value ?? "").trim();
+  const pattern = suffix === "%"
+    ? /^([+-])(\d{1,3})%$/
+    : /^([+-])(\d{1,3})Hz$/;
+  const match = raw.match(pattern);
   if (!match) throw new TypeError("Edge TTS " + label + " must be a signed integer followed by " + suffix + ".");
   const magnitude = Number(match[2]);
   const number = match[1] === "-" ? -magnitude : magnitude;
