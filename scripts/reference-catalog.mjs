@@ -17,7 +17,6 @@ export const REFERENCE_TARGET_QUOTAS = Object.freeze({
 });
 
 const TRACKING_PARAMS = /^(utm_.+|si|feature|t|start|pp|ab_channel|ref|source|fbclid|gclid|mc_cid|mc_eid)$/i;
-const TOOLING_ONLY = /\b(workflow\/tools|workflow|tutorial|plugins?|tool research|install another|claude code)\b/i;
 
 export function canonicalizeReferenceUrl(rawUrl) {
   const url = new URL(String(rawUrl || "").trim());
