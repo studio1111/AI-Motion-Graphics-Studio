@@ -14,13 +14,29 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/STYLE_PRESET_CATALOG.md`: concrete palettes, font roles, motion, sound and anti-patterns.
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
-- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.\n- `prompt-library/`: standalone, tool-agnostic prompt suite with 50 reusable style recipes, six specialized master prompts, a browsable catalog and copy-ready CLI for any AI assistant.
+- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
+- `prompt-library/`: standalone, tool-agnostic prompt suite with 70 reusable style recipes, six specialized master prompts, a browsable catalog and copy-ready CLI for any AI assistant.
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
+- `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`: repeatable evidence-aware rubric for analyzing reference pages and videos.
+- `prompt-library/PRODUCTION_WORKFLOW_PACK.md`: copy-ready prompts for story, storyboard, motion, typography, audio, rendering and quality repair.
+- `research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md`: source-linked lessons from Prompt Motion research pages.
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
 - `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost caveats.
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
 
-## Portable prompt library\n\nUse the built-in prompt library with any AI assistant or creative tool:\n\n    npm run prompts:list\n    npm run prompts:search -- typography\n    npm run prompts:show -- kinetic-type\n    npm run prompts:show -- product-launch --format json\n    npm run prompts:master\n\nThe `show` command combines the universal master prompt with the selected style recipe. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.\n\n## Running the production engine
+## Portable prompt library
+
+Use the built-in prompt library with any AI assistant or creative tool:
+
+    npm run prompts:list
+    npm run prompts:search -- typography
+    npm run prompts:show -- kinetic-type
+    npm run prompts:show -- product-launch --format json
+    npm run prompts:master
+
+The `show` command combines the universal master prompt with the selected style recipe. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.
+
+## Running the production engine
 
 Local install and validation:
 
