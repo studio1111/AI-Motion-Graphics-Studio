@@ -64,3 +64,15 @@ test("CLI supports machine-readable output and helpful unknown-id errors", () =>
   assert.equal(missing.status, 2);
   assert.match(missing.stderr, /Unknown recipe/);
 });
+
+
+test("portable library includes reference-analysis and production workflow packs", () => {
+  const workbook = fs.readFileSync(path.join(root, "prompt-library", "REFERENCE_ANALYSIS_WORKBOOK.md"), "utf8");
+  const workflows = fs.readFileSync(path.join(root, "prompt-library", "PRODUCTION_WORKFLOW_PACK.md"), "utf8");
+  const synthesis = fs.readFileSync(path.join(root, "research", "PROMPT_MOTION_SYNTHESIS_2026-10-28.md"), "utf8");
+  assert.match(workbook, /sampled review remains sampled/i);
+  assert.match(workbook, /L0.*L1.*L2.*L3/s);
+  assert.match(workflows, /beat sheet and timecoded storyboard/i);
+  assert.match(workflows, /Do not claim external tools are installed/i);
+  assert.match(synthesis, /not a claim that every video in the gallery was watched/i);
+});
