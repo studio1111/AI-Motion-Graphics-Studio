@@ -14,16 +14,25 @@ test("topic-aware scene graphics remain wired into the Remotion composition",asy
   assert.match(motion,/return <TopicSceneGraphic scene=\{scene\} family=\{visualFamily\}/);
 });
 
-test("manual workflow defaults to local narration without enabling paid AI",async()=>{
+test("manual workflow exposes explicit neural voice, score and prompt recipes without enabling paid AI",async()=>{
   const workflow=await readFile(new URL("../.github/workflows/produce-video.yml",import.meta.url),"utf8");
   const paidBlock=workflow.match(/allow_paid_ai:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
-  const voiceBlock=workflow.match(/generate_voice:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
+  const voiceBlock=workflow.match(/voice_engine:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
+  const musicBlock=workflow.match(/music_engine:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
+  const recipeBlock=workflow.match(/prompt_recipe:\n([\s\S]*?)(?=\n      [a-z_]+:|\n\s*permissions:)/)?.[1]||"";
   assert.match(paidBlock,/default:\s*["']?false["']?/,"paid API access must be opt-in");
-  assert.match(voiceBlock,/default:\s*true/,"local narration should be on by default");
+  assert.match(voiceBlock,/default:\s*auto/,"private local narration must remain the default");
+  assert.match(voiceBlock,/edge-tts/,"the user must be able to opt into the online neural voice");
+  assert.match(musicBlock,/default:\s*auto/,"the music engine should be selected based on configuration");
+  assert.match(musicBlock,/ace-step/,"the open-source neural score path must be configurable");
+  assert.match(recipeBlock,/default:\s*cinematic-science-cutaway/,"the prompt recipe must reach the real producer");
   assert.match(workflow,/MOTION_STUDIO_ALLOW_PAID_API:\s*\$\{\{\s*inputs\.allow_paid_ai\s*\}\}/);
-  assert.match(workflow,/MOTION_STUDIO_VOICE:\s*\$\{\{[\s\S]*inputs\.generate_voice/);
+  assert.match(workflow,/MOTION_STUDIO_VOICE:\s*\$\{\{\s*inputs\.voice_engine\s*\}\}/);
+  assert.match(workflow,/inputs\.voice_engine\s*==\s*'edge-tts'[\s\S]*edge-tts==7\.3\.1/);
   assert.match(workflow,/inputs\.language\s*==\s*'fa'[\s\S]*persian-speech/i);
   assert.match(workflow,/pocket-tts/i);
+  assert.match(workflow,/--prompt-recipe "\$MOTION_STUDIO_PROMPT_RECIPE"/);
+  assert.match(workflow,/--music-engine "\$MOTION_STUDIO_MUSIC_ENGINE"/);
 });
 
 test("topic visual classifier selects a safe, relevant illustration family",()=>{
