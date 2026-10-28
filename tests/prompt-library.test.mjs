@@ -72,7 +72,7 @@ test("portable library includes reference-analysis and production workflow packs
   const synthesis = fs.readFileSync(path.join(root, "research", "PROMPT_MOTION_SYNTHESIS_2026-10-28.md"), "utf8");
   assert.match(workbook, /sampled review remains sampled/i);
   assert.match(workbook, /L0.*L1.*L2.*L3/s);
-  assert.match(workflows, /beat sheet and timecoded storyboard/i);
+  assert.match(workflows, /timecoded beat sheet/i);
   assert.match(workflows, /Do not claim external tools are installed/i);
   assert.match(synthesis, /not a claim that every video in the gallery was watched/i);
 });
