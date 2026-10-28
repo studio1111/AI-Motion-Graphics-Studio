@@ -524,6 +524,7 @@ export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --top
 export async function produce(options,env=process.env){
  const warnings=[],runId=new Date().toISOString().replace(/[:.]/g,"-")+"-"+process.pid;let brief={};if(options.briefPath)brief=await readJson(resolve(options.briefPath));let sources=normalizeSources(brief.sources||brief.sourceUrls||[]);if(options.sourcesPath)sources=normalizeSources(sources.concat(normalizeSources(await readJson(resolve(options.sourcesPath)))));
  const topic=String(brief.topic||options.topic||"").trim();if(!topic)throw new Error("No topic supplied. Use --topic or --brief.");const language=String(brief.language||options.language||"fa").toLowerCase().split("-")[0],duration=Number(brief.durationSeconds||brief.duration||options.duration||90),ratio=String(brief.aspectRatio||options.aspectRatio||"16:9");if(!SUPPORTED_LANGUAGES.has(language))throw new Error("Unsupported language: "+language+". Supported languages: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");if(duration<5||duration>3600||!Number.isFinite(duration))throw new Error("Duration must be 5-3600 seconds (one hour).");if(!["16:9","9:16","1:1"].includes(ratio))throw new Error("Invalid aspect ratio.");
+ const fps=30,targetFrames=Math.round(duration*fps);
  const promptRecipeId=String(brief.promptRecipe||options.promptRecipe||"").trim().toLowerCase().replaceAll("_","-").replaceAll(" ","-");
  let promptRecipe=null;
  if(promptRecipeId){
