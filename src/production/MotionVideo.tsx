@@ -13,6 +13,7 @@ import type { CSSProperties } from "react";
 import type { MotionPalette, MotionScene, MotionVideoProps } from "./types";
 import { splitCaptionSegments } from "./captions.mjs";
 import { getCameraMotion } from "./motion-profiles.mjs";
+import { getMusicBedGain, getVoiceFadeEnvelope } from "./audio-mix.mjs";
 
 const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
 
@@ -1050,7 +1051,7 @@ export const MotionVideo: React.FC<MotionVideoProps> = (props) => {
     return (
       <Sequence key={scene.id} from={startFrame} durationInFrames={scene.durationInFrames} name={scene.title}>
         <SceneView scene={scene} palette={props.palette} typography={props.typography} props={{ ...props, durationInFrames: totalFrames }} index={index} sceneCount={props.scenes.length} offset={startFrame} />
-        {scene.audioSrc ? <Audio src={staticFile(scene.audioSrc)} volume={0.96} /> : null}
+        {scene.audioSrc ? <Audio src={staticFile(scene.audioSrc)} volume={(frame) => 0.96 * getVoiceFadeEnvelope(frame, scene.audioDurationInFrames || scene.durationInFrames, fps)} /> : null}
       </Sequence>
     );
   });
@@ -1060,12 +1061,7 @@ export const MotionVideo: React.FC<MotionVideoProps> = (props) => {
       {props.audioBedSrc ? (
         <Audio
           src={staticFile(props.audioBedSrc)}
-          volume={(frame) => {
-            const baseBedLevel = voiceRanges.length ? 0.18 : 0.32;
-            const envelope = interpolate(frame, [0, fps * 2, Math.max(fps * 2, totalFrames - fps * 3), totalFrames], [0, baseBedLevel, baseBedLevel, 0], clamp);
-            const narrationIsActive = voiceRanges.some((range) => frame >= range.startFrame && frame < range.endFrame);
-            return narrationIsActive ? Math.min(envelope, 0.05) : envelope;
-          }}
+          volume={(frame) => getMusicBedGain(frame, totalFrames, fps, voiceRanges)}
         />
       ) : null}
     </AbsoluteFill>
