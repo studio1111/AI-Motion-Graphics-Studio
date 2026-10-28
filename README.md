@@ -40,6 +40,16 @@ Use the built-in prompt library with any AI assistant or creative tool:
 
 The `show` command combines the universal master prompt with the selected style recipe. The `export` command creates a self-contained Markdown or JSON bundle, optionally filtered by style category, for transfer into another AI environment. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.
 
+## Use a style recipe in the production engine
+
+List available recipe IDs with `npm run prompts:list`, then let the storyboarding pipeline use one of the 96 recipes:
+
+```sh
+npm run produce -- --topic "An idea worth explaining" --language en --duration 30 --style auto --prompt-recipe motion-design-showreel --plan-only
+```
+
+The selected recipe is recorded in the run's brief, storyboard, manifest, and QC report. With configured AI storyboard generation, its motion, typography, palette, sound, story-beat and anti-pattern directions are passed to the planner. The local fallback maps the recipe category to a supported preset and explicitly reports that advanced recipe-specific effects are not fully implemented by the fallback renderer.
+
 ## Running the production engine
 
 Local install and validation:
