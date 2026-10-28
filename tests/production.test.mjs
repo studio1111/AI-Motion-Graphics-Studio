@@ -404,7 +404,7 @@ test("Persian AI explainer local fallback fits a one-minute narration budget and
   assert.equal(plan.scenes.reduce((sum, scene) => sum + scene.durationInFrames, 0), 1800);
   const narration = plan.scenes.map(scene => scene.narration).join(" ");
   const wordCount = narration.split(/\s+/).filter(Boolean).length;
-  assert.ok(wordCount <= 125, `Expected a concise Persian script for a 60-second film, got ${wordCount} words.`);
+  assert.ok(wordCount <= 112, `Expected a concise Persian script for a 60-second film, got ${wordCount} words.`);
   assert.match(narration, /پزشکی/);
   assert.match(narration, /سوگیری/);
   assert.match(narration, /آینده/);
