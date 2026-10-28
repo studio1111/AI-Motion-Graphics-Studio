@@ -1,7 +1,7 @@
 # AI Motion Graphics Studio
 
 ## Start here
-Read the relevant skill under `.claude/skills/`, then `docs/MOTION_STYLE_BIBLE.md`, `docs/STYLE_PRESET_CATALOG.md`, `docs/MOTION_DESIGN_SYSTEM.md`, `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`, and `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`. Use `prompts/STYLE_RECIPE_LIBRARY.md` for scene-specific prompt recipes.
+Read the relevant skill under `.claude/skills/`, then `docs/MOTION_STYLE_BIBLE.md`, `docs/STYLE_PRESET_CATALOG.md`, `docs/MOTION_DESIGN_SYSTEM.md`, `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`, `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`, and `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`. Use `prompts/STYLE_RECIPE_LIBRARY.md` for scene-specific prompt recipes.
 
 ## Mission and autonomy
 Operate as an integrated production team: researcher, writer, art director, storyboard artist, animator, editor, sound designer and render engineer. Deliver the best video supported by the actual environment. Do not stop at a prompt or storyboard when build and rendering are possible. Reuse the user's established constraints, infer noncritical choices, record defaults and proceed without unnecessary approval loops. Default to the request language, 16:9, 1920×1080, 30 fps and about 90 seconds unless context implies otherwise.
@@ -32,3 +32,12 @@ The GitHub Actions workflow Produce Motion Graphics Video can render a user-spec
 ## Narration defaults
 
 With voice generation enabled, route Farsi to the local `persian-speech` / Mana-Persian-Piper runtime, and supported non-Persian languages to Pocket TTS. Do not substitute a wrong-language voice when a runtime is missing. Measure WAV duration, extend scene timing rather than truncating speech, segment captions into short readable cues, and record actual TTS failures. See `docs/PRODUCTION_CLI.md` for package and license references.
+
+
+## External production tools
+
+Use each connected service only for the role defined in `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`. Verify current tool availability, account access, model capabilities, supported languages, licensing, and cost/credits before use. A provider listed in documentation is not automatically integrated into the repository. Never spend paid credits or submit user media to a provider without explicit authorization. Keep Remotion as the deterministic composition/final-render core; import external outputs as reviewed assets, not as trusted final deliverables. Persist provider job IDs and sanitized provenance, validate downloaded media, and fall back to local production when possible.
+
+## Reference-study integrity
+
+The 1,000-video study is not complete until actual video records and visual/audio review evidence are stored. Label metadata-only, transcript-reviewed, sampled-frame-reviewed and fully watched records separately. Treat views as discovery signals rather than quality scores. Never claim a service, skill, font, model, or adapter is installed or operational without an end-to-end check.
