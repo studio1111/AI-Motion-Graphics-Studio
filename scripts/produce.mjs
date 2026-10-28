@@ -157,19 +157,17 @@ export function promptRecipeStyleHint(recipe,ratio="16:9"){
   if(["typography","title-sequence"].includes(category))return "editorial-kinetic-type";
   if(["product-film","product-ui","architecture"].includes(category))return "premium-3d-product";
   if(["data-storytelling","data","finance"].includes(category))return "data-journalism";
-  if(["science","education","technology"].includes(category))return "scientific-2-5d";
+  if(["science","education","educational","technology","diagram","technical-explainer"].includes(category))return "scientific-2-5d";
   if(["maps","history"].includes(category))return "maps-timeline";
-  if(["documentary","editorial"].includes(category))return "cinematic-documentary";
-  if(category==="collage")return "tactile-collage";
-  if(category==="character")return "character-2d";
-  if(["brand","event-brand"].includes(category))return "swiss-modernist";
-  if(["abstract","looping-motion","music","showreel","transitions","retro-game","retro-futurism"].includes(category))return "procedural-generative";
-  if(["sports","nature","food","fashion","real-footage"].includes(category))return "hybrid-live-action";
-  if(category==="social")return "vertical-social";
-  if(category==="storyboard")return "cinematic-documentary";
+  if(["documentary","editorial","storyboard"].includes(category))return "cinematic-documentary";
+  if(["collage"].includes(category))return "tactile-collage";
+  if(["character","comedy"].includes(category))return "character-2d";
+  if(["brand","event-brand","corporate"].includes(category))return "swiss-modernist";
+  if(["abstract","looping-motion","music","showreel","transitions","retro-game","retro-futurism","particles","sci-fi","gaming"].includes(category))return "procedural-generative";
+  if(["sports","nature","food","fashion","real-footage","photo-essay"].includes(category))return "hybrid-live-action";
+  if(["social"].includes(category))return "vertical-social";
   return "auto";
 }
-
 export function chooseStyle(style,topic,ratio="16:9"){
   const id=String(style||"auto").toLowerCase().replaceAll("_","-").replaceAll(" ","-");
   if(id!=="auto"){const found=ALIASES[id]||id;if(!PRESETS[found])throw new Error("Unknown style: "+style);return found;}
