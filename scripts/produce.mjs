@@ -9,6 +9,7 @@ import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { generateAceStepMusic, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { masterAudioVideo } from "../src/production/audio-mastering.mjs";
 import { buildNarrationEnhancementFilter, getEnhancedNarrationPath } from "../src/production/voice-processing.mjs";
+import { extendFinalSceneToTarget } from "../src/production/narration-timing.mjs";
 export { splitCaptionSegments };
 
 export const LAYOUTS = new Set(["hero","editorial","diagram","timeline","compare","data","particles","map","interface","quote","outro"]);
@@ -581,7 +582,15 @@ export async function produce(options,env=process.env){
   await writeFile(join(dir,"qc-report.json"),JSON.stringify(voiceQc,null,2)+"\n");
   throw new Error(voiceErrors.join(" "));
  }
- const hasVoice=plan.scenes.some(s=>s.audioSrc);if(!hasVoice){const frames=allocateFrames(plan.scenes,targetFrames,fps);plan.scenes=plan.scenes.map((s,i)=>({...s,durationInFrames:frames[i]}));}
+ const hasVoice=plan.scenes.some(s=>s.audioSrc);
+ if(!hasVoice){
+  const frames=allocateFrames(plan.scenes,targetFrames,fps);
+  plan.scenes=plan.scenes.map((s,i)=>({...s,durationInFrames:frames[i]}));
+ }else{
+  const runtimeFit=extendFinalSceneToTarget(plan.scenes,targetFrames);
+  plan.scenes=runtimeFit.scenes;
+  if(runtimeFit.addedFrames>0)warnings.push("The narration finished before the target; extended the final scene with an instrumental outro hold of "+(runtimeFit.addedFrames/fps).toFixed(2)+" seconds to match the requested runtime.");
+ }
  const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;let musicInfo={status:options.planOnly?"not_generated":"pending",engine:selectedMusicEngine};
  if(!options.planOnly){
   const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});
