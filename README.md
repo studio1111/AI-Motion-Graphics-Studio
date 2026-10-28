@@ -5,7 +5,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 ## Start here
 - `CLAUDE.md`: persistent project instructions.
 - `docs/PRODUCTION_CLI.md`: real CLI workflow and configuration.
-- `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`: autonomous Claude production prompt.
+- `prompts/CLAUDE_AUTONOMOUS_STUDIO_PROMPT.md`: autonomous Claude production prompt.\n- `prompts/MOTION_GRAPHICS_MASTER_PROMPT.md`: cross-role production director prompt.\n- `prompts/PROFESSIONAL_PROMPT_PLAYBOOK.md`: original prompts for fourteen visual families, camera, motion, sound and repair.
 - `docs/MOTION_STYLE_BIBLE.md`: twelve motion-design families.
 - `docs/STYLE_PRESET_CATALOG.md`: concrete palettes, font roles, motion, sound and anti-patterns.
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
