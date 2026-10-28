@@ -30,6 +30,12 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
 - `docs/AUDIO_PRODUCTION_PIPELINE.md`: Persian narration normalization, voice fades, smooth music ducking, two-pass loudness mastering, optional ACE-Step 1.5 API integration, and voice/model licensing notes.
 
+## Browser studio and secure AI production
+
+- A Persian responsive UI for building a production brief lives in `site/` and is deployed to GitHub Pages by `.github/workflows/pages.yml` after merge to `main`.
+- `.github/workflows/motion-studio-produce.yml` provides a guided Run workflow form, uses `ANTHROPIC_API_KEY` from repository Actions Secrets, renders the video, and uploads production artifacts.
+- Setup, limitations, secret configuration, artifact retrieval and security boundaries: `docs/GITHUB_PAGES_AND_AI_SETUP.md`.
+
 ## Portable prompt library
 
 ### Browser prompt builder

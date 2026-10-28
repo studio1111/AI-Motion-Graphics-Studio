@@ -1,0 +1,124 @@
+name: Motion Studio Production
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Video topic or creative brief"
+        required: true
+        type: string
+      language:
+        description: "Narration and caption language"
+        required: true
+        type: choice
+        options: [fa, en, de, es, fr, it, pt, nl]
+        default: fa
+      duration:
+        description: "Target duration in seconds (5-600)"
+        required: true
+        type: number
+        default: 90
+      style:
+        description: "Visual style preset"
+        required: true
+        type: choice
+        options: [auto, cinematic-documentary, scientific-2-5d, data-journalism, editorial-kinetic-type, premium-3d-product, tactile-collage, swiss-modernist, procedural-generative, vertical-social]
+        default: auto
+      aspect_ratio:
+        description: "Output frame"
+        required: true
+        type: choice
+        options: ["16:9", "9:16", "1:1"]
+        default: "16:9"
+      voice:
+        description: "Narration engine"
+        required: true
+        type: choice
+        options: [edge-tts, auto, off]
+        default: edge-tts
+      opus55_reference:
+        description: "Optional Opus 5.5 reference slug"
+        required: false
+        type: string
+      use_ai:
+        description: "Use Anthropic AI when ANTHROPIC_API_KEY is configured"
+        required: true
+        type: boolean
+        default: true
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: motion-studio-production-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  produce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install system render tools and fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation fonts-noto-core fonts-noto-cjk
+      - name: Set up Python for neural voice
+        if: inputs.voice == 'edge-tts'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install neural voice engine
+        if: inputs.voice == 'edge-tts'
+        run: python -m pip install --disable-pip-version-check edge-tts==7.3.1
+      - name: Install project dependencies
+        run: npm ci
+      - name: Validate browser UI syntax
+        run: node --check site/app.js
+      - name: Validate project
+        run: npm run validate
+      - name: Prepare Remotion browser
+        run: npx remotion browser ensure
+      - name: Produce and render video
+        env:
+          TOPIC: ${{ inputs.topic }}
+          LANGUAGE: ${{ inputs.language }}
+          DURATION: ${{ inputs.duration }}
+          STYLE: ${{ inputs.style }}
+          ASPECT_RATIO: ${{ inputs.aspect_ratio }}
+          VOICE: ${{ inputs.voice }}
+          OPUS55_REFERENCE: ${{ inputs.opus55_reference }}
+          USE_AI: ${{ inputs.use_ai }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! [[ "$DURATION" =~ ^[0-9]+$ ]] || (( DURATION < 5 || DURATION > 600 )); then
+            echo "::error::Duration must be between 5 and 600 seconds."
+            exit 2
+          fi
+          args=(--topic "$TOPIC" --language "$LANGUAGE" --duration "$DURATION" --style "$STYLE" --aspect-ratio "$ASPECT_RATIO" --voice "$VOICE" --output-dir "out/run-${GITHUB_RUN_ID}")
+          if [[ -n "${OPUS55_REFERENCE//[[:space:]]/}" ]]; then
+            args+=(--opus55-reference "$OPUS55_REFERENCE")
+          fi
+          if [[ "$USE_AI" == "true" ]]; then
+            if [[ -n "${ANTHROPIC_API_KEY:-}" ]]; then
+              args+=(--allow-paid-ai)
+            else
+              echo "::warning::ANTHROPIC_API_KEY is not configured. The engine will use its local fallback."
+            fi
+          fi
+          npm run produce -- "${args[@]}"
+      - name: Upload video, captions and production reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: motion-studio-output-${{ github.run_id }}
+          path: |
+            out/run-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 14
