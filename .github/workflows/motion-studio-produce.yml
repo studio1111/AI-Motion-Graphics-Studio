@@ -30,11 +30,11 @@ on:
         options: ["16:9", "9:16", "1:1"]
         default: "16:9"
       voice:
-        description: "Narration (off is the most reliable default without extra TTS setup)"
+        description: "Narration engine"
         required: true
         type: choice
-        options: [off, auto]
-        default: off
+        options: [edge-tts, auto, off]
+        default: edge-tts
       opus55_reference:
         description: "Optional Opus 5.5 reference slug"
         required: false
@@ -66,6 +66,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation fonts-noto-core fonts-noto-cjk
+      - name: Set up Python for neural voice
+        if: inputs.voice == 'edge-tts'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install neural voice engine
+        if: inputs.voice == 'edge-tts'
+        run: python -m pip install --disable-pip-version-check edge-tts==7.3.1
       - name: Install project dependencies
         run: npm ci
       - name: Validate project
