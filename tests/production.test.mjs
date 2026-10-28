@@ -302,3 +302,12 @@ test("storyboard validator accepts long-form chapter plans without allowing unbo
   plan.scenes=Array.from({length:121},(_,i)=>({...plan.scenes[i%8],id:`scene-${String(i+1).padStart(3,"0")}`}));
   assert.ok(validateStoryboard(plan).some(error=>/4-120 scenes/.test(error)));
 });
+
+
+test("long-form renders require a topic-specific storyboard instead of stretching the generic fallback",async()=>{
+  const {validateRuntimePlan}=await import("../scripts/produce.mjs");
+  assert.equal(typeof validateRuntimePlan,"function");
+  assert.match(validateRuntimePlan({contentMode:"conceptual_template"},601)[0],/long-form.*topic-specific storyboard/i);
+  assert.deepEqual(validateRuntimePlan({contentMode:"ai_generated"},3600),[]);
+  assert.deepEqual(validateRuntimePlan({contentMode:"conceptual_template"},3600,{planOnly:true}),[]);
+});
