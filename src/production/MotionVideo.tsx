@@ -12,6 +12,7 @@ import {
 import type { CSSProperties } from "react";
 import type { MotionPalette, MotionScene, MotionVideoProps } from "./types";
 import { splitCaptionSegments } from "./captions.mjs";
+import { getCameraMotion } from "./motion-profiles.mjs";
 
 const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
 
@@ -252,6 +253,8 @@ const SceneText: React.FC<{
           const wordFrame = Math.max(0, frame - wordIndex * 2);
           const wordOpacity = interpolate(wordFrame, [0, 8], [0, 1], clamp);
           const wordY = interpolate(wordFrame, [0, 10], [18, 0], clamp);
+          const wordBlur = interpolate(wordFrame, [0, 10], [4, 0], clamp);
+          const wordScale = interpolate(wordFrame, [0, 12], [0.97, 1], clamp);
           return (
             <React.Fragment key={word + "-" + wordIndex}>
               <span
@@ -259,7 +262,8 @@ const SceneText: React.FC<{
                   display: "inline-block",
                   maxWidth: "100%",
                   opacity: wordOpacity,
-                  transform: "translateY(" + wordY + "px)",
+                  transform: "translateY(" + wordY + "px) scale(" + wordScale + ")",
+                  filter: "blur(" + wordBlur + "px)",
                   overflowWrap: "anywhere"
                 }}
               >
@@ -270,6 +274,21 @@ const SceneText: React.FC<{
           );
         })}
       </div>
+      {scene.title ? (
+        <div
+          aria-hidden="true"
+          style={{
+            alignSelf: vertical ? "center" : rtl ? "flex-end" : "flex-start",
+            marginTop: 18,
+            width: interpolate(frame, [4, 24], [0, vertical ? 140 : 220], clamp),
+            maxWidth: "42%",
+            height: 4,
+            background: palette.accent,
+            boxShadow: "0 0 18px " + rgba(palette.accent, 0.28),
+            borderRadius: 2
+          }}
+        />
+      ) : null}
       {scene.body ? (
         <div
           dir={rtl ? "rtl" : "auto"}
@@ -902,6 +921,7 @@ const SceneView: React.FC<{
   const { fps, width, height } = useVideoConfig();
   const vertical = height > width;
   const rtl = isRtlLanguage(props.language);
+  const camera = getCameraMotion(props.styleId, frame, scene.durationInFrames, index);
   const entrance = interpolate(frame, [0, 18], [0, 1], clamp);
   const sceneProgress = (offset + frame) / Math.max(1, props.durationInFrames);
   const transition = scene.transition || (index % 4 === 0 ? "wipe" : index % 4 === 1 ? "scale" : index % 4 === 2 ? "split" : "fade");
@@ -918,6 +938,23 @@ const SceneView: React.FC<{
   return (
     <AbsoluteFill>
       <SceneBackdrop palette={palette} frame={frame} index={index} styleId={props.styleId} />
+      {camera.lightSweep ? (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: "-18%",
+            bottom: "-18%",
+            left: camera.sweepX + "%",
+            width: "18%",
+            transform: "skewX(-18deg)",
+            background: "linear-gradient(90deg, transparent 0%, " + rgba(palette.accent2, 0.025) + " 36%, " + rgba(palette.accent, 0.07) + " 52%, transparent 100%)",
+            opacity: 0.82,
+            pointerEvents: "none",
+            zIndex: 1
+          }}
+        />
+      ) : null}
       <AbsoluteFill style={{ clipPath, opacity: contentOpacity, transform: transition === "scale" ? "scale(" + zoom + ")" : "none" }}>
         <div style={{ position: "absolute", top: 34, left: margin, right: margin, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -946,7 +983,7 @@ const SceneView: React.FC<{
               <SceneText scene={scene} palette={palette} typography={typography} rtl={rtl} vertical={vertical} frame={frame} fps={fps} />
             </div>
           ) : null}
-          <div style={{ width: mainGraphicWidth, height: vertical && !typographyLed ? "47%" : "100%", minHeight: vertical ? 250 : undefined, position: "relative", zIndex: 2 }}>
+          <div style={{ width: mainGraphicWidth, height: vertical && !typographyLed ? "47%" : "100%", minHeight: vertical ? 250 : undefined, position: "relative", zIndex: 2, overflow: "visible", transform: "translate3d(" + camera.translateX + "px, " + camera.translateY + "px, 0) scale(" + camera.scale + ")", transformOrigin: index % 2 ? "54% 48%" : "46% 52%" }}>
             <LayoutGraphic scene={scene} palette={palette} frame={frame} vertical={vertical} typography={typography} rtl={rtl} visualFamily={props.visualFamily || "general"} />
           </div>
         </div>
