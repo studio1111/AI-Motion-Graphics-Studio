@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, validateVoiceGeneration, wavDuration, produce, promptRecipeStyleHint, PRESETS } from "../scripts/produce.mjs";
+import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, validateVoiceGeneration, wavDuration, produce, promptRecipeStyleHint } from "../scripts/produce.mjs";
 
 test("topic-aware scene graphics remain wired into the Remotion composition",async()=>{
   const motion=await readFile(new URL("../src/production/MotionVideo.tsx",import.meta.url),"utf8");
@@ -167,7 +167,7 @@ test("portable prompt recipe option is normalized and mapped to supported preset
   for (const category of categories) {
     const mapped = promptRecipeStyleHint({category}, "16:9");
     assert.notEqual(mapped, "auto", `recipe category ${category} must map to an implemented preset`);
-    assert.ok(PRESETS[mapped], `recipe category ${category} mapped to missing preset ${mapped}`);
+    assert.equal(chooseStyle(mapped, "recipe category regression", "16:9"), mapped, `recipe category ${category} must target an implemented preset`);
   }
   assert.throws(() => parseArgs(["--prompt-recipe", "../unsafe"], {}), /lowercase recipe ID/);
 });
