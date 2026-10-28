@@ -1,0 +1,64 @@
+name: Build AI Future Persian Motion Graphic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "video-requests/ai-future-fa.json"
+      - ".github/workflows/build-ai-future-fa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-future-fa-motion-graphic
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      MOTION_TOPIC: "آینده هوش مصنوعی؛ فناوری‌ای که جهان را تغییر می‌دهد"
+      MOTION_STUDIO_LANGUAGE: "fa"
+      MOTION_STUDIO_DURATION: "60"
+      MOTION_STUDIO_STYLE: "scientific-2-5d"
+      MOTION_STUDIO_ASPECT_RATIO: "16:9"
+      MOTION_STUDIO_VOICE: "auto"
+      MOTION_STUDIO_ALLOW_PAID_API: "false"
+    steps:
+      - name: Check out the GitHub project
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Set up Python for Persian narration
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Persian speech engine
+        run: python -m pip install --no-cache-dir persian-speech==1.1.3
+      - name: Install Node dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install FFmpeg and fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-liberation2 fonts-noto-core
+      - name: Validate project and tests
+        run: npm run validate
+      - name: Ensure Remotion browser
+        run: npx remotion browser ensure
+      - name: Produce and render with the repository engine
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE"
+      - name: Upload rendered video and production reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-future-persian-motion-graphic-${{ github.run_id }}
+          path: |
+            out/**
+            public/generated/**
+          if-no-files-found: error
+          retention-days: 7
