@@ -1,6 +1,6 @@
 # Motion Graphics Reference Seed Catalog
 
-Capture date: 2026-10-27. This is a public-search starter set for the 1,000-reference benchmark, not the finished study. Search snippets and titles are metadata evidence only. None of the records below claims that the full video was watched.
+Capture date: 2026-10-28. This is a public-search starter set for the 1,000-reference benchmark, not the finished study. Search snippets and titles are metadata evidence only. None of the records below claims that the full video was watched.
 
 ## Current candidates
 
@@ -61,6 +61,27 @@ Capture date: 2026-10-27. This is a public-search starter set for the 1,000-refe
 | R053 | [Create Vox-Style Explainer Videos with Google Flow](https://www.youtube.com/watch?v=90UscKAvHIc) | AI-assisted explainer workflow | L0 | Tool workflow candidate; not proof of autonomous quality. |
 | R054 | [How to Make Kinetic Warp Text Animation in After Effects](https://www.youtube.com/watch?v=IvTXbHLtod4) | Kinetic type technique | L0 | Tutorial/source file mention in search snippet. |
 | R055 | [Typography Motion Graphics Animation in CapCut](https://www.youtube.com/watch?v=dinxVj4mMi0) | Mobile/social typography | L0 | Search metadata only. |
+
+## Batch B: 12 recent explainers referenced in a 2026 industry article
+
+Source: [Moonb, “Animated explainer videos: 12 examples across 8 styles”](https://www.moonb.io/blog/animated-explainer-video), published 24 September 2026. IDs below were recovered from the examples’ YouTube thumbnail URLs on that article. Evidence is L1 article-supported only; this project has not watched these videos, and none is counted as an L2/L3 review.
+
+| ID | Reference | Intended category | Evidence | Secondary observation to verify in the video |
+|---|---|---|---|---|
+| R056 | [Deel Overview](https://www.youtube.com/watch?v=fC9XnpI8ahk) · Deel | 2D vector / software explainer | L1 | Article describes a global HR/hiring idea made concrete with a world map, then simplified product/interface tiles. |
+| R057 | [What Is Cryptocurrency](https://www.youtube.com/watch?v=erzVdnTaBKk) · Coinbase | 2D vector / comparison | L1 | Article describes comparing a new concept with familiar money and centralized versus decentralized systems. |
+| R058 | [A Brief History of Online Payments](https://www.youtube.com/watch?v=GuG4j2RUMwY) · Klarna | Character animation / brand story | L1 | Article describes a cartoon origin-story approach with stylized opposing characters. |
+| R059 | [How Does Solar Energy Work?](https://www.youtube.com/watch?v=KE4blc-4jqE) · Octopus Energy | Educational character / hybrid | L1 | Article describes characters carrying the science, with some real solar-installation footage. |
+| R060 | [How Plaid Works](https://www.youtube.com/watch?v=iRIQipBXvgs) · Plaid | Motion graphics / invisible systems | L1 | Article describes human portraits, orbiting service marks and connections to make a hidden bank-to-app flow visible. |
+| R061 | [Showcase](https://www.youtube.com/watch?v=tZjOjrTvBEY) · Spotify for Artists | Product UI / motion graphics | L1 | Article describes floating campaign cards, interface crops, typography and a pie-chart metaphor. |
+| R062 | [Lemonade Insurance: How It Works](https://www.youtube.com/watch?v=tbOfboCmv6I) · Lemonade | Hand-drawn line art | L1 | Article describes pale line work with pink applied semantically to covered objects. |
+| R063 | [Unveiling High NA EUV](https://www.youtube.com/watch?v=h_zgURwr6nA) · ASML | 3D industrial visualization | L1 | Article describes internal machinery, scale cues and labeled technical detail. |
+| R064 | [WATCHMAN FLX Pro: Advancing LAAC for Larger Anatomies](https://www.youtube.com/watch?v=sHAUuyyKdcU) · Boston Scientific | 3D medical-product visualization | L1 | Article describes product renders and a clean technical presentation of an implant. |
+| R065 | [Too Good To Go Platform](https://www.youtube.com/watch?v=8rFUih7Glzg) · Too Good To Go | Live-action / UI hybrid | L1 | Article describes a presenter followed by a handheld device and product workflow, linked by a stable brand palette. |
+| R066 | [What Is Todoist?](https://www.youtube.com/watch?v=fI-iTYAwL6c) · Todoist | Product demo / UI animation | L1 | Article describes hand-drawn task doodles transitioning to a simplified real interface. |
+| R067 | [Introducing Ask Attio](https://www.youtube.com/watch?v=HSVVMgExV9U) · Attio | Kinetic typography | L1 | Article describes short phrases, a faint waveform and a clean ending; type is the main visual. |
+
+These are candidate references and article-derived notes, not yet direct observations. Promote any to L2 only after watching the full video; promote to L3 only after recording timestamps, selected frames and the associated design/motion/audio evidence.
 
 ## Written sources reviewed
 | Source | Evidence | Transferable use | Limitation |

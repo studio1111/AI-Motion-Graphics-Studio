@@ -23,6 +23,27 @@ Source: [ADVIDS Research, “95 Enterprise AI Launch Videos”](https://advids.c
 
 These three studies are by the same publisher, use B2B/software-heavy samples, and may overlap in individual video references. Do **not** add 100 + 74 + 95 and describe them as 269 unique videos. The reports do not measure viewer outcomes or objectively rate craft quality. They are article-level secondary evidence, not this studio's full-video review.
 
+## Recent multi-style explainer examples: article-level evidence only
+
+Source: [Moonb, “Animated explainer videos: 12 examples across 8 styles”](https://www.moonb.io/blog/animated-explainer-video), published 24 September 2026. The article discusses twelve recent examples from brand channels. The references are cataloged as R056–R067. This is L1 evidence: the article’s explanations were reviewed, but the underlying videos have not been watched here. It is not an independent measurement of performance or a substitute for timestamped scene review.
+
+| Reference | Style | Transferable hypothesis to test |
+|---|---|---|
+| R056, Deel Overview | 2D vector / software | Turn an abstract global service into a map first, then a readable interface. |
+| R057, Coinbase “What Is Cryptocurrency” | 2D vector / comparison | Pair an unfamiliar concept with a familiar visual analogue and explicit contrasts. |
+| R058, Klarna payment history | Character-led brand story | Let a visual conflict or character journey carry the history instead of listing milestones. |
+| R059, Octopus Energy solar explainer | Educational character / hybrid | Use characters to stage a mechanism, with real footage when it adds physical context. |
+| R060, Plaid “How Plaid Works” | Motion graphics / invisible system | Represent an invisible connection as people, endpoints and a legible bridge or flow. |
+| R061, Spotify for Artists “Showcase” | Product UI / abstract accents | Simplify interface cards to their essential signal; decorative 3D accents should earn their place. |
+| R062, Lemonade insurance explainer | Hand-drawn line art | Use one semantic accent to mark what matters rather than coloring every object equally. |
+| R063, ASML “Unveiling High NA EUV” | 3D industrial visualization | Use depth and camera movement to explain inaccessible internal mechanisms and scale. |
+| R064, Boston Scientific WATCHMAN FLX Pro | 3D medical product | Use a clear product silhouette, controlled lighting and technical labels for a device that cannot be filmed in use. |
+| R065, Too Good To Go platform | Live-action / UI hybrid | Establish human context, then hand over to a full-frame workflow with palette continuity. |
+| R066, Todoist “What Is Todoist?” | Doodles → product UI | Use a contrast between the messy problem and the organized interface as part of the argument. |
+| R067, Attio “Introducing Ask Attio” | Kinetic typography | Reserve the largest typographic movement for a few important phrases and preserve readable holds. |
+
+**Cautions:** these are secondary article observations. Before adopting a recipe as a validated rule, inspect the original video, record timestamps and scene transitions, and check counterexamples. The article’s advice that motion graphics should reveal a meaningful change is a useful review question, not proof that these examples all succeed at it.
+
 ## Transferable production rules
 
 1. **Choose media by the idea.** Do not make every film 3D. For a software walkthrough, show the real interface when available; for inaccessible internals or abstract concepts, use clear diagrams or original animation.
@@ -45,4 +66,4 @@ These are trade/agency viewpoints, not a comprehensive scientific census. Use th
 
 ## How this matrix should evolve
 
-For each new batch, link each pattern to the relevant reference IDs, label direct observations versus inference, and add counterexamples. Promote a rule to “validated” only after varied creators, languages, genres and L2/L3 evidence support it. The current reference catalog holds 55 public video candidates, predominantly L0 metadata; the 1,000-reference study remains unfinished.
+For each new batch, link each pattern to the relevant reference IDs, label direct observations versus inference, and add counterexamples. Promote a rule to “validated” only after varied creators, languages, genres and L2/L3 evidence support it. The current reference catalog holds 67 public video candidates: 55 L0 metadata-only entries and 12 L1 article-supported entries, with zero L2/L3 full-video reviews confirmed; the 1,000-reference study remains unfinished.
