@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, normalizePlan, parseArgs, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
 
 test("local fallback creates eight scenes and varies visual layouts",()=>{
   const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
@@ -93,6 +93,13 @@ test("output slug is path-safe",()=>{
   assert.equal(safeSlug("***"),"motion-video");
 });
 
+test("audio peak parser accepts measured levels and handles silence safely",()=>{
+  assert.equal(parsePeakVolumeDb("[Parsed_volumedetect] max_volume: -14.2 dB"),-14.2);
+  assert.equal(parsePeakVolumeDb("max_volume: 0.0 dB"),0);
+  assert.equal(parsePeakVolumeDb("max_volume: -inf dB"),-Infinity);
+  assert.equal(parsePeakVolumeDb("no measurement"),null);
+});
+
 test("procedural music bed is valid stereo PCM with a varied, non-silent waveform",()=>{
   const wav=createProceduralBedWav(5,"scientific-2-5d");
   assert.equal(wav.toString("ascii",0,4),"RIFF");
@@ -113,7 +120,7 @@ test("procedural music bed is valid stereo PCM with a varied, non-silent wavefor
 });
 
 test("QC samples interior frames rather than exact start and midpoint cuts",()=>{
-  assert.deepEqual(sampleTimes(12),[0.5,6.37,11]);
+  assert.deepEqual(sampleTimes(12),[0.96,6.96,11.52]);
   for(const duration of [5,12,90]){
     const times=sampleTimes(duration);
     assert.equal(times.length,3);

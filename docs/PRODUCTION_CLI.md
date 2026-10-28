@@ -42,4 +42,4 @@ Each run has its own folder under out. It contains brief.json, storyboard.json, 
 
 ## Honest quality boundary
 
-Technical PASS means the file exists, matches expected metadata and passes the decode test. Extracting frame samples is not the same as visually reviewing them. The QC report leaves creativeReview and audioListening as NOT_RUN. The conceptual fallback is not a sourced factual documentary. Fonts, models and paid APIs are not assumed installed or free.
+Technical PASS means the file exists, matches expected metadata, passes a full decode and has a measurable audio peak above the silence threshold. Extracting frame samples is not the same as visually reviewing them, and an audio peak check is not a listening or mix-quality review. The QC report leaves creativeReview and audioListening as NOT_RUN. The conceptual fallback is not a sourced factual documentary. Fonts, models and paid APIs are not assumed installed or free.

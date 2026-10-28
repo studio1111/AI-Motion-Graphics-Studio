@@ -36,7 +36,7 @@ GitHub Actions has a production workflow: open Actions, choose Produce Motion Gr
 
 The repository includes a data-driven MotionVideo composition with eleven layout modes, a local production CLI, optional Firecrawl research, optional Claude storyboard generation, optional Pocket TTS for its supported languages, a generated ambient audio bed, captions/SRT, Remotion rendering and FFprobe/FFmpeg technical checks. GitHub Actions runs the production tests and renders both the generic smoke test and the data-driven composition.
 
-Technical QC does not automatically prove creative quality. Reports intentionally leave human visual review and audio listening as NOT_RUN. Font names are candidates, not proof the font files exist. Official Pocket TTS does not list Persian; it will not silently substitute an unrelated-language voice. Full 1,000-video visual analysis is still incomplete; the reference set contains candidates and article-level evidence, not a claim of 1,000 videos watched.
+Technical QC verifies the media stream, full-file decode, sampled-frame extraction and a non-silent audio peak. It does not prove creative quality or sound-mix quality. Reports intentionally leave human visual review and audio listening as NOT_RUN. Font names are candidates, not proof the font files exist. Official Pocket TTS does not list Persian; it will not silently substitute an unrelated-language voice. Full 1,000-video visual analysis is still incomplete; the reference set contains candidates and article-level evidence, not a claim of 1,000 videos watched.
 
 The former “Why is the sky blue?” example remains removed. MotionDemo is smoke-test infrastructure only.
 

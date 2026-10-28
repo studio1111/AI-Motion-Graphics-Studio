@@ -346,22 +346,41 @@ function makeSrt(scenes,fps){
  return rows.join("\n");
 }
 function timedScenes(scenes,fps){let cursor=0;return scenes.map(s=>{const start=cursor,end=start+s.durationInFrames;cursor=end;return {...s,startFrame:start,endFrame:end,startSeconds:Number((start/fps).toFixed(3)),endSeconds:Number((end/fps).toFixed(3))};});}
+export function parsePeakVolumeDb(logText){
+ const match=String(logText||"").match(/max_volume:\s*(-?(?:\d+(?:\.\d+)?|inf))\s*dB/i);
+ if(!match)return null;
+ const value=match[1].toLowerCase();
+ if(value==="inf")return Infinity;
+ if(value==="-inf")return -Infinity;
+ const parsed=Number(value);
+ return Number.isFinite(parsed)?parsed:null;
+}
 export function sampleTimes(durationSeconds){
  const duration=Number(durationSeconds);
  if(!Number.isFinite(duration)||duration<=0)return [];
  const clampTime=value=>Math.max(0,Math.min(Math.max(0,duration-0.1),value));
- const candidates=[Math.min(0.5,duration/4),duration/2+Math.min(0.37,duration/10),Math.max(0,duration-Math.min(1,duration/4))];
+ const candidates=[duration*0.08,duration*0.58,duration*0.96];
  return Array.from(new Set(candidates.map(value => Number(clampTime(value).toFixed(2)))));
 }
 
 async function checkVideo(file,expected,dir){
- const report={fileExists:"NOT_RUN",nonEmpty:"NOT_RUN",probe:"NOT_RUN",decode:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN",failures:[],metadata:null,sampledFrames:[]};let st;try{st=await stat(file);report.fileExists="PASS";report.nonEmpty=st.size?"PASS":"FAIL";report.fileSizeBytes=st.size;}catch{report.fileExists="FAIL";report.nonEmpty="FAIL";report.failures.push("Video file missing.");return report;}
+ const report={fileExists:"NOT_RUN",nonEmpty:"NOT_RUN",probe:"NOT_RUN",decode:"NOT_RUN",frameSamples:"NOT_RUN",audioSignal:"NOT_RUN",audioPeakDb:null,creativeReview:"NOT_RUN",audioListening:"NOT_RUN",failures:[],metadata:null,sampledFrames:[]};let st;try{st=await stat(file);report.fileExists="PASS";report.nonEmpty=st.size?"PASS":"FAIL";report.fileSizeBytes=st.size;}catch{report.fileExists="FAIL";report.nonEmpty="FAIL";report.failures.push("Video file missing.");return report;}
  const probe=executable("ffprobe"),ffmpeg=executable("ffmpeg");if(!probe){report.probe="BLOCKED";report.failures.push("ffprobe is unavailable.");return report;}
  const p=await run(probe,["-v","error","-show_streams","-show_format","-of","json",file],45000);if(p.code!==0){report.probe="FAIL";report.failures.push("ffprobe could not read output.");return report;}let d;try{d=JSON.parse(p.stdout);}catch{report.probe="FAIL";report.failures.push("Invalid ffprobe JSON.");return report;}
  const v=(d.streams||[]).find(s=>s.codec_type==="video"),a=(d.streams||[]).filter(s=>s.codec_type==="audio"),duration=Number(d.format?.duration||0),rate=String(v?.avg_frame_rate||v?.r_frame_rate||"0/1").split("/"),fps=rate.length===2?Number(rate[0])/Number(rate[1]):Number(rate[0]);
  report.metadata={codec:v?.codec_name||null,width:v?.width||null,height:v?.height||null,frameRate:v?.avg_frame_rate||v?.r_frame_rate||null,durationSeconds:duration,audioStreams:a.length,audioCodecs:a.map(x=>x.codec_name)};
  const ok=v?.codec_name==="h264"&&v.width===expected.width&&v.height===expected.height&&Math.abs(fps-expected.fps)<0.02&&duration>=expected.durationSeconds*0.9&&a.length>=(expected.audioExpected?1:0);report.probe=ok?"PASS":"FAIL";if(!ok)report.failures.push("MP4 metadata differs from expected properties.");
  if(ffmpeg){const dec=await run(ffmpeg,["-v","error","-i",file,"-f","null","-"],Math.max(120000,expected.durationSeconds*3000));report.decode=dec.code===0?"PASS":"FAIL";if(dec.code!==0)report.failures.push("Full-file decode failed.");const frameDir=join(dir,"frame-samples");await mkdir(frameDir,{recursive:true});let all=true;const times=sampleTimes(duration);for(let i=0;i<times.length;i++){const frame=join(frameDir,"frame-"+String(i+1).padStart(2,"0")+".jpg");const r=await run(ffmpeg,["-y","-v","error","-ss",times[i].toFixed(2),"-i",file,"-frames:v","1","-q:v","3",frame],30000);if(r.code===0)report.sampledFrames.push({path:frame,second:Number(times[i].toFixed(2))});else all=false;}report.frameSamples=all&&report.sampledFrames.length?"PASS_EXTRACTED_NOT_VISUALLY_REVIEWED":"FAIL";}else{report.decode="BLOCKED";report.frameSamples="BLOCKED";report.failures.push("ffmpeg is unavailable.");}
+ if(a.length&&ffmpeg){
+  const measured=await run(ffmpeg,["-hide_banner","-i",file,"-vn","-af","volumedetect","-f","null","-"],Math.max(60000,expected.durationSeconds*2500));
+  const peak=parsePeakVolumeDb(measured.stderr);
+  report.audioPeakDb=peak===null?null:Number.isFinite(peak)?Number(peak.toFixed(2)):peak===-Infinity?"-inf":"inf";
+  report.audioSignal=measured.code===0&&peak!==null&&Number.isFinite(peak)&&peak>-60?"PASS":"FAIL";
+  if(report.audioSignal==="FAIL")report.failures.push("Audio stream is silent or its peak signal could not be verified above -60 dBFS.");
+ }else if(expected.audioExpected){
+  report.audioSignal=ffmpeg?"FAIL":"BLOCKED";
+  report.failures.push(ffmpeg?"Expected audio stream is missing.":"ffmpeg is unavailable for audio signal verification.");
+ }else report.audioSignal="NOT_EXPECTED";
  report.durationSeconds=duration;return report;
 }
 
@@ -389,12 +408,12 @@ export async function produce(options,env=process.env){
  const props={topic,title:plan.title,subtitle:plan.subtitle||"",language,styleId,fps,width:size.width,height:size.height,durationInFrames:totalFrames,palette:preset.palette,typography:preset.typography,captionsEnabled:hasVoice,scenes:plan.scenes,...(audioBedSrc?{audioBedSrc}:{})};
  await writeFile(join(dir,"props.json"),JSON.stringify(props,null,2)+"\n");await writeFile(join(dir,"voiceover.txt"),plan.scenes.map(s=>s.narration||"").filter(Boolean).join("\n\n")+"\n");await writeFile(join(dir,"captions.srt"),makeSrt(plan.scenes,fps));await writeFile(join(dir,"storyboard-timed.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,fps,width:size.width,height:size.height,durationInFrames:totalFrames,durationSeconds:actualDuration,scenes:timedScenes(plan.scenes,fps)},null,2)+"\n");
  const manifest={runId,createdAt:new Date().toISOString(),brief:briefRecord,selectedStyle:{id:styleId,label:preset.label,palette:preset.palette,typography:preset.typography},contentMode:plan.contentMode,research,ai,voice,audioBed:options.planOnly?"not_generated":"locally_synthesized_procedural_ambient_bed",render:{status:options.planOnly?"NOT_RUN":"PENDING",composition:"MotionVideo"},output:{runDirectory:dir,videoPath:null},warnings};await writeFile(join(dir,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");
- const qcPath=join(dir,"qc-report.json"),qc={runId,status:options.planOnly?"PLAN_ONLY":"PENDING",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",sourceResearch:research.status,fontAvailability:"NOT_RUN",rtlVisualReview:"NOT_RUN",voiceGeneration:voice.status,render:options.planOnly?"NOT_RUN":"PENDING",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},facts:{factualClaimsAutomaticallyVerified:false,fontFilesVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,sourceCount:sources.length},warnings,files:{storyboard:"storyboard.json",timedStoryboard:"storyboard-timed.json",props:"props.json",narration:"voiceover.txt",captions:"captions.srt",manifest:"manifest.json"}};
+ const qcPath=join(dir,"qc-report.json"),qc={runId,status:options.planOnly?"PLAN_ONLY":"PENDING",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",sourceResearch:research.status,fontAvailability:"NOT_RUN",rtlVisualReview:"NOT_RUN",voiceGeneration:voice.status,render:options.planOnly?"NOT_RUN":"PENDING",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},facts:{factualClaimsAutomaticallyVerified:false,fontFilesVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,sourceCount:sources.length},warnings,files:{storyboard:"storyboard.json",timedStoryboard:"storyboard-timed.json",props:"props.json",narration:"voiceover.txt",captions:"captions.srt",manifest:"manifest.json"}};
  if(options.planOnly){await writeFile(qcPath,JSON.stringify(qc,null,2)+"\n");console.log("Plan created: "+dir);return {runId,runDir:dir,plan,props,qc,manifest};}
  const video=join(dir,"video.mp4");console.log("Rendering "+plan.scenes.length+" scenes ("+size.width+"x"+size.height+", "+fps+" fps).");const r=await run(process.platform==="win32"?"npx.cmd":"npx",["remotion","render","src/index.ts","MotionVideo",video,"--props",join(dir,"props.json"),"--codec=h264","--overwrite"],Math.max(300000,actualDuration*9000));
  manifest.render={status:r.code===0?"PASS":"FAIL",exitCode:r.code,timedOut:Boolean(r.timedOut),stderr:String(r.stderr||r.error||"").slice(-1800),composition:"MotionVideo"};manifest.output.videoPath=video;qc.gates.render=manifest.render.status;
  if(r.code!==0){qc.status="FAIL";qc.warnings=warnings.concat(["Remotion render failed."]);await writeFile(qcPath,JSON.stringify(qc,null,2)+"\n");manifest.warnings=qc.warnings;await writeFile(join(dir,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");throw new Error("Remotion render failed; inspect workflow logs and "+qcPath);}
- const media=await checkVideo(video,{width:size.width,height:size.height,fps,durationSeconds:actualDuration,audioExpected:Boolean(audioBedSrc||hasVoice)},dir);qc.gates.mediaProbe=media.probe;qc.gates.fullDecode=media.decode;qc.gates.frameSamples=media.frameSamples;qc.media=media;qc.warnings=warnings;const passed=media.fileExists==="PASS"&&media.nonEmpty==="PASS"&&media.probe==="PASS"&&media.decode==="PASS";qc.status=passed?"TECHNICAL_PASS_CREATIVE_REVIEW_PENDING":"TECHNICAL_QC_FAILED_OR_BLOCKED";manifest.render.status=passed?"TECHNICAL_PASS":"TECHNICAL_QC_FAILED_OR_BLOCKED";manifest.output={runDirectory:dir,videoPath:video,expectedDurationSeconds:actualDuration,mediaMetadata:media.metadata};manifest.warnings=warnings;
+ const media=await checkVideo(video,{width:size.width,height:size.height,fps,durationSeconds:actualDuration,audioExpected:Boolean(audioBedSrc||hasVoice)},dir);qc.gates.mediaProbe=media.probe;qc.gates.fullDecode=media.decode;qc.gates.audioSignal=media.audioSignal;qc.gates.frameSamples=media.frameSamples;qc.media=media;qc.warnings=warnings;const passed=media.fileExists==="PASS"&&media.nonEmpty==="PASS"&&media.probe==="PASS"&&media.decode==="PASS"&&media.audioSignal==="PASS";qc.status=passed?"TECHNICAL_PASS_CREATIVE_REVIEW_PENDING":"TECHNICAL_QC_FAILED_OR_BLOCKED";manifest.render.status=passed?"TECHNICAL_PASS":"TECHNICAL_QC_FAILED_OR_BLOCKED";manifest.output={runDirectory:dir,videoPath:video,expectedDurationSeconds:actualDuration,mediaMetadata:media.metadata};manifest.warnings=warnings;
  await writeFile(qcPath,JSON.stringify(qc,null,2)+"\n");await writeFile(join(dir,"manifest.json"),JSON.stringify(manifest,null,2)+"\n");console.log("Video: "+video);console.log("Technical QC: "+qc.status+" (visual/audio review remains NOT_RUN).");if(!passed)throw new Error("Technical QC failed or blocked; see "+qcPath);return {runId,runDir:dir,plan,props,qc,manifest};
 }
 async function main(){try{const o=parseArgs();if(o.help){console.log(HELP_TEXT);return;}const r=await produce(o);console.log("Manifest: "+join(r.runDir,"manifest.json"));}catch(e){console.error("Motion Graphics Studio: "+String(e?.message||e));process.exitCode=1;}}
