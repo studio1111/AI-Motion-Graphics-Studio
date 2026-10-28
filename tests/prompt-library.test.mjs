@@ -185,7 +185,9 @@ test("browser prompt-library page exposes accessible search, composition, copy a
   const page = fs.readFileSync(path.join(root, "prompt-library", "index.html"), "utf8");
   assert.match(page, /id="search"/);
   assert.match(page, /id="category"/);
+  assert.match(page, /MASTER_PROMPT_PACK\.md/);
   assert.match(page, /ADVANCED_MASTER_PROMPTS\.md/);
+  assert.match(page, /Foundational · /);
   assert.match(page, /SCENE_PROMPT_TEMPLATES\.md/);
   assert.match(page, /Copy full prompt/);
   assert.match(page, /Download \.md/);
