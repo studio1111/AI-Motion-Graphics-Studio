@@ -19,7 +19,7 @@ export function getEnhancedNarrationPath(inputPath) {
 
 export const EDGE_TTS_VOICE_BY_LANGUAGE = Object.freeze({
   fa: "fa-IR-FaridNeural",
-  en: "en-US-GuyNeural",
+  en: "en-US-AriaNeural",
   de: "de-DE-ConradNeural",
   es: "es-ES-AlvaroNeural",
   fr: "fr-FR-HenriNeural",
