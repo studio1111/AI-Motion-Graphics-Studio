@@ -30,3 +30,14 @@ Create one {{SHOT_DURATION}} shot for {{PROJECT_TOPIC}}. Subject and action: {{S
 - Captions, contrast, flashing and safe areas meet platform/accessibility needs.
 - Claims, metrics, quotes, logos, likenesses and source assets are verified and appropriately cleared.
 - The final export is watched end-to-end before delivery.
+
+
+## Use a recipe in the production pipeline
+
+Choose a recipe ID from `npm run prompts:list`, then pass it to the production CLI:
+
+```sh
+npm run produce -- --topic "A concept-led motion design showreel" --language en --duration 30 --prompt-recipe motion-design-showreel --plan-only --voice off
+```
+
+The run saves the selected recipe to `prompt-recipe.json` and records its ID in the brief, storyboard and QC report. If `--style auto` is active, the recipe category is mapped to a renderer preset that already exists in the codebase. An explicit `--style` takes precedence. The local fallback is intentionally not described as implementing advanced effects it does not actually render; inspect the manifest and QC warnings before treating a plan as a finished creative execution.
