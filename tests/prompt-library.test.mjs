@@ -180,3 +180,18 @@ test("CLI exports a portable prompt bundle filtered by category", () => {
   assert.equal(invalid.status, 2);
   assert.match(invalid.stderr, /Unknown prompt category/);
 });
+
+test("browser prompt-library page exposes accessible search, composition, copy and download", () => {
+  const page = fs.readFileSync(path.join(root, "prompt-library", "index.html"), "utf8");
+  assert.match(page, /id="search"/);
+  assert.match(page, /id="category"/);
+  assert.match(page, /ADVANCED_MASTER_PROMPTS\.md/);
+  assert.match(page, /SCENE_PROMPT_TEMPLATES\.md/);
+  assert.match(page, /Copy full prompt/);
+  assert.match(page, /Download \.md/);
+  assert.match(page, /navigator\.clipboard/);
+  assert.match(page, /aria-live/);
+  assert.match(page, /prefers-reduced-motion/);
+  assert.match(page, /fetch\("prompts\.json"\)/);
+  assert.doesNotMatch(page, /<script[^>]+src="https?:\/\//i);
+});
