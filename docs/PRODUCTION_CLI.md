@@ -49,3 +49,8 @@ Technical PASS means the file exists, matches expected metadata, passes a full d
 
 ### Topic-specific local fallback
 For city-heat, artificial-intelligence and solar-energy topics, the local fallback provides a dedicated eight-scene narrative in English and Persian. The output remains `conceptual_topic_template` until research and factual review are completed. The other supported languages continue to use localized general conceptual copy when no dedicated topic-language storyline exists.
+
+
+### High-quality English neural narration
+
+Install `edge-tts==7.3.1` in the same Python environment as the CLI, then use `--voice edge-tts`. The English default profile is `en-US-AriaNeural`, with rate, pitch and volume configurable through `MOTION_STUDIO_EDGE_RATE`, `MOTION_STUDIO_EDGE_PITCH` and `MOTION_STUDIO_EDGE_VOLUME`. This is online synthesis and sends narration text to Microsoft's service; `--voice auto` remains the local-first path. The pipeline still enhances, measures and masters the resulting audio, but real listening is required to judge voice naturalness and pronunciation.
