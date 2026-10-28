@@ -213,3 +213,13 @@ test("browser prompt composer keeps its client-side script valid and locally por
   ]) assert.ok(html.includes(asset), `browser prompt library missing expected capability: ${asset}`);
   assert.doesNotMatch(scriptMatch[1], /\.innerHTML\s*=/i, "recipe content should be inserted as text, not executable HTML");
 });
+
+test("Persian quick-start documents cross-tool use and clear capability limits", () => {
+  const fa = fs.readFileSync(path.join(root, "prompt-library", "PERSIAN_QUICK_START.md"), "utf8");
+  assert.match(fa, /۹۶/);
+  assert.match(fa, /prompt-library/);
+  assert.match(fa, /--prompt-recipe/);
+  assert.match(fa, /L0 تا L3/);
+  assert.match(fa, /همهٔ ۹۶ سبک/);
+  assert.match(fa, /API پولی/);
+});
