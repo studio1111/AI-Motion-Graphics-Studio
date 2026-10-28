@@ -10,6 +10,7 @@ import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { buildMusicPrompt, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { getMusicBedGain, getVoiceFadeEnvelope } from "../src/production/audio-mix.mjs";
 import { buildNarrationEnhancementFilter } from "../src/production/voice-processing.mjs";
+import { parseArgs } from "../scripts/produce.mjs";
 
 test("audio master targets creator-friendly loudness and includes restrained voice clarity processing", () => {
   assert.equal(TARGET_LOUDNESS_LUFS, -16);
@@ -108,4 +109,12 @@ test("narration enhancement chain controls rumble, intelligibility, dynamics and
   assert.match(filter, /acompressor=/);
   assert.match(filter, /loudnorm=I=-20:TP=-3:LRA=7/);
   assert.match(filter, /alimiter=limit=0\.92/);
+});
+
+test("CLI selects music engines explicitly and supports workflow configuration", () => {
+  assert.equal(parseArgs([], {}).musicEngine, "auto");
+  assert.equal(parseArgs([], { MOTION_STUDIO_MUSIC_ENGINE: "procedural" }).musicEngine, "procedural");
+  assert.equal(parseArgs(["--music-engine", "ace-step"], { ACESTEP_API_URL: "http://127.0.0.1:8001" }).musicEngine, "ace-step");
+  assert.throws(() => parseArgs(["--music-engine", "ace-step"], {}), /ACESTEP_API_URL/);
+  assert.throws(() => parseArgs(["--music-engine", "arbitrary"], {}), /Music engine/);
 });
