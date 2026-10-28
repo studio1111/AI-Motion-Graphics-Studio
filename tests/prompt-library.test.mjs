@@ -111,3 +111,13 @@ test("CLI exposes newly added specialist recipes as copy-ready prompts", () => {
     assert.match(result.stdout, /Selected style recipe/);
   }
 });
+
+test("human-readable catalog remains synchronized with structured recipe IDs", () => {
+  const catalog = fs.readFileSync(path.join(root, "prompt-library", "CATALOG.md"), "utf8");
+  assert.match(catalog, new RegExp(`# Prompt Catalog: ${data.recipes.length} Ready-to-Use Motion Styles`));
+  for (const recipe of data.recipes) {
+    assert.ok(catalog.includes(`(` + "`" + recipe.id + "`" + `)`), `catalog missing recipe ID ${recipe.id}`);
+  }
+  assert.match(catalog, /ADVANCED_MASTER_PROMPTS\.md/);
+  assert.match(catalog, /SCENE_PROMPT_TEMPLATES\.md/);
+});
