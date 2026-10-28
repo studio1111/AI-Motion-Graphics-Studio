@@ -4,6 +4,8 @@ import { constants as fsConstants } from "node:fs";
 import { spawn, spawnSync } from "node:child_process";
 import { delimiter, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { splitCaptionSegments } from "../src/production/captions.mjs";
+export { splitCaptionSegments };
 
 export const LAYOUTS = new Set(["hero","editorial","diagram","timeline","compare","data","particles","map","interface","quote","outro"]);
 export const SUPPORTED_LANGUAGES = new Set(["fa","en","de","es","fr","it","pt","nl"]);
@@ -429,26 +431,6 @@ async function writeBed(path, seconds, styleId, transitionCues = []) {
 
 
 function srtTime(sec){const m=Math.round(Math.max(0,sec)*1000);const h=Math.floor(m/3600000),mi=Math.floor(m%3600000/60000),s=Math.floor(m%60000/1000),ms=m%1000;return [h,mi,s].map(v=>String(v).padStart(2,"0")).join(":")+","+String(ms).padStart(3,"0");}
-export function splitCaptionSegments(text,maxChars=44){
- const limit=Math.max(1,Math.floor(Number(maxChars)||44));
- const words=String(text||"").trim().split(/\s+/).filter(Boolean).flatMap(word=>{
-  const chars=Array.from(word);
-  if(chars.length<=limit)return [word];
-  const chunks=[];
-  for(let i=0;i<chars.length;i+=limit)chunks.push(chars.slice(i,i+limit).join(""));
-  return chunks;
- });
- if(!words.length)return [];
- const lines=[];let line="";
- for(const word of words){
-  const next=line?line+" "+word:word;
-  if(line&&Array.from(next).length>limit){lines.push(line);line=word;}else line=next;
- }
- if(line)lines.push(line);
- const segments=[];
- for(let i=0;i<lines.length;i+=2)segments.push([lines[i],lines[i+1]].filter(Boolean).join("\n"));
- return segments;
-}
 function makeSrt(scenes,fps){
  let cursor=0,index=1;const rows=[];
  for(const s of scenes){
