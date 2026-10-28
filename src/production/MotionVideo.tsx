@@ -585,10 +585,9 @@ const SceneView: React.FC<{
   const vertical = height > width;
   const rtl = isRtlLanguage(props.language);
   const entrance = interpolate(frame, [0, 18], [0, 1], clamp);
-  const exit = interpolate(frame, [scene.durationInFrames - 12, scene.durationInFrames], [1, 0], clamp);
-  const opacity = clamp01(Math.min(entrance, exit));
   const sceneProgress = (offset + frame) / Math.max(1, props.durationInFrames);
   const transition = scene.transition || (index % 4 === 0 ? "wipe" : index % 4 === 1 ? "scale" : index % 4 === 2 ? "split" : "fade");
+  const contentOpacity = transition === "fade" ? entrance : 1;
   const wipe = interpolate(frame, [0, 18], [0, 100], clamp);
   const zoom = interpolate(frame, [0, 22], [0.95, 1], clamp);
   const clipPath = transition === "wipe" ? "inset(0 " + (100 - wipe) + "% 0 0)" : transition === "split" ? "inset(0 0 0 " + (50 * (1 - entrance)) + "%)" : "none";
@@ -599,9 +598,9 @@ const SceneView: React.FC<{
   const horizontalTextAlign = rtl ? "flex-end" : "flex-start";
 
   return (
-    <AbsoluteFill style={{ opacity }}>
+    <AbsoluteFill>
       <SceneBackdrop palette={palette} frame={frame} index={index} styleId={props.styleId} />
-      <AbsoluteFill style={{ clipPath, transform: transition === "scale" ? "scale(" + zoom + ")" : "none" }}>
+      <AbsoluteFill style={{ clipPath, opacity: contentOpacity, transform: transition === "scale" ? "scale(" + zoom + ")" : "none" }}>
         <div style={{ position: "absolute", top: 34, left: margin, right: margin, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <div style={{ width: 34, height: 3, background: palette.accent }} />
@@ -707,9 +706,9 @@ export const MotionVideo: React.FC<MotionVideoProps> = (props) => {
         <Audio
           src={staticFile(props.audioBedSrc)}
           volume={(frame) => {
-            const envelope = interpolate(frame, [0, fps * 2, Math.max(fps * 2, totalFrames - fps * 3), totalFrames], [0, 0.075, 0.075, 0], clamp);
+            const envelope = interpolate(frame, [0, fps * 2, Math.max(fps * 2, totalFrames - fps * 3), totalFrames], [0, 0.11, 0.11, 0], clamp);
             const narrationIsActive = voiceRanges.some((range) => frame >= range.startFrame && frame < range.endFrame);
-            return narrationIsActive ? Math.min(envelope, 0.025) : envelope;
+            return narrationIsActive ? Math.min(envelope, 0.032) : envelope;
           }}
         />
       ) : null}

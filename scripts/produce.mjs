@@ -311,6 +311,41 @@ async function writeBed(path, seconds, styleId) {
  await writeFile(path, createProceduralBedWav(seconds, styleId));
 }
 
+
+function srtTime(sec){const m=Math.round(Math.max(0,sec)*1000);const h=Math.floor(m/3600000),mi=Math.floor(m%3600000/60000),s=Math.floor(m%60000/1000),ms=m%1000;return [h,mi,s].map(v=>String(v).padStart(2,"0")).join(":")+","+String(ms).padStart(3,"0");}
+export function splitCaptionSegments(text,maxChars=44){
+ const words=String(text||"").trim().split(/\\s+/).filter(Boolean);
+ if(!words.length)return [];
+ const lines=[];let line="";
+ for(const word of words){
+  const next=line?line+" "+word:word;
+  if(line&&next.length>maxChars){lines.push(line);line=word;}else line=next;
+ }
+ if(line)lines.push(line);
+ const segments=[];
+ for(let i=0;i<lines.length;i+=2)segments.push([lines[i],lines[i+1]].filter(Boolean).join("\\n"));
+ return segments;
+}
+function makeSrt(scenes,fps){
+ let cursor=0,index=1;const rows=[];
+ for(const s of scenes){
+  const sceneFrames=s.durationInFrames;
+  const spokenFrames=Math.min(sceneFrames,s.audioDurationInFrames||sceneFrames);
+  const segments=splitCaptionSegments(s.narration);
+  const wordCounts=segments.map(v=>v.split(/\\s+/).filter(Boolean).length);
+  const totalWords=wordCounts.reduce((a,b)=>a+b,0)||1;
+  let offset=0;
+  for(let i=0;i<segments.length;i++){
+   const start=cursor+Math.round(spokenFrames*offset/totalWords);
+   offset+=wordCounts[i];
+   const end=cursor+(i===segments.length-1?spokenFrames:Math.round(spokenFrames*offset/totalWords));
+   rows.push(index+++"\\n"+srtTime(start/fps)+" --> "+srtTime(Math.max(start+1,end)/fps)+"\\n"+segments[i]+"\\n");
+  }
+  cursor+=sceneFrames;
+ }
+ return rows.join("\\n");
+}
+function timedScenes(scenes,fps){let cursor=0;return scenes.map(s=>{const start=cursor,end=start+s.durationInFrames;cursor=end;return {...s,startFrame:start,endFrame:end,startSeconds:Number((start/fps).toFixed(3)),endSeconds:Number((end/fps).toFixed(3))};});}
 export function sampleTimes(durationSeconds){
  const duration=Number(durationSeconds);
  if(!Number.isFinite(duration)||duration<=0)return [];
