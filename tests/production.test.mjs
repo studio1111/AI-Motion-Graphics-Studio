@@ -59,6 +59,12 @@ test("paid provider calls are disabled by default",()=>{
   assert.throws(()=>parseArgs(["--mystery"],{}),/Unknown option/);
 });
 
+test("CLI accepts documented language codes and rejects unsupported ones",()=>{
+  assert.equal(parseArgs(["--language","de-DE"],{}).language,"de");
+  assert.equal(parseArgs(["--language","fa"],{}).language,"fa");
+  assert.throws(()=>parseArgs(["--language","xx"],{}),/Language must be one of/);
+});
+
 test("output slug is path-safe",()=>{
   const slug=safeSlug("../../my dangerous: topic");
   assert.ok(slug.length>0&&slug.length<=48);
