@@ -8,7 +8,7 @@ import { splitCaptionSegments } from "../src/production/captions.mjs";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { generateAceStepMusic, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { masterAudioVideo } from "../src/production/audio-mastering.mjs";
-import { buildNarrationEnhancementFilter, getEnhancedNarrationPath } from "../src/production/voice-processing.mjs";
+import { buildNarrationEnhancementFilter, getEnhancedNarrationPath, buildEdgeTtsArgs } from "../src/production/voice-processing.mjs";
 import { extendFinalSceneToTarget } from "../src/production/narration-timing.mjs";
 export { splitCaptionSegments };
 
@@ -133,7 +133,7 @@ export function parseArgs(argv=process.argv.slice(2),env=process.env){
   for(let i=0;i<argv.length;i++){const arg=argv[i];if(arg==="--allow-paid-ai"){o.allowPaidAI=true;continue;}if(arg==="--plan-only"||arg==="--skip-render"){o.planOnly=true;continue;}if(arg==="--no-research"){o.skipResearch=true;continue;}if(arg==="--help"||arg==="-h"){o.help=true;continue;}const flag=arg.includes("=")?arg.slice(0,arg.indexOf("=")):arg;const inline=arg.includes("=")?arg.slice(arg.indexOf("=")+1):undefined;const key=map.get(flag);if(!key)throw new Error("Unknown option: "+arg);const value=inline===undefined?argv[++i]:inline;if(value===undefined||value==="")throw new Error("Missing value for "+flag);o[key]=key==="duration"?Number(value):value;}
   o.language=String(o.language).toLowerCase().split("-")[0];o.style=String(o.style).toLowerCase().replaceAll("_","-").replaceAll(" ","-");o.aspectRatio=String(o.aspectRatio).replace(/\s+/g,"");o.voice=String(o.voice).toLowerCase();o.musicEngine=String(o.musicEngine||"auto").toLowerCase();o.promptRecipe=String(o.promptRecipe||"").toLowerCase().replaceAll("_","-").replaceAll(" ","-");if(o.promptRecipe&&!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(o.promptRecipe))throw new Error("Prompt recipe must be a lowercase recipe ID such as motion-design-showreel.");
   if(!SUPPORTED_LANGUAGES.has(o.language))throw new Error("Language must be one of: "+Array.from(SUPPORTED_LANGUAGES).join(", ")+".");
-  if(!["auto","off","pocket-tts","persian-speech"].includes(o.voice))throw new Error("Voice must be auto, off, pocket-tts, or persian-speech.");if(!["auto","procedural","ace-step"].includes(o.musicEngine))throw new Error("Music engine must be auto, procedural, or ace-step.");resolveMusicEngine(o.musicEngine,env.ACESTEP_API_URL||"");
+  if(!["auto","off","pocket-tts","persian-speech","edge-tts"].includes(o.voice))throw new Error("Voice must be auto, off, pocket-tts, persian-speech, or edge-tts.");if(!["auto","procedural","ace-step"].includes(o.musicEngine))throw new Error("Music engine must be auto, procedural, or ace-step.");resolveMusicEngine(o.musicEngine,env.ACESTEP_API_URL||"");
   if(!["16:9","9:16","1:1"].includes(o.aspectRatio))throw new Error("Aspect ratio must be 16:9, 9:16, or 1:1.");
   if(!Number.isFinite(o.duration)||o.duration<5||o.duration>3600)throw new Error("Duration must be between 5 and 3600 seconds (one hour).");
   return o;
@@ -311,7 +311,20 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
  if(mode==="off")return result;
  const locale=String(language).split("-")[0].toLowerCase();
  let engine=null;
- if(locale==="fa"){
+ if(mode==="edge-tts"){
+  const edge=executable("edge-tts");
+  if(!edge){
+   const w="The optional Edge neural TTS engine is not installed. Install edge-tts==7.3.1 or use --voice auto for local narration.";
+   result.status="not_installed";result.warnings.push(w);warnings.push(w);return result;
+  }
+  engine={
+   name:"Microsoft Edge Neural TTS via edge-tts (online)",
+   executable:edge,
+   extension:".mp3",
+   args:(text,file)=>buildEdgeTtsArgs({text,outputPath:file,language:locale,env:process.env}),
+   timeout:180000
+  };
+ }else if(locale==="fa"){
   if(mode==="pocket-tts"){
    const w="Pocket TTS does not currently provide an official Persian voice. Choose auto or persian-speech; no unrelated voice was substituted.";
    result.status="unsupported_language";result.warnings.push(w);warnings.push(w);return result;
@@ -344,7 +357,7 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
  const narratedScenes=scenes.filter(s=>String(s.narration||"").trim());
  for(let i=0;i<scenes.length;i++){
   const s=scenes[i];if(!String(s.narration||"").trim())continue;
-  const name="voice-"+String(i+1).padStart(2,"0")+".wav",file=join(dir,name);
+  const name="voice-"+String(i+1).padStart(2,"0")+(engine.extension||".wav"),file=join(dir,name);
   const narrationText=normalizeNarrationText(s.narration,locale);s.narration=narrationText;const r=await run(engine.executable,engine.args(narrationText,file),engine.timeout);
   if(r.code!==0){
    const w=engine.name+" failed on "+s.id+(r.timedOut?" (timeout).":": "+String(r.stderr||r.error||"unknown error").slice(-220));
@@ -363,9 +376,9 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
    const w="Narration enhancement generated an invalid WAV for "+s.id;
    result.status="partial";result.warnings.push(w);warnings.push(w);await rm(enhancedFile,{force:true});continue;
   }
-  await rename(enhancedFile,file);
-  let b;try{b=await readFile(file);}catch{}
-    s.audioSrc="generated/"+runId+"/"+name;
+  const enhancedName=name.replace(/\.(?:wav|mp3)$/i,".enhanced.wav");
+  await rm(file,{force:true});
+  s.audioSrc="generated/"+runId+"/"+enhancedName;
   s.audioDurationInFrames=Math.ceil(seconds*fps);
   s.durationInFrames=s.audioDurationInFrames+Math.ceil(fps*1.1);
   result.generatedScenes++;
@@ -538,7 +551,7 @@ async function checkVideo(file,expected,dir){
  report.durationSeconds=duration;return report;
 }
 
-export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..3600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech, --music-engine auto|procedural|ace-step, --prompt-recipe <recipe-id> (96 portable recipes), --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
+export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..3600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech|edge-tts, --music-engine auto|procedural|ace-step, --prompt-recipe <recipe-id> (96 portable recipes), --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
 
 export async function produce(options,env=process.env){
  const warnings=[],runId=new Date().toISOString().replace(/[:.]/g,"-")+"-"+process.pid;let brief={};if(options.briefPath)brief=await readJson(resolve(options.briefPath));let sources=normalizeSources(brief.sources||brief.sourceUrls||[]);if(options.sourcesPath)sources=normalizeSources(sources.concat(normalizeSources(await readJson(resolve(options.sourcesPath)))));
