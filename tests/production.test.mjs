@@ -248,3 +248,12 @@ test("caption segmentation limits the visible caption and creates multiple cues"
     assert.ok(lines.every(line => line.length <= 44));
   }
 });
+
+
+test("kinetic title animation splits titles into words rather than one literal backslash-s sequence", async () => {
+  const motion = await readFile(new URL("../src/production/MotionVideo.tsx", import.meta.url), "utf8");
+  assert.ok(
+    motion.includes('scene.title.trim().split(/\\s+/)'),
+    "title words must be split on whitespace so each word can animate independently"
+  );
+});
