@@ -14,13 +14,13 @@ When the `speech` executable from `persian-speech` is installed, `--voice auto` 
 ## Arguments
 
 - --topic: required topic or question unless supplied in a brief JSON file.
-- --language: fa, en, de, es, fr, it, pt, nl.
+- --language: fa, en, de, es, fr, it, pt, nl. Unsupported language codes are rejected instead of generating mislabeled output.
 - --duration: target seconds, 5 to 600.
 - --style: auto or a preset such as cinematic-documentary, scientific-2-5d, data-journalism, or vertical-social.
 - --aspect-ratio: 16:9, 9:16, or 1:1.
 - --brief: optional JSON brief with topic, language, durationSeconds, aspectRatio, style and sources.
 - --sources: optional JSON array of source URLs or source objects.
-- --voice: auto, off, or pocket-tts.
+- --voice: auto, off, pocket-tts, or persian-speech. In GitHub Actions, the narration toggle now maps to `off` when disabled, Pocket TTS for requested supported non-Persian languages, and Persian Speech for requested Farsi narration.
 - --allow-paid-ai: explicitly permits Firecrawl/Claude API use, if corresponding keys exist.
 - --no-research: skip optional Firecrawl search.
 - --plan-only: write storyboard and manifests without audio generation or rendering.
