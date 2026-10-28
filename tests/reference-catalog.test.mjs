@@ -47,4 +47,7 @@ test("the current 100-reference seed imports without silently dropping rows or i
   assert.equal(parsed.records.filter(record=>record.evidenceLevel==="L0").length,55);
   assert.equal(parsed.records.filter(record=>record.evidenceLevel==="L1").length,45);
   assert.equal(parsed.records.filter(record=>record.watched===true).length,0);
+  const relatedArticleOnly=parsed.records.find(record=>record.id==="R005");
+  assert.equal(relatedArticleOnly.evidenceLevel,"L0");
+  assert.equal(relatedArticleOnly.relatedArticleReviewed,true);
 });
