@@ -90,3 +90,14 @@ The production workflow can now generate Persian/Farsi narration locally via `pe
 
 ### Topic-aware local storyboards
 When paid research/LLM access is not enabled, the local fallback now includes dedicated eight-scene conceptual storylines for city heat, artificial intelligence and solar energy in English and Persian. These are deliberately marked `conceptual_topic_template` and identify where real-world claims need sources; they are not a substitute for a researched factual script.
+
+
+## Premium English narration
+
+For a more expressive English neural voice, install the optional online Edge TTS client in the production environment with `python -m pip install edge-tts==7.3.1`, then render with `--voice edge-tts`. The default English profile is `en-US-AriaNeural`; override it with `MOTION_STUDIO_EDGE_VOICE` to use another supported Neural voice. Example:
+
+```sh
+MOTION_STUDIO_EDGE_VOICE=en-US-AriaNeural MOTION_STUDIO_EDGE_RATE=-6% npm run produce -- --topic "The future of science" --language en --duration 60 --style cinematic-documentary --voice edge-tts
+```
+
+Edge TTS is an online service: narration text is sent to the service and network/service availability is not guaranteed. Use `--voice auto` for the existing local engine path. The Edge TTS client is optional and must be installed in the same environment that runs the production CLI.
