@@ -526,8 +526,8 @@ export async function produce(options,env=process.env){
  if(voiceErrors.length){
   warnings.push(...voiceErrors);
   const voiceQc={runId,status:"VOICE_GENERATION_FAILED",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",voiceGeneration:"FAIL",render:"BLOCKED",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},voice,warnings,facts:{factualClaimsAutomaticallyVerified:false,fontFilesVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,sourceCount:sources.length}};
-  await writeFile(join(dir,"voice-status.json"),JSON.stringify(voice,null,2)+"\\n");
-  await writeFile(join(dir,"qc-report.json"),JSON.stringify(voiceQc,null,2)+"\\n");
+  await writeFile(join(dir,"voice-status.json"),JSON.stringify(voice,null,2)+"\n");
+  await writeFile(join(dir,"qc-report.json"),JSON.stringify(voiceQc,null,2)+"\n");
   throw new Error(voiceErrors.join(" "));
  }
  const hasVoice=plan.scenes.some(s=>s.audioSrc);if(!hasVoice){const frames=allocateFrames(plan.scenes,targetFrames,fps);plan.scenes=plan.scenes.map((s,i)=>({...s,durationInFrames:frames[i]}));}
