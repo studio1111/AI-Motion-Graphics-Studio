@@ -24,7 +24,7 @@ Local install and validation:
     npx remotion browser ensure
     npm run validate
 
-Build and render a 90-second video:
+Build and render a 90-second video (the CLI accepts 5 seconds to 60 minutes; long-form rendering requires a valid topic-specific storyboard):
 
     npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
 
