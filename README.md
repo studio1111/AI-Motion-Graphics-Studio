@@ -28,6 +28,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
 - `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost caveats.
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
+- `docs/AUDIO_PRODUCTION_PIPELINE.md`: Persian narration normalization, voice fades, smooth music ducking, two-pass loudness mastering, optional ACE-Step 1.5 API integration, and voice/model licensing notes.
 
 ## Portable prompt library
 
@@ -75,7 +76,7 @@ GitHub Actions has a production workflow: open Actions, choose Produce Motion Gr
 
 ## Runtime status and limitations
 
-The repository includes a data-driven MotionVideo composition with eleven layout modes, a local production CLI, optional Firecrawl research, optional Claude storyboard generation, optional Pocket TTS for its supported languages, a procedural music score with scene-synchronized transition sound cues, captions/SRT, Remotion rendering and FFprobe/FFmpeg technical checks. GitHub Actions runs the production tests and renders both the generic smoke test and the data-driven composition.
+The repository includes a data-driven MotionVideo composition with eleven layout modes, a local production CLI, optional Firecrawl research, optional Claude storyboard generation, optional Pocket TTS for its supported languages, locally synthesized Persian narration, a richer procedural score or optional self-hosted ACE-Step 1.5 soundtrack, speech-aware music ducking, two-pass EBU R128 audio mastering, captions/SRT, Remotion rendering and FFprobe/FFmpeg technical checks. GitHub Actions runs the production tests and renders both the generic smoke test and the data-driven composition.
 
 Technical QC verifies the media stream, full-file decode, sampled-frame extraction and a non-silent audio peak. It does not prove creative quality or sound-mix quality. Reports intentionally leave human visual review and audio listening as NOT_RUN. Font names are candidates, not proof the font files exist. Official Pocket TTS does not list Persian; it will not silently substitute an unrelated-language voice. Full 1,000-video visual analysis is still incomplete; the reference set contains candidates and article-level evidence, not a claim of 1,000 videos watched.
 
