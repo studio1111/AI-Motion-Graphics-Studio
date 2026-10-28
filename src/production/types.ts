@@ -23,7 +23,7 @@ export type MotionScene = {
   transition?: "wipe" | "fade" | "scale" | "split";
 };
 
-export type MotionVisualFamily = "city-heat" | "artificial-intelligence" | "solar-energy" | "climate" | "biology" | "space" | "finance" | "cybersecurity" | "water" | "general";
+export type MotionVisualFamily = "city-heat" | "city" | "artificial-intelligence" | "solar-energy" | "climate" | "biology" | "space" | "finance" | "cybersecurity" | "water" | "general";
 
 export type MotionVideoProps = {
   topic: string;

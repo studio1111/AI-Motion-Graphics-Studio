@@ -5,6 +5,8 @@ import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, de
 test("topic visual classifier selects a safe, relevant illustration family",()=>{
   const cases=[
     ["How heat moves through a city","city-heat"],
+    ["A city transit system","city"],
+    ["Urban design and walkable streets","city"],
     ["Artificial intelligence and neural networks","artificial-intelligence"],
     ["How solar energy becomes electricity","solar-energy"],
     ["Climate change and carbon emissions","climate"],
@@ -24,7 +26,7 @@ test("local fallback creates eight scenes and varies visual layouts",()=>{
   const plan=buildLocalPlan({topic:"دگرگونی اقلیم",language:"fa",styleId:"scientific-2-5d",totalFrames:2700,fps:30});
   assert.equal(plan.scenes.length,8);
   assert.equal(plan.contentMode,"conceptual_template");
-  assert.ok(plan.scenes[0].title.includes("دگرگونی اقلیم"));
+  assert.equal(plan.scenes[0].title,"دگرگونی اقلیم");
   assert.equal(plan.scenes.reduce((sum,s)=>sum+s.durationInFrames,0),2700);
   assert.ok(new Set(plan.scenes.map(s=>s.layout)).size>=5);
   assert.ok(plan.scenes.every(s=>s.sourceRefs.length===0));

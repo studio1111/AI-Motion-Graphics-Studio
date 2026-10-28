@@ -523,6 +523,8 @@ const QuoteGraphic: React.FC<{ scene: MotionScene; palette: MotionPalette; frame
 const TopicHeroGraphic: React.FC<{ family: NonNullable<MotionVideoProps["visualFamily"]>; palette: MotionPalette; frame: number }> = ({ family, palette, frame }) => {
   const reveal = interpolate(frame, [0, 34], [0, 1], clamp);
   const pulse = 0.5 + 0.5 * Math.sin(frame / 13);
+  const thermalAccent = "#FF8058";
+  const thermalHighlight = "#FFD166";
   const cityBuildings = [
     { x: 28, w: 104, h: 178 }, { x: 144, w: 118, h: 252 }, { x: 273, w: 94, h: 208 },
     { x: 378, w: 142, h: 318 }, { x: 531, w: 105, h: 236 }, { x: 647, w: 130, h: 278 },
@@ -551,25 +553,46 @@ const TopicHeroGraphic: React.FC<{ family: NonNullable<MotionVideoProps["visualF
           <stop offset="0%" stopColor={palette.accent2} stopOpacity="0.26" />
           <stop offset="100%" stopColor={palette.accent2} stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="topic-thermal-halo">
+          <stop offset="0%" stopColor={thermalHighlight} stopOpacity="0.42" />
+          <stop offset="48%" stopColor={thermalAccent} stopOpacity="0.2" />
+          <stop offset="100%" stopColor={thermalAccent} stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="topic-thermal-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={thermalHighlight} />
+          <stop offset="100%" stopColor={thermalAccent} />
+        </linearGradient>
       </defs>
       {family === "city-heat" ? (
         <>
-          <circle cx="752" cy="182" r="190" fill="url(#topic-halo)" />
-          <circle cx="752" cy="182" r={56 + pulse * 5} fill="none" stroke={rgba(palette.accent2, 0.22)} strokeWidth="2" />
-          <circle cx="752" cy="182" r="37" fill="url(#topic-object-gradient)" opacity="0.75" />
+          <circle cx="752" cy="182" r="190" fill="url(#topic-thermal-halo)" />
+          <circle cx="752" cy="182" r={56 + pulse * 5} fill="none" stroke={rgba(thermalHighlight, 0.34)} strokeWidth="2" />
+          <circle cx="752" cy="182" r="37" fill="url(#topic-thermal-gradient)" opacity="0.88" />
           {cityBuildings.map((b, i) => <g key={i}>
             <rect x={b.x} y={620 - b.h} width={b.w} height={b.h} rx="3" fill="url(#topic-building-gradient)" stroke={rgba(palette.line, 0.95)} strokeWidth="2" />
             <path d={`M ${b.x + 8} ${620 - b.h + 12} L ${b.x + b.w - 8} ${620 - b.h + 12}`} stroke={rgba(palette.foreground, 0.16)} strokeWidth="2" />
             {windows(b, i)}
           </g>)}
           <path d="M0 622 L1000 622" stroke={palette.foreground} strokeOpacity="0.23" strokeWidth="3" />
-          {[0, 1, 2, 3].map((i) => <path key={i} d={`M ${75 + i * 215} 400 C ${25 + i * 215} 345, ${150 + i * 215} 315, ${96 + i * 215} 260 S ${160 + i * 215} 208, ${125 + i * 215} 172`} fill="none" stroke={i % 2 ? palette.accent : palette.accent2} strokeWidth={3 + (i % 2)} strokeLinecap="round" strokeDasharray="12 16" strokeDashoffset={-frame * (1.8 + i * 0.3)} opacity={0.5 + reveal * 0.45} />)}
+          {[0, 1, 2, 3].map((i) => <path key={i} d={`M ${75 + i * 215} 400 C ${25 + i * 215} 345, ${150 + i * 215} 315, ${96 + i * 215} 260 S ${160 + i * 215} 208, ${125 + i * 215} 172`} fill="none" stroke={i % 2 ? thermalAccent : thermalHighlight} strokeWidth={3 + (i % 2)} strokeLinecap="round" strokeDasharray="12 16" strokeDashoffset={-frame * (1.8 + i * 0.3)} opacity={0.5 + reveal * 0.45} />)}
           <path d="M100 655 Q300 642 500 655 T900 655" fill="none" stroke={rgba(palette.accent, 0.44)} strokeWidth="2" />
           <g opacity="0.68">
             {Array.from({ length: 8 }, (_, i) => <path key={i} d={`M ${80 + i * 118} 644 l18 -4 l18 4`} fill="none" stroke={palette.accent2} strokeWidth="2" />)}
           </g>
         </>
-      ) : family === "artificial-intelligence" ? (
+            ) : family === "city" ? (
+        <>
+          <circle cx="752" cy="182" r="190" fill="url(#topic-halo)" />
+          <circle cx="752" cy="182" r={56 + pulse * 5} fill="none" stroke={rgba(palette.accent2, 0.28)} strokeWidth="2" />
+          <circle cx="752" cy="182" r="28" fill="url(#topic-object-gradient)" opacity="0.8" />
+          {cityBuildings.map((b, i) => <g key={i}>
+            <rect x={b.x} y={620 - b.h} width={b.w} height={b.h} rx="3" fill="url(#topic-building-gradient)" stroke={rgba(palette.line, 0.95)} strokeWidth="2" />
+            {windows(b, i)}
+          </g>)}
+          <path d="M0 622 L1000 622" stroke={palette.foreground} strokeOpacity="0.23" strokeWidth="3" />
+          <path d="M45 590 C170 554 260 605 394 576 S700 558 950 592" fill="none" stroke={palette.accent} strokeWidth="5" strokeDasharray="16 12" strokeDashoffset={-frame * 1.4} strokeLinecap="round" />
+          {[0,1,2,3,4].map(i => <circle key={i} cx={95+i*200} cy={578+Math.sin(frame/22+i)*8} r="7" fill={i%2?palette.accent2:palette.accent} />)}
+        </> : family === "artificial-intelligence" ? (
         <>
           <circle cx="500" cy="350" r="270" fill="url(#topic-halo)" />
           {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => {
