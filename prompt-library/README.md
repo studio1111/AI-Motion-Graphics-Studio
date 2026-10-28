@@ -14,6 +14,7 @@ npm run prompts:list
 npm run prompts:search -- typography
 npm run prompts:show -- kinetic-type
 npm run prompts:show -- product-launch --format json
+npm run prompts:export -- --category product-ui
 ```
 If you use a different AI, copy `MASTER_PROMPT.md`, then append a recipe printed by `prompts:show`. Give the AI the brief and the actual available tools. A prompt library improves direction but does not itself grant a model video-rendering, browsing, voice, music or asset-generation capabilities.
 
@@ -29,3 +30,6 @@ Every recipe records its stable ID, category, intended duration, visual language
 - Read REFERENCE_ANALYSIS_WORKBOOK.md before treating an inspiration source as analyzed. It separates page review, sampled video review and timestamped full analysis.
 - Use PRODUCTION_WORKFLOW_PACK.md to move from creative brief to beat sheet, storyboard, motion implementation, sound map and quality checks.
 - The expanded catalog has 70 original recipes. Use the search command to find a style, then the show command for its full ready-to-copy director prompt.
+
+
+Use the export command to create a portable category bundle in Markdown, or add --format json for machine-readable recipes and copy-ready composed prompts. This is useful when another AI assistant cannot read the repository directly.
