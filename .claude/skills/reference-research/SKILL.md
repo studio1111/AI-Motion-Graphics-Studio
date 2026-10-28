@@ -4,7 +4,7 @@ description: Discover, deduplicate and analyze public motion-graphics references
 ---
 # Reference Research
 
-Read `docs/REFERENCE_SOURCE_REGISTRY.md` first, then `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`. Prompt Motion (`https://prompt-motion.com/`) is the primary source for prompt/skill-to-output research. Inspect both Prompt and Skill entries before broad discovery where relevant.
+Read `docs/REFERENCE_SOURCE_REGISTRY.md` first, then `docs/PROMPT_MOTION_PATTERN_STUDY.md`, `research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md`, `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`, `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`. Convert transferable principles into original recipes in `prompt-library/prompts.json`; use `ADVANCED_MASTER_PROMPTS.md` and `SCENE_PROMPT_TEMPLATES.md` as production references. Prompt Motion (`https://prompt-motion.com/`) is the primary source for prompt/skill-to-output research. Inspect both Prompt and Skill entries before broad discovery where relevant.
 
 ## Evidence levels
 - L0: search result, metadata, source listing or thumbnail only.
@@ -12,7 +12,7 @@ Read `docs/REFERENCE_SOURCE_REGISTRY.md` first, then `docs/RESEARCH_AND_BENCHMAR
 - L2: complete video watched.
 - L3: timestamped visual breakdown with selected-frame evidence.
 
-Never count L0/L1 as full visual analysis. Never infer exact colors, transition behavior, font, timing curve or sound design without evidence.
+Never count L0/L1 as full visual analysis. Never infer exact colors, transition behavior, font, timing curve or sound design without evidence. Keep observation, interpretation and original adaptation in separate fields. Do not duplicate creator-authored full prompts unless reuse rights are explicit.
 
 ## Dataset integrity
 Deduplicate by canonical URL/video ID and obvious reposts. Balance creators, language, genre, duration, platform, date and popularity. Track the query, capture date, evidence level, reviewed fields and uncertainty. Public metadata does not make a full video review.
