@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, wavDuration } from "../scripts/produce.mjs";
+import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, validateVoiceGeneration, wavDuration } from "../scripts/produce.mjs";
 
 test("topic-aware scene graphics remain wired into the Remotion composition",async()=>{
   const motion=await readFile(new URL("../src/production/MotionVideo.tsx",import.meta.url),"utf8");
@@ -156,6 +156,14 @@ test("output slug is path-safe",()=>{
   assert.ok(slug.length>0&&slug.length<=48);
   assert.ok(!slug.includes("/")&&!slug.includes("\\"));
   assert.equal(safeSlug("***"),"motion-video");
+});
+
+test("requested narration blocks silent or partially narrated production",()=>{
+  assert.deepEqual(validateVoiceGeneration("off",{status:"disabled",generatedScenes:0}),[]);
+  assert.deepEqual(validateVoiceGeneration("auto",{status:"generated",generatedScenes:8}),[]);
+  assert.match(validateVoiceGeneration("auto",{status:"not_installed",generatedScenes:0})[0],/Refusing to deliver a silent or partially narrated video/);
+  assert.match(validateVoiceGeneration("pocket-tts",{status:"partial",generatedScenes:3})[0],/generated scenes: 3/);
+  assert.match(validateVoiceGeneration("auto",null)[0],/status: missing/);
 });
 
 test("audio peak parser accepts measured levels and handles silence safely",()=>{
