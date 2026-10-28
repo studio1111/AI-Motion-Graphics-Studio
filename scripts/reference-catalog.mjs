@@ -72,7 +72,7 @@ export function parseSeedCatalog(markdown, captureDate = "2026-10-28") {
       continue;
     }
     const [, id, title, url, creator = "", rawCategory, evidenceText, notes] = match;
-    const evidenceLevel = /\bL1\b/.test(evidenceText) ? "L1" : "L0";
+    const evidenceLevel = /^\s*L1\b/.test(evidenceText) ? "L1" : "L0";
     const category = categoryForSeed(rawCategory, title);
     records.push({
       id,
