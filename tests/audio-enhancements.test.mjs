@@ -122,5 +122,5 @@ test("CLI selects music engines explicitly and supports workflow configuration",
 test("enhanced narration output uses a distinct WAV path on every platform", () => {
   assert.equal(getEnhancedNarrationPath("voice-01.wav"), "voice-01.enhanced.wav");
   assert.equal(getEnhancedNarrationPath("/tmp/generated/voice-02.WAV"), "/tmp/generated/voice-02.enhanced.wav");
-  assert.throws(() => getEnhancedNarrationPath("voice-03.mp3"), /\.wav/i);
+  assert.throws(() => getEnhancedNarrationPath("voice-03.mp3"), /WAV file path/i);
 });
