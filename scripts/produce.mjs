@@ -245,6 +245,12 @@ export function validateStoryboard(p){
   for(const s of p.scenes){if(!s||typeof s!=="object"){errors.push("Scene is invalid.");continue;}if(!String(s.id||"").trim())errors.push("Scene id is required.");if(ids.has(s.id))errors.push("Duplicate scene id: "+s.id);ids.add(s.id);for(const f of ["kicker","title","body","narration"])if(typeof s[f]!=="string")errors.push("Scene "+s.id+" field "+f+" must be text.");if(!LAYOUTS.has(s.layout))errors.push("Scene "+s.id+" layout is invalid.");if(s.bullets!==undefined&&(!Array.isArray(s.bullets)||s.bullets.length>4||s.bullets.some(v=>typeof v!=="string")))errors.push("Scene "+s.id+" bullets invalid.");}
   return errors;
 }
+export function validateRuntimePlan(plan,durationSeconds,{planOnly=false}={}){
+  if(Number(durationSeconds)>600&&!planOnly&&plan?.contentMode!=="ai_generated"){
+    return ["Long-form production over 10 minutes requires a valid topic-specific storyboard; the generic local fallback is not sufficient for a professional long-form render."];
+  }
+  return [];
+}
 export function normalizePlan(p,ctx){
   if(!p||typeof p!=="object")throw new Error("AI storyboard was not a JSON object.");const allowed=new Set((ctx.sources||[]).map(s=>s.url));const fallback=buildLocalPlan(ctx);
   const scenes=(Array.isArray(p.scenes)?p.scenes:[]).map((s,i)=>({id:String(s.id||"scene-"+String(i+1).padStart(2,"0")),kicker:String(s.kicker||"SECTION "+(i+1)).slice(0,140),title:String(s.title||"").trim().slice(0,260),body:String(s.body||"").trim().slice(0,1000),narration:String(s.narration||"").trim().slice(0,1400),layout:LAYOUTS.has(s.layout)?s.layout:fallback.scenes[i%8].layout,bullets:Array.isArray(s.bullets)?s.bullets.filter(v=>typeof v==="string").slice(0,4):[],sourceRefs:Array.isArray(s.sourceRefs)?s.sourceRefs.filter(u=>allowed.has(u)):[],transition:["wipe","fade","scale","split"].includes(s.transition)?s.transition:["wipe","scale","split","fade"][i%4]}));
@@ -527,6 +533,13 @@ export async function produce(options,env=process.env){
  if(options.allowPaidAI&&env.ANTHROPIC_API_KEY){try{const r=await generateClaude(ctx,research,env);plan=normalizePlan(r.plan,ctx);ai={status:"generated",model:r.model,usage:r.usage};}catch(e){warnings.push("Claude generation failed; local fallback used: "+String(e).slice(0,350));ai={status:"failed_fallback_used",model:env.ANTHROPIC_MODEL||"claude-sonnet-5-5"};}}
  else if(options.allowPaidAI){warnings.push("Paid AI was allowed but ANTHROPIC_API_KEY is not configured.");ai.status="key_missing_fallback_used";}
  if(!plan)plan=buildLocalPlan({topic,language,styleId,totalFrames:targetFrames,fps});let errors=validateStoryboard(plan);if(errors.length){warnings.push("Invalid storyboard; local fallback used: "+errors.join(" "));plan=buildLocalPlan({topic,language,styleId,totalFrames:targetFrames,fps});}
+ const runtimeErrors=validateRuntimePlan(plan,duration,{planOnly:options.planOnly});
+ if(runtimeErrors.length){
+  warnings.push(...runtimeErrors);
+  await writeFile(join(dir,"qc-report.json"),JSON.stringify({runId,status:"LONG_FORM_PLAN_REQUIRED",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",longFormStory:"FAIL",render:"BLOCKED",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},warnings,facts:{factualClaimsAutomaticallyVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,requestedDurationSeconds:duration}},null,2)+"\\n");
+  throw new Error(runtimeErrors.join(" "));
+ }
+ if(duration>600&&options.planOnly&&plan.contentMode!=="ai_generated")warnings.push("Plan-only output is a generic scaffold; a long-form render requires a valid topic-specific storyboard.");
  const urls=new Set(sources.map(s=>s.url));plan.scenes=plan.scenes.map(s=>({...s,sourceRefs:(s.sourceRefs||[]).filter(u=>urls.has(u))}));if(plan.contentMode==="conceptual_template")warnings.push("Conceptual output only; factual claims have not been researched. Provide sources or explicitly opt into configured research/AI services for topic-specific scripts.");
  await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
  let voice={status:"not_attempted",engine:null,generatedScenes:0,warnings:[]};if(options.planOnly)voice.status="not_run_plan_only";else voice=await makeVoice(plan.scenes,language,options.voice,runId,fps,warnings);
