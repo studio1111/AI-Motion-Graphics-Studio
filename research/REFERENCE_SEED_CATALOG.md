@@ -105,6 +105,39 @@ Source: [B2W Production, “19 Best Motion Graphics Video Examples & Samples: Le
 
 These entries are article-supported rather than video-reviewed. Upgrade them to L2 only after watching the full original; upgrade to L3 only when timestamped scene observations and selected-frame evidence have been recorded.
 
+## Batch D: 20 motion-graphics references from updated industry roundups
+
+These are L1 article-supported candidates from two secondary sources. Their descriptions below reflect article text; this studio has not directly watched these target videos, checked every claim in the videos, or recorded timestamps.
+
+Sources:
+- [What a Story, “20+ Best Motion Graphics Video Examples To Be Inspired From in 2026”](https://www.whatastory.agency/blog/20-exemplary-motion-graphics-videos-to-be-inspired-from-in-2024), published 1 August 2024 and updated 2 October 2026.
+- [Yum Yum Videos, “30 Best Motion Graphics Examples of 2026 With Real Business Results”](https://www.yumyumvideos.com/blog/best-motion-graphics-video-examples/), published 16 August 2022 and updated 21 August 2026.
+
+| ID | Reference | Intended category | Evidence | Article-derived hypothesis to verify in the original |
+|---|---|---|---|---|
+| R081 | [What is Bitcoin? (In 2 minutes)](https://www.youtube.com/watch?v=bRtFCXkNpWI) · Goodbit | Cryptocurrency explainer | L1 | The article identifies this as a concise Bitcoin explainer; inspect how transactions and decentralization are made understandable. |
+| R082 | [History of Deloitte in 4 minutes](https://www.youtube.com/watch?v=SyoLqUP6dX4) · Deloitte UK | Corporate history | L1 | The article describes an engaging company-history piece; verify how chronology and brand changes are handled. |
+| R083 | [Mad Men, Opening Credits](https://www.youtube.com/watch?v=znq_fLzEzbw) · CreditsManiak | Cinematic title sequence | L1 | The source highlights the sequence as an expression of the show's essence; inspect symbolic imagery, pacing, and mood. |
+| R084 | [Param.AI: AI Recruitment Software](https://www.youtube.com/watch?v=8RJg9FrSeew) · What a Story | AI SaaS explainer | L1 | Industry software case; inspect how the workflow and invisible product benefits are made concrete. |
+| R085 | [Slack: Communication Without Chaos](https://www.youtube.com/watch?v=W8_tGC8pNvI) · Slack | Minimal 2D brand explainer | L1 | The article describes simple geometric shapes and a limited palette; verify whether restraint keeps the problem–solution story clear. |
+| R086 | [Adobe: CMO Explainer](https://www.youtube.com/watch?v=RaXUljzEhGo) · VeracityColab | Concept-led product explainer | L1 | The article describes a journey organized around a red ball; test how one recurring motif keeps multiple benefits connected. |
+| R087 | [What is Ahrefs?](https://www.youtube.com/watch?v=krzF3YhmSMw) · Ahrefs | SEO software explainer | L1 | The article describes opening with a recognizable website problem before introducing a solution; inspect the problem–solution transition. |
+| R088 | [Google Cloud IoT Solutions](https://www.youtube.com/watch?v=3NYfoJO2LTI) | Abstract technical explainer | L1 | The article describes abstract animation for an intangible data system; verify that the visual metaphor remains intelligible. |
+| R089 | [What is Parse?](https://www.youtube.com/watch?v=89xIe8FbR2g) · Parse | Isometric / 3D cubes | L1 | The article describes isometric illustrations and cubes; check how spatial relationships communicate a backend platform. |
+| R090 | [Look Up: Housing Brand Story](https://www.youtube.com/watch?v=KyYyKRiJR4M) · Housing.com | Symbol-led brand story | L1 | The article describes a recurring arrow derived from the logo; verify how one evolving shape links otherwise distinct scenes. |
+| R091 | [Dropbox Smart Sync: Work Without Limits](https://www.youtube.com/watch?v=bg2nKQgEAh4) · Dropbox | Minimal 2D line animation | L1 | The article describes simple line animation and an upbeat soundtrack; inspect how little motion can still explain a workflow. |
+| R092 | [SAP – Innovations](https://www.youtube.com/watch?v=saBokaJUIs8) · Ordinary Folk | Abstract corporate motion design | L1 | The article praises abstract imagery and blended transitions; verify whether visual changes follow the narration rather than decorate it. |
+| R093 | [Webflow: Welcome to the Age of No-code](https://www.youtube.com/watch?v=_qCBg_Wsr8M) · Ordinary Folk | Product vision / 2D–3D hybrid | L1 | The article describes a clear no-code narrative and distinctive visual language; inspect how the concept stays grounded in product value. |
+| R094 | [Twilio: Trusted Communications](https://www.youtube.com/watch?v=4j1o8A1bhqw) · Ordinary Folk | Cybersecurity / communications explainer | L1 | The article describes a spam-call problem and vibrant 2D animation; inspect how the story presents risk without becoming alarmist. |
+| R095 | [Slack: Making the Motion Feel Like the Product](https://www.youtube.com/watch?v=EDATYbzYGiE) · Yum Yum Videos | UI motion / product rhythm | L1 | The article describes connected transitions and quick reactions that echo the product; test whether motion makes UI changes feel causally linked. |
+| R096 | [Reddit: Animation With a Recognizable Personality](https://youtu.be/cCnTVd9nMoY) · Yum Yum Videos | Playful character / brand motion | L1 | The article describes loose, quick movement; inspect how irregularity conveys platform personality without obscuring the message. |
+| R097 | [MedVector: Combining Whiteboard and Motion Graphics](https://youtu.be/p5LnKLRrz7M) · Yum Yum Videos | Medical / whiteboard hybrid | L1 | The article describes progressive drawing and icon reveals; verify how controlled information density supports medical explanations. |
+| R098 | [Brain Power by Neurocore: Slowing the Pace Down](https://youtu.be/imirLfYS5P0) · Yum Yum Videos | Calm wellness explainer | L1 | The article describes softer shapes, longer pauses and fewer simultaneous changes; inspect whether timing gives narration room to breathe. |
+| R099 | [Charles Schwab: Explaining an Idea Without a Product Demo](https://www.youtube.com/watch?v=m69Z04XM6nE) · Yum Yum Videos | Typography-led financial story | L1 | The article describes typography, narration and sound supporting an investing philosophy; verify that visuals carry an idea rather than just decorate words. |
+| R100 | [Guide Your Family’s Tech Journey: Making Digital Safety Approachable](https://youtu.be/64mhEVSQYNM) · Yum Yum Videos | Friendly digital-safety explainer | L1 | The article describes generous spacing and friendly illustration; inspect how it communicates risk without overwhelming families. |
+
+Count and evidence discipline: R081–R100 are discovery candidates supported by article descriptions, not direct visual reviews. Promote them to L2 only after watching the original video; promote to L3 only with timestamped scenes, frame evidence, and notes on motion, typography, palette and audio.
+
 ## Written sources reviewed
 | Source | Evidence | Transferable use | Limitation |
 |---|---|---|---|

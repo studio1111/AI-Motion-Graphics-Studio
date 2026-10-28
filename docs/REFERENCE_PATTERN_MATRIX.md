@@ -64,6 +64,35 @@ Source: [B2W Production, “19 Best Motion Graphics Video Examples & Samples: Le
 | R079 Adobe Type | Everyday objects and mixed-media typography history | Material changes can create transitions while narration moves through history. |
 | R080 MITRE | Character-led narration plus changing network diagrams | A human guide and supporting systems diagram may balance trust with precision. |
 
+## Twenty further references: article-level evidence only
+
+The candidates R081–R100 were drawn from [What a Story’s updated motion-graphics roundup](https://www.whatastory.agency/blog/20-exemplary-motion-graphics-videos-to-be-inspired-from-in-2024) (updated 2 October 2026) and [Yum Yum Videos’ motion-graphics roundup](https://www.yumyumvideos.com/blog/best-motion-graphics-video-examples/) (updated 21 August 2026). The descriptions and hypotheses below come from their written articles; the target videos have not been directly reviewed by this project.
+
+| Reference | Article-level idea | Production hypothesis to test |
+|---|---|---|
+| R081 Goodbit Bitcoin explainer | A short introduction to Bitcoin | Use a compact visual transaction model, but verify technical accuracy before using it. |
+| R082 Deloitte history | Corporate chronology in a concise film | Use dates and brand evolution as story beats, not an undifferentiated list. |
+| R083 Mad Men opening credits | Symbolic title sequence as show identity | Tie movement and metaphor to the emotional premise, not only to attractive imagery. |
+| R084 Param.AI | AI recruitment software explainer | Make the hiring workflow visible instead of relying on abstract AI particles. |
+| R085 Slack | Basic 2D forms and a restricted palette | A limited palette can strengthen cohesion when scene transitions remain motivated. |
+| R086 Adobe CMO | Journey orbiting a recurring red-ball motif | Let one object connect separate benefits into a single narrative journey. |
+| R087 Ahrefs | Start with the audience’s website problem | Earn the product reveal by first visualizing a recognizable user pain point. |
+| R088 Google Cloud IoT | Abstract visualization of an intangible system | Use an analogy only if relationships and data flow remain understandable. |
+| R089 Parse | Isometric illustration and cube forms | Spatially organize a software architecture instead of showing a generic dashboard. |
+| R090 Housing.com | Recurring arrow symbol changes and travels | Transform one branded symbol to connect scenes and build anticipation. |
+| R091 Dropbox Smart Sync | Minimal 2D line animation with upbeat music | Remove each line once it has explained its function; keep the screen uncluttered. |
+| R092 SAP Innovations | Abstract forms, color and flowing transitions | Align transition shape, music and narration to the idea that is changing. |
+| R093 Webflow no-code | Narrative-led visual system for a product vision | Pair aspiration with a concrete product outcome so the story does not remain vague. |
+| R094 Twilio | Spam-call problem framed with vibrant 2D animation | Show the threat and its resolution without fear-driven overstatement. |
+| R095 Slack product rhythm | Connected actions and responsive timing | Let transitions mirror causal UI behavior, not merely slide between screenshots. |
+| R096 Reddit personality | Loose, fast movement that feels recognizable | Keep stylistic irregularity deliberate and subordinate to reading order. |
+| R097 MedVector | Whiteboard drawing blended with motion graphics | Reveal one medical concept at a time and keep labels on screen long enough to read. |
+| R098 Neurocore wellness | Soft shapes, pauses and lower information density | Slow pacing when the emotional brief calls for reflection rather than urgency. |
+| R099 Charles Schwab | Typography, narration and sound carry a financial idea | Support the argument with visual hierarchy rather than forcing a product demo. |
+| R100 family digital-safety explainer | Friendly illustration and generous spacing | Make safety guidance clear without crowding the screen with warnings and icons. |
+
+These patterns are study questions, not proven rules: a technique is promoted to a production rule only after inspecting the original video and recording contrary examples where it fails.
+
 ## Transferable production rules
 
 1. **Choose media by the idea.** Do not make every film 3D. For a software walkthrough, show the real interface when available; for inaccessible internals or abstract concepts, use clear diagrams or original animation.
@@ -86,4 +115,4 @@ These are trade/agency viewpoints, not a comprehensive scientific census. Use th
 
 ## How this matrix should evolve
 
-For each new batch, link each pattern to the relevant reference IDs, label direct observations versus inference, and add counterexamples. Promote a rule to “validated” only after varied creators, languages, genres and L2/L3 evidence support it. The current reference catalog holds 80 public video candidates: 55 L0 metadata-only entries and 25 L1 article-supported entries, with zero L2/L3 full-video reviews confirmed; the 1,000-reference study remains unfinished.
+For each new batch, link each pattern to the relevant reference IDs, label direct observations versus inference, and add counterexamples. Promote a rule to “validated” only after varied creators, languages, genres and L2/L3 evidence support it. The current reference catalog holds 100 public video candidates: 55 L0 metadata-only entries and 45 L1 article-supported entries, with zero L2/L3 full-video reviews confirmed; the 1,000-reference study remains unfinished.
