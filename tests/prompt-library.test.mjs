@@ -15,9 +15,12 @@ function run(args) {
 
 test("portable prompt library has many unique, complete recipes", () => {
   assert.equal(data.schemaVersion, 1);
-  assert.ok(data.recipes.length >= 30, "expected at least 30 reusable style recipes");
+  assert.ok(data.recipes.length >= 70, "expected at least 70 reusable style recipes");
   assert.equal(data.count, data.recipes.length);
   assert.equal(new Set(data.recipes.map((r)=>r.id)).size, data.recipes.length);
+  for (const id of ["product-ui-state-morph","beat-driven-showreel","verified-data-burst","seamless-shape-loop","voiceover-first-explainer"]) {
+    assert.ok(data.recipes.some((r)=>r.id===id), `missing advanced recipe ${id}`);
+  }
   for (const r of data.recipes) {
     for (const key of ["id","title","category","duration","visual_language","motion_grammar","typography","color_system","sound_design","story_beats","avoid","adaptation"]) {
       assert.equal(typeof r[key], "string", `${r.id} missing ${key}`);
@@ -33,6 +36,9 @@ test("CLI lists recipes and searches by style terms", () => {
   const search = run(["search", "cinematic"]);
   assert.equal(search.status, 0, search.stderr);
   assert.match(search.stdout, /product-launch|space-cosmos|liquid-metal/);
+  const advanced = run(["search", "state morph"]);
+  assert.equal(advanced.status, 0, advanced.stderr);
+  assert.match(advanced.stdout, /product-ui-state-morph/);
 });
 
 test("CLI creates a copy-ready master prompt with selected recipe", () => {
@@ -42,6 +48,10 @@ test("CLI creates a copy-ready master prompt with selected recipe", () => {
   assert.match(result.stdout, /Kinetic Typography Trailer/);
   assert.match(result.stdout, /sound design|Sound design/i);
   assert.match(result.stdout, /{{TOPIC}}/);
+  const advanced = run(["show", "product-ui-state-morph"]);
+  assert.equal(advanced.status, 0, advanced.stderr);
+  assert.match(advanced.stdout, /deterministic, time-based springs/i);
+  assert.match(advanced.stdout, /render|loop/i);
 });
 
 test("CLI supports machine-readable output and helpful unknown-id errors", () => {
