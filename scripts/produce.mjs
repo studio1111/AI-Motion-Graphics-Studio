@@ -536,7 +536,7 @@ export async function produce(options,env=process.env){
  const runtimeErrors=validateRuntimePlan(plan,duration,{planOnly:options.planOnly});
  if(runtimeErrors.length){
   warnings.push(...runtimeErrors);
-  await writeFile(join(dir,"qc-report.json"),JSON.stringify({runId,status:"LONG_FORM_PLAN_REQUIRED",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",longFormStory:"FAIL",render:"BLOCKED",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},warnings,facts:{factualClaimsAutomaticallyVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,requestedDurationSeconds:duration}},null,2)+"\\n");
+  await writeFile(join(dir,"qc-report.json"),JSON.stringify({runId,status:"LONG_FORM_PLAN_REQUIRED",gates:{brief:"PASS",styleSelection:"PASS",storyboardValidation:errors.length?"FAIL":"PASS",longFormStory:"FAIL",render:"BLOCKED",mediaProbe:"NOT_RUN",fullDecode:"NOT_RUN",audioSignal:"NOT_RUN",frameSamples:"NOT_RUN",creativeReview:"NOT_RUN",audioListening:"NOT_RUN"},warnings,facts:{factualClaimsAutomaticallyVerified:false,visualFramesReviewedByHuman:false,audioListenedToByHuman:false,requestedDurationSeconds:duration}},null,2)+"\n");
   throw new Error(runtimeErrors.join(" "));
  }
  if(duration>600&&options.planOnly&&plan.contentMode!=="ai_generated")warnings.push("Plan-only output is a generic scaffold; a long-form render requires a valid topic-specific storyboard.");
