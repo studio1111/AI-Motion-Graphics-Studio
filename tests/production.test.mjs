@@ -275,4 +275,5 @@ test("production CLI supports long-form runtimes beyond ten minutes up to one ho
   assert.throws(()=>parseArgs(["--duration","3601"],{}),/5 and 3600 seconds/);
   const plan=buildLocalPlan({topic:"Long-form story",language:"en",styleId:"cinematic-documentary",totalFrames:601*30,fps:30});
   assert.equal(plan.scenes.reduce((sum,scene)=>sum+scene.durationInFrames,0),601*30);
+  assert.equal(wavDuration(createProceduralBedWav(601,"cinematic-documentary")),601,"the score must not silently truncate long-form audio at ten minutes");
 });
