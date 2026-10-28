@@ -295,7 +295,7 @@ export function sampleTimes(durationSeconds){
  if(!Number.isFinite(duration)||duration<=0)return [];
  const clampTime=value=>Math.max(0,Math.min(Math.max(0,duration-0.1),value));
  const candidates=[Math.min(0.5,duration/4),duration/2+Math.min(0.37,duration/10),Math.max(0,duration-Math.min(1,duration/4))];
- return Array.from(new Set(candidates.map(value=>Number(clampTime(value).toFixed(2))));
+ return Array.from(new Set(candidates.map(value => Number(clampTime(value).toFixed(2)))));
 }
 
 async function checkVideo(file,expected,dir){
