@@ -14,7 +14,8 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/STYLE_PRESET_CATALOG.md`: concrete palettes, font roles, motion, sound and anti-patterns.
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
-- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.\n- `prompt-library/`: portable prompt suite with 77 reusable style recipes, six core and ten advanced specialist master prompts, 15 scene-level templates, a browsable catalog and copy-ready CLI for any AI assistant.
+- `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
+- `prompt-library/`: portable prompt suite with 77 reusable style recipes, six core and ten advanced specialist master prompts, 15 scene-level templates, a browsable catalog and copy-ready CLI for any AI assistant.
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
 - `docs/PROMPT_MOTION_PATTERN_STUDY.md`: prompt-to-output patterns, original studio adaptations and research limits.
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
@@ -24,7 +25,16 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 ## Portable prompt library
 
 Use the built-in prompt library with any AI assistant or creative tool. It currently includes 77 complete structured style recipes, ten advanced specialist master prompts and 15 scene-level templates:
-\n    npm run prompts:list\n    npm run prompts:search -- typography\n    npm run prompts:show -- kinetic-type\n    npm run prompts:show -- product-launch --format json\n    npm run prompts:master\n\nThe `show` command combines the universal master prompt with the selected style recipe. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.\n\n## Running the production engine
+
+    npm run prompts:list
+    npm run prompts:search -- typography
+    npm run prompts:show -- kinetic-type
+    npm run prompts:show -- product-launch --format json
+    npm run prompts:master
+
+The `show` command combines the universal master prompt with the selected style recipe. It provides instructions only; available generation, browsing, voice and rendering capabilities depend on the AI/tools you use.
+
+## Running the production engine
 
 Local install and validation:
 
