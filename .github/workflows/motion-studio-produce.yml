@@ -122,9 +122,10 @@ jobs:
           set -euo pipefail
           artifact_dir="out/run-${GITHUB_RUN_ID}"
           mkdir -p "$artifact_dir"
-          roots=("$artifact_dir")
-          if [[ -d public/generated ]]; then roots+=(public/generated); fi
-          find "${roots[@]}" -type f ! -name 'SHA256SUMS.txt' -print0 | sort -z | xargs -0 -r sha256sum > "$artifact_dir/SHA256SUMS.txt"
+          (
+            cd "$artifact_dir"
+            find . -type f ! -name 'SHA256SUMS.txt' -print0 | sort -z | xargs -0 -r sha256sum > SHA256SUMS.txt
+          )
       - name: Upload video, captions and production reports
         if: always()
         uses: actions/upload-artifact@v4
