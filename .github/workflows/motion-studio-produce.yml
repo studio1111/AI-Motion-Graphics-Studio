@@ -115,6 +115,15 @@ jobs:
             echo "Paid AI disabled by default; the local storyboard fallback will be used."
           fi
           npm run produce -- "${args[@]}"
+      - name: Generate artifact integrity checksums
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          artifact_dir="out/run-${GITHUB_RUN_ID}"
+          mkdir -p "$artifact_dir"
+          : > "$artifact_dir/SHA256SUMS.txt"
+          find "$artifact_dir" public/generated -type f ! -name 'SHA256SUMS.txt' -print0 2>/dev/null | sort -z | xargs -0 -r sha256sum > "$artifact_dir/SHA256SUMS.txt"
       - name: Upload video, captions and production reports
         if: always()
         uses: actions/upload-artifact@v4
