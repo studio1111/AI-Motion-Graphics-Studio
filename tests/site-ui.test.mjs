@@ -37,7 +37,7 @@ test("paid AI is an explicit opt-in in the browser brief and workflow", () => {
 });
 
 test("local CLI command quotes user topics and omits paid AI unless opted in", () => {
-  const brief = { topic: "A creator's "quoted" idea", language: "en", durationSeconds: 60, style: "auto", aspectRatio: "16:9", voice: "off", allowPaidAi: false };
+  const brief = { topic: `A creator's "quoted" idea`, language: "en", durationSeconds: 60, style: "auto", aspectRatio: "16:9", voice: "off", allowPaidAi: false };
   const command = buildLocalCliCommand(brief);
   assert.match(command, /'A creator'\\''s "quoted" idea'/);
   assert.doesNotMatch(command, /--allow-paid-ai/);
