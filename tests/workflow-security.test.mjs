@@ -30,3 +30,13 @@ test("every production workflow packages SHA-256 checksums with its artifacts", 
     assert.match(workflow, /SHA256SUMS\.txt/);
   }
 });
+
+test("interactive production installs the selected local narration engine", async () => {
+  const workflow = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  assert.match(workflow, /if: inputs\.voice == 'edge-tts'/);
+  assert.match(workflow, /edge-tts==7\.3\.1/);
+  assert.match(workflow, /if: inputs\.voice == 'auto' && inputs\.language == 'fa'/);
+  assert.match(workflow, /persian-speech==1\.1\.3/);
+  assert.match(workflow, /if: inputs\.voice == 'auto' && inputs\.language != 'fa'/);
+  assert.match(workflow, /pocket-tts/);
+});
