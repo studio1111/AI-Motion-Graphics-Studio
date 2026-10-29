@@ -84,9 +84,12 @@ export function buildLocalCliCommand(inputBrief) {
     "--duration", String(brief.durationSeconds),
     "--style", brief.style,
     "--aspect-ratio", brief.aspectRatio,
-    "--voice", brief.voice
+    "--voice", brief.voice,
+    "--music-engine", brief.musicEngine,
+    "--prompt-recipe", brief.promptRecipe
   ];
   if (brief.opus55Reference) args.push("--opus55-reference", shellQuote(brief.opus55Reference));
+  if (brief.planOnly) args.push("--plan-only");
   if (brief.allowPaidAi) args.push("--allow-paid-ai");
   return args.join(" ");
 }
