@@ -103,6 +103,9 @@ export function buildWorkflowDispatchCommand(inputBrief) {
     ["style", brief.style],
     ["aspect_ratio", brief.aspectRatio],
     ["voice", brief.voice],
+    ["music_engine", brief.musicEngine],
+    ["prompt_recipe", brief.promptRecipe],
+    ["plan_only", String(brief.planOnly)],
     ...(brief.opus55Reference ? [["opus55_reference", brief.opus55Reference]] : []),
     ["use_ai", String(brief.allowPaidAi)]
   ];
