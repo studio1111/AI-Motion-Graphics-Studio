@@ -134,7 +134,16 @@ jobs:
       - name: Produce storyboard and manifest only
         if: ${{ inputs.plan_only }}
         run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice off --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --plan-only
+      - name: Generate artifact integrity checksums
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          : > out/SHA256SUMS.txt
+          find out public/generated -type f ! -name 'SHA256SUMS.txt' -print0 2>/dev/null | sort -z | xargs -0 -r sha256sum > out/SHA256SUMS.txt
       - name: Upload video, source manifest and generated assets
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: motion-graphics-${{ github.run_id }}
