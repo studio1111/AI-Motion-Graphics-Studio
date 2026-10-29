@@ -37,9 +37,9 @@ test("paid AI is an explicit opt-in in the browser brief and workflow", () => {
   assert.match(workflow, /use_ai:[\s\S]*?default: false/);
   assert.match(workflow, /if \[\[ "\$USE_AI" == "true" \]\]/);
   assert.match(workflow, /--allow-paid-ai/);
-  assert.match(workflow, /music_engine:[\\s\\S]*?default: procedural/);
-  assert.match(workflow, /prompt_recipe:[\\s\\S]*?default: cinematic-science-cutaway/);
-  assert.match(workflow, /plan_only:[\\s\\S]*?default: false/);
+  assert.match(workflow, /music_engine:[\s\S]*?default: procedural/);
+  assert.match(workflow, /prompt_recipe:[\s\S]*?default: cinematic-science-cutaway/);
+  assert.match(workflow, /plan_only:[\s\S]*?default: false/);
 });
 
 test("local CLI command quotes user topics and omits paid AI unless opted in", () => {
