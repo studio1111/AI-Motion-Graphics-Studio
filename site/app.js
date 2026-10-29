@@ -1,3 +1,5 @@
+import { buildLocalCliCommand, buildWorkflowDispatchCommand } from "./brief-commands.mjs";
+
 const $ = id => document.getElementById(id);
 let lastBrief = null;
 
@@ -5,7 +7,6 @@ const labels = {
   fa: "فارسی", en: "English", de: "آلمانی", es: "اسپانیایی",
   fr: "فرانسوی", it: "ایتالیایی", pt: "پرتغالی", nl: "هلندی"
 };
-
 const styleNames = {
   auto: "هوشمند",
   "cinematic-documentary": "مستند سینمایی",
@@ -18,10 +19,15 @@ const styleNames = {
   "procedural-generative": "گرافیک مولد",
   "vertical-social": "عمودی شبکه‌های اجتماعی"
 };
+const voiceNames = {
+  "edge-tts": "عصبی آنلاین",
+  auto: "موتور محلی",
+  off: "خاموش"
+};
 
 function buildBrief() {
   const topic = $("topic").value.trim();
-  if (topic.length < 8) {
+  if (topic.length < 8 || topic.length > 1200) {
     $("topic").reportValidity();
     return null;
   }
@@ -35,33 +41,9 @@ function buildBrief() {
     voice: $("voice").value,
     allowPaidAi: $("allow-paid-ai").checked
   };
-
   const reference = $("reference").value.trim();
   if (reference) result.opus55Reference = reference;
   return result;
-}
-
-function shellQuote(value) {
-  return "'" + String(value).replace(/'/g, "'\\''") + "'";
-}
-
-function buildCommand(brief) {
-  const args = [
-    "npm run produce -- --topic", shellQuote(brief.topic),
-    "--language", brief.language,
-    "--duration", String(brief.durationSeconds),
-    "--style", brief.style,
-    "--aspect-ratio", brief.aspectRatio,
-    "--voice", brief.voice
-  ];
-
-  if (brief.opus55Reference) {
-    args.push("--opus55-reference", brief.opus55Reference);
-  }
-  if (brief.allowPaidAi) {
-    args.push("--allow-paid-ai");
-  }
-  return args.join(" ");
 }
 
 function setStatus(message, success = false) {
@@ -78,6 +60,35 @@ function updatePaidAiState() {
     : "غیرفعال تا زمان انتخاب شما";
 }
 
+function updateBriefSummary(brief) {
+  $("summary-language").textContent = labels[brief.language] || brief.language;
+  $("summary-style").textContent = styleNames[brief.style] || brief.style;
+  $("summary-ratio").textContent = brief.aspectRatio;
+  $("summary-voice").textContent = voiceNames[brief.voice] || brief.voice;
+}
+
+function markBriefStale() {
+  if (!lastBrief) {
+    updatePaidAiState();
+    return;
+  }
+  lastBrief = null;
+  $("download").disabled = true;
+  $("copy").disabled = true;
+  $("copy-workflow").disabled = true;
+  updatePaidAiState();
+  setStatus("تنظیمات تغییر کرده‌اند. برای تولید دستور جدید، دوباره «آماده‌سازی تنظیمات» را بزن.");
+}
+
+async function copyCommand(command, successMessage) {
+  try {
+    await navigator.clipboard.writeText(command);
+    setStatus(successMessage, true);
+  } catch {
+    setStatus("کپی خودکار در این مرورگر در دسترس نیست. دستور را از کادر زیر انتخاب و کپی کن:\n" + command);
+  }
+}
+
 $("brief-form").addEventListener("submit", event => {
   event.preventDefault();
   lastBrief = buildBrief();
@@ -85,12 +96,14 @@ $("brief-form").addEventListener("submit", event => {
 
   $("metric-duration").textContent = lastBrief.durationSeconds + " ثانیه";
   updatePaidAiState();
+  updateBriefSummary(lastBrief);
   $("download").disabled = false;
   $("copy").disabled = false;
+  $("copy-workflow").disabled = false;
   setStatus(
     lastBrief.allowPaidAi
       ? "تنظیمات آماده است. استفاده از AI پولی با انتخاب صریح شما فعال شده است."
-      : "تنظیمات آماده است. AI پولی خاموش است و کلیدی در فایل brief قرار ندارد.",
+      : "تنظیمات آماده است. AI پولی خاموش است و هیچ کلیدی در فایل brief یا دستور قرار نمی‌گیرد.",
     true
   );
 });
@@ -110,18 +123,24 @@ $("download").addEventListener("click", () => {
 
 $("copy").addEventListener("click", async () => {
   if (!lastBrief) return;
-  const text = buildCommand(lastBrief);
-  try {
-    await navigator.clipboard.writeText(text);
-    setStatus(
-      lastBrief.allowPaidAi
-        ? "دستور کپی شد و شامل اجازه استفاده از AI پولی است."
-        : "دستور کپی شد؛ برای جلوگیری از هزینه ناخواسته، پرچم AI پولی اضافه نشده است.",
-      true
-    );
-  } catch {
-    setStatus(text);
-  }
+  const command = buildLocalCliCommand(lastBrief);
+  await copyCommand(
+    command,
+    lastBrief.allowPaidAi
+      ? "دستور CLI کپی شد و شامل اجازه استفاده از AI پولی است."
+      : "دستور CLI کپی شد؛ برای جلوگیری از هزینه ناخواسته، پرچم AI پولی اضافه نشده است."
+  );
+});
+
+$("copy-workflow").addEventListener("click", async () => {
+  if (!lastBrief) return;
+  const command = buildWorkflowDispatchCommand(lastBrief);
+  await copyCommand(
+    command,
+    lastBrief.allowPaidAi
+      ? "دستور GitHub Actions کپی شد. با اجرای آن، گزینه use_ai=true صریحاً ارسال می‌شود."
+      : "دستور GitHub Actions کپی شد. همه گزینه‌ها ارسال می‌شوند و use_ai=false باقی می‌ماند."
+  );
 });
 
 $("reset").addEventListener("click", () => {
@@ -129,13 +148,21 @@ $("reset").addEventListener("click", () => {
   lastBrief = null;
   $("download").disabled = true;
   $("copy").disabled = true;
+  $("copy-workflow").disabled = true;
   $("metric-duration").textContent = "۹۰ ثانیه";
+  $("summary-language").textContent = "فارسی";
+  $("summary-style").textContent = "هوشمند";
+  $("summary-ratio").textContent = "16:9";
+  $("summary-voice").textContent = "عصبی آنلاین";
   updatePaidAiState();
   setStatus("فرم پاک شد.");
 });
 
-$("duration").addEventListener("change", () => {
-  $("metric-duration").textContent = $("duration").value + " ثانیه";
+$("brief-form").addEventListener("input", event => {
+  markBriefStale();
+  if (event.target.id === "duration") {
+    $("metric-duration").textContent = event.target.value + " ثانیه";
+  }
 });
-$("allow-paid-ai").addEventListener("change", updatePaidAiState);
+
 updatePaidAiState();
