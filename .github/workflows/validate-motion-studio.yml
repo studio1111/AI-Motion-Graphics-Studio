@@ -36,6 +36,8 @@ jobs:
       - name: Syntax-check and exercise the production CLI
         run: |
           node --check scripts/produce.mjs
+          node --check site/brief-commands.mjs
+          node --input-type=module --check < site/app.js
           npm run produce -- --topic "CLI orchestration regression" --language en --duration 20 --style auto --aspect-ratio 16:9 --voice off --plan-only
       - name: Ensure Remotion browser
         run: npx remotion browser ensure
