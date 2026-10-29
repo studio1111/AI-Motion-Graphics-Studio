@@ -77,7 +77,7 @@ function updatePaidAiState() {
   const enabled = $("allow-paid-ai").checked;
   $("metric-paid-ai").textContent = enabled ? "فعال با انتخاب شما" : "خیر";
   $("metric-paid-ai").classList.toggle("safe", !enabled);
-  document.querySelector(".consent-state").textContent = enabled
+  document.querySelector(".paid-consent:not(.plan-consent) .consent-state").textContent = enabled
     ? "فعال شد؛ اجرای AI ممکن است هزینه داشته باشد"
     : "غیرفعال تا زمان انتخاب شما";
 }
