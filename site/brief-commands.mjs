@@ -50,6 +50,13 @@ function validateBrief(brief) {
   if (brief.allowPaidAi !== undefined && typeof brief.allowPaidAi !== "boolean") {
     throw new TypeError("allowPaidAi must be a boolean.");
   }
+  const musicEngine = brief.musicEngine ?? "procedural";
+  if (!SUPPORTED_MUSIC_ENGINES.has(musicEngine)) throw new RangeError("Unsupported music engine.");
+  const promptRecipe = brief.promptRecipe ?? DEFAULT_PROMPT_RECIPE;
+  if (!SUPPORTED_PROMPT_RECIPES.has(promptRecipe)) throw new RangeError("Unsupported prompt recipe.");
+  if (brief.planOnly !== undefined && typeof brief.planOnly !== "boolean") {
+    throw new TypeError("planOnly must be a boolean.");
+  }
   return {
     topic,
     language: brief.language,
@@ -57,6 +64,9 @@ function validateBrief(brief) {
     style: brief.style,
     aspectRatio: brief.aspectRatio,
     voice: brief.voice,
+    musicEngine,
+    promptRecipe,
+    planOnly: brief.planOnly === true,
     ...(reference ? { opus55Reference: reference } : {}),
     allowPaidAi: brief.allowPaidAi === true
   };
