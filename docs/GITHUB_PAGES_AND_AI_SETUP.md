@@ -10,6 +10,8 @@ Before the first deployment, open **Settings → Pages** in the repository and s
 
 The site can assemble and download a `brief.json` file, copy a local CLI command, and generate a ready-to-run GitHub Actions command using GitHub CLI. The command includes the selected topic and options, but never includes API keys. The page intentionally does not ask for credentials or trigger a workflow itself: you decide when to execute the copied command in your authenticated terminal. A static Pages page cannot securely read repository secrets.
 
+The browser also lets you select one of the curated motion-design prompt recipes, choose the procedural local music bed or the optional ACE-Step engine, and request plan-only output. The default music engine is **procedural**, so no external music endpoint is called by default. Selecting `auto` can choose ACE-Step when an endpoint is configured; choosing `ace-step` explicitly requires `ACESTEP_API_URL` and may require `ACESTEP_API_KEY`, depending on the self-hosted service. Plan-only mode creates storyboard/manifests without rendering an MP4 and skips voice setup, but enabling paid AI for research/storyboard generation can still incur charges.
+
 The browser's **Allow paid AI** checkbox is unchecked by default. Unless you explicitly enable it, the local CLI command omits `--allow-paid-ai` and the GitHub Actions command sends `use_ai=false`. If you enable it, the GitHub Actions command sends `use_ai=true`; the workflow still requires the repository secret to be configured. Re-prepare the brief after changing any field so the copied commands reflect the latest selection.
 
 ## Configure AI safely
