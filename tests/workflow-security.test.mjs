@@ -16,3 +16,17 @@ test("manual production artifacts have bounded retention and an explicit missing
   assert.match(workflow, /if-no-files-found:\s*warn/);
   assert.match(workflow, /retention-days:\s*7/);
 });
+
+test("every production workflow packages SHA-256 checksums with its artifacts", async () => {
+  const paths = [
+    "../.github/workflows/produce-video.yml",
+    "../.github/workflows/motion-studio-produce.yml",
+    "../.github/workflows/build-ai-future-fa.yml"
+  ];
+  const workflows = await Promise.all(paths.map(path => readFile(new URL(path, import.meta.url), "utf8")));
+  for (const workflow of workflows) {
+    assert.match(workflow, /Generate artifact integrity checksums/);
+    assert.match(workflow, /sha256sum/);
+    assert.match(workflow, /SHA256SUMS\.txt/);
+  }
+});
