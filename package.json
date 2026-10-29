@@ -19,7 +19,8 @@
     "opus55:sync": "node scripts/opus55-reference-library.mjs sync",
     "opus55:list": "node scripts/opus55-reference-library.mjs list",
     "opus55:search": "node scripts/opus55-reference-library.mjs search",
-    "opus55:show": "node scripts/opus55-reference-library.mjs show"
+    "opus55:show": "node scripts/opus55-reference-library.mjs show",
+    "readiness": "node scripts/provider-readiness.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.539",

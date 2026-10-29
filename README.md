@@ -27,6 +27,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `research/PROMPT_MOTION_SYNTHESIS_2026-10-28.md`: source-linked lessons from Prompt Motion research pages.
 - `docs/RESEARCH_AND_BENCHMARK_PLAN.md` and `research/REFERENCE_SEED_CATALOG.md`: 1,000-reference study plan and initial candidates.
 - `docs/TOOLCHAIN_CATALOG.md`: tool, license, model and cost caveats.
+- `docs/PRODUCTION_READINESS_AUDIT.md`: offline provider/tool readiness, secret-safe reporting, explicit paid-API gates, and separate creative/render release checks. Run `npm run readiness`.
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
 - `docs/AUDIO_PRODUCTION_PIPELINE.md`: Persian narration normalization, voice fades, smooth music ducking, two-pass loudness mastering, optional ACE-Step 1.5 API integration, and voice/model licensing notes.
 
