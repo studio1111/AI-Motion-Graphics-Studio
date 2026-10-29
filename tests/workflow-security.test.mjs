@@ -53,5 +53,7 @@ test("primary production workflow wires soundtrack, prompt recipe and plan-only 
   assert.match(workflow, /ACESTEP_API_KEY:\s*\$\{\{\s*secrets\.ACESTEP_API_KEY\s*\}\}/);
   assert.match(workflow, /--prompt-recipe "\$PROMPT_RECIPE"/);
   assert.match(workflow, /--music-engine "\$MUSIC_ENGINE"/);
-  assert.match(workflow, /if: \\$\\{\\{\\s*!inputs\\.plan_only\\s*\\}\\}/);\n  assert.match(workflow, /if \\\[\\[ "\\$PLAN_ONLY" == "true" \\\]\\]/);\n  assert.match(workflow, /effective_voice="off"/);
+  assert.match(workflow, /if: \\$\\{\\{\\s*!inputs\\.plan_only\\s*\\}\\}/);
+  assert.match(workflow, /if \[\[ "\$PLAN_ONLY" == "true" \]\]/);
+  assert.match(workflow, /effective_voice="off"/);
 });
