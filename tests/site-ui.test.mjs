@@ -29,7 +29,7 @@ test("paid AI is an explicit opt-in in the browser brief and workflow", () => {
   assert.match(html, /type="checkbox"[^>]*id="allow-paid-ai"|id="allow-paid-ai"[^>]*type="checkbox"/);
   assert.match(html, /غیرفعال/);
   assert.match(js, /allowPaidAi/);
-  assert.match(js, /if\s*\(b\.allowPaidAi\)/);
+  assert.match(js, /if\s*\(brief\.allowPaidAi\)/);
   assert.match(workflow, /use_ai:[\s\S]*?default: false/);
   assert.match(workflow, /if \[\[ "\$USE_AI" == "true" \]\]/);
   assert.match(workflow, /--allow-paid-ai/);
