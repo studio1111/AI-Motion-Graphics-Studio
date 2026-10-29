@@ -40,10 +40,10 @@ on:
         required: false
         type: string
       use_ai:
-        description: "Use Anthropic AI when ANTHROPIC_API_KEY is configured"
+        description: "Allow paid Anthropic API usage when ANTHROPIC_API_KEY is configured"
         required: true
         type: boolean
-        default: true
+        default: false
 permissions:
   contents: read
   actions: read
@@ -111,6 +111,8 @@ jobs:
             else
               echo "::warning::ANTHROPIC_API_KEY is not configured. The engine will use its local fallback."
             fi
+          else
+            echo "Paid AI disabled by default; the local storyboard fallback will be used."
           fi
           npm run produce -- "${args[@]}"
       - name: Upload video, captions and production reports
