@@ -30,7 +30,7 @@ The workflow uses GitHub-hosted runner compute. GitHub Actions usage and AI prov
 - With paid AI disabled, the workflow does not pass `--allow-paid-ai`; the engine uses its local storyboard path. Local fallback is not equivalent to researched, topic-specific AI writing.
 - The default voice is `edge-tts`: the workflow installs `edge-tts==7.3.1` and uses its online neural voices. It requires network access to the voice service. `auto` selects the local language-specific engine and may require additional setup; `off` disables narration.
 - Artifacts are retained for 14 days in the Motion Studio Production workflow and 7 days in the other production workflows. A failed render can still upload diagnostics when available.
-- Production artifacts include a `SHA256SUMS.txt` manifest of generated files. Verify it with `sha256sum -c SHA256SUMS.txt` from the root of the downloaded Motion Studio Production artifact. In the other workflows, run `sha256sum -c out/SHA256SUMS.txt` from the artifact root when that path exists.
+- Production artifacts include a `SHA256SUMS.txt` manifest of generated files. Verify the manifest with `sha256sum -c SHA256SUMS.txt` from the root of the downloaded artifact. The manifest records the relative paths of the files included in that artifact; it detects accidental corruption but does not establish creative quality or source licensing.
 - GitHub Pages is a static frontend, not a secure backend. Do not add a PAT or API key to local storage, query strings, JavaScript, or client-side form fields.
 
 ## Local use
