@@ -10,13 +10,15 @@ Before the first deployment, open **Settings → Pages** in the repository and s
 
 The site can assemble and download a `brief.json` file, copy a local CLI command, and generate a ready-to-run GitHub Actions command using GitHub CLI. The command includes the selected topic and options, but never includes API keys. The page intentionally does not ask for credentials or trigger a workflow itself: you decide when to execute the copied command in your authenticated terminal. A static Pages page cannot securely read repository secrets.
 
+The browser also lets you select one of the curated motion-design prompt recipes, choose the procedural local music bed or the optional ACE-Step engine, and request plan-only output. The default music engine is **procedural**, so no external music endpoint is called by default. Selecting `auto` can choose ACE-Step when an endpoint is configured; choosing `ace-step` explicitly requires `ACESTEP_API_URL` and may require `ACESTEP_API_KEY`, depending on the self-hosted service. Plan-only mode creates storyboard/manifests without rendering an MP4 and skips voice setup, but enabling paid AI for research/storyboard generation can still incur charges.
+
 The browser's **Allow paid AI** checkbox is unchecked by default. Unless you explicitly enable it, the local CLI command omits `--allow-paid-ai` and the GitHub Actions command sends `use_ai=false`. If you enable it, the GitHub Actions command sends `use_ai=true`; the workflow still requires the repository secret to be configured. Re-prepare the brief after changing any field so the copied commands reflect the latest selection.
 
 ## Configure AI safely
 
 1. Open **Settings → Secrets and variables → Actions → New repository secret**.
 2. Add `ANTHROPIC_API_KEY` with an API key from Anthropic. Never paste it into the Pages UI, source code, an issue, or a workflow input.
-3. Optionally add `FIRECRAWL_API_KEY` to enable web research. Research is optional; search results are treated as candidate sources, not automatically verified facts.
+3. Optionally add `FIRECRAWL_API_KEY` to enable web research. Research is optional; search results are treated as candidate sources, not automatically verified facts. For an ACE-Step music server, add `ACESTEP_API_URL`; add `ACESTEP_API_KEY` only if your self-hosted service requires authentication.
 4. Either open **Actions → Motion Studio Production → Run workflow** and enter the form manually, or copy the generated **GitHub Actions command** from the studio and run it in a terminal where `gh auth status` confirms you are authenticated to this repository. The generated command uses `gh workflow run` with the fields selected in the page, so you do not have to retype them. Running it submits the topic text to GitHub Actions and may put that text in your terminal command history; review it before running if the topic is confidential.
 5. **Use AI is off by default.** Enable it only when you intentionally authorize possible Anthropic API charges and the secret is configured.
 6. When the run finishes, open its **Artifacts** section and download `motion-studio-output-<run-id>`. The artifact may include MP4, captions, audio, storyboard/manifests, `SHA256SUMS.txt` integrity checksums, and QC reports depending on the production path.

@@ -9,6 +9,9 @@ const validBrief = {
   style: "auto",
   aspectRatio: "16:9",
   voice: "off",
+  musicEngine: "procedural",
+  promptRecipe: "cinematic-science-cutaway",
+  planOnly: false,
   allowPaidAi: false
 };
 
@@ -31,4 +34,22 @@ test("workflow command sends explicit boolean consent and never asks for an API 
   const allowed = buildWorkflowDispatchCommand({ ...validBrief, allowPaidAi: true });
   assert.match(allowed, /-f 'use_ai=true'/);
   assert.doesNotMatch(allowed, /ANTHROPIC_API_KEY|FIRECRAWL_API_KEY/);
+});
+
+test("command builders pass music and prompt controls and support a plan-only run", () => {
+  const local = buildLocalCliCommand({ ...validBrief, musicEngine: "ace-step", promptRecipe: "motion-design-showreel", planOnly: true });
+  assert.match(local, /--music-engine ace-step/);
+  assert.match(local, /--prompt-recipe motion-design-showreel/);
+  assert.match(local, /--plan-only$/);
+
+  const workflow = buildWorkflowDispatchCommand({ ...validBrief, musicEngine: "procedural", promptRecipe: "kinetic-type", planOnly: true });
+  assert.match(workflow, /-f 'music_engine=procedural'/);
+  assert.match(workflow, /-f 'prompt_recipe=kinetic-type'/);
+  assert.match(workflow, /-f 'plan_only=true'/);
+});
+
+test("command builders reject unknown recipe IDs and unsupported music engines", () => {
+  assert.throws(() => buildWorkflowDispatchCommand({ ...validBrief, promptRecipe: "not-a-real-recipe" }), /Unsupported prompt recipe/);
+  assert.throws(() => buildLocalCliCommand({ ...validBrief, musicEngine: "remote-random" }), /Unsupported music engine/);
+  assert.throws(() => buildWorkflowDispatchCommand({ ...validBrief, planOnly: "true" }), /planOnly must be a boolean/);
 });

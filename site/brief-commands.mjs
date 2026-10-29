@@ -13,6 +13,22 @@ const SUPPORTED_STYLES = new Set([
 ]);
 const SUPPORTED_RATIOS = new Set(["16:9", "9:16", "1:1"]);
 const SUPPORTED_VOICES = new Set(["edge-tts", "auto", "off"]);
+const SUPPORTED_MUSIC_ENGINES = new Set(["procedural", "auto", "ace-step"]);
+const DEFAULT_PROMPT_RECIPE = "cinematic-science-cutaway";
+const SUPPORTED_PROMPT_RECIPES = new Set([
+  DEFAULT_PROMPT_RECIPE,
+  "scientific-mechanism-cutaway",
+  "kinetic-type",
+  "data-story",
+  "editorial-explainer",
+  "cinematic-comparison",
+  "motion-design-showreel",
+  "real-footage-data-overlay",
+  "product-launch",
+  "cinematic-map-journey",
+  "voiceover-first-explainer",
+  "cinematic-transition-library"
+]);
 
 function validateBrief(brief) {
   if (!brief || typeof brief !== "object") throw new TypeError("A video brief is required.");
@@ -34,6 +50,13 @@ function validateBrief(brief) {
   if (brief.allowPaidAi !== undefined && typeof brief.allowPaidAi !== "boolean") {
     throw new TypeError("allowPaidAi must be a boolean.");
   }
+  const musicEngine = brief.musicEngine ?? "procedural";
+  if (!SUPPORTED_MUSIC_ENGINES.has(musicEngine)) throw new RangeError("Unsupported music engine.");
+  const promptRecipe = brief.promptRecipe ?? DEFAULT_PROMPT_RECIPE;
+  if (!SUPPORTED_PROMPT_RECIPES.has(promptRecipe)) throw new RangeError("Unsupported prompt recipe.");
+  if (brief.planOnly !== undefined && typeof brief.planOnly !== "boolean") {
+    throw new TypeError("planOnly must be a boolean.");
+  }
   return {
     topic,
     language: brief.language,
@@ -41,6 +64,9 @@ function validateBrief(brief) {
     style: brief.style,
     aspectRatio: brief.aspectRatio,
     voice: brief.voice,
+    musicEngine,
+    promptRecipe,
+    planOnly: brief.planOnly === true,
     ...(reference ? { opus55Reference: reference } : {}),
     allowPaidAi: brief.allowPaidAi === true
   };
@@ -58,9 +84,12 @@ export function buildLocalCliCommand(inputBrief) {
     "--duration", String(brief.durationSeconds),
     "--style", brief.style,
     "--aspect-ratio", brief.aspectRatio,
-    "--voice", brief.voice
+    "--voice", brief.voice,
+    "--music-engine", brief.musicEngine,
+    "--prompt-recipe", brief.promptRecipe
   ];
   if (brief.opus55Reference) args.push("--opus55-reference", shellQuote(brief.opus55Reference));
+  if (brief.planOnly) args.push("--plan-only");
   if (brief.allowPaidAi) args.push("--allow-paid-ai");
   return args.join(" ");
 }
@@ -74,6 +103,9 @@ export function buildWorkflowDispatchCommand(inputBrief) {
     ["style", brief.style],
     ["aspect_ratio", brief.aspectRatio],
     ["voice", brief.voice],
+    ["music_engine", brief.musicEngine],
+    ["prompt_recipe", brief.promptRecipe],
+    ["plan_only", String(brief.planOnly)],
     ...(brief.opus55Reference ? [["opus55_reference", brief.opus55Reference]] : []),
     ["use_ai", String(brief.allowPaidAi)]
   ];

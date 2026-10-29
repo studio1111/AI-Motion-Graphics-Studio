@@ -24,6 +24,25 @@ const voiceNames = {
   auto: "موتور محلی",
   off: "خاموش"
 };
+const musicNames = {
+  procedural: "مولد محلی",
+  auto: "خودکار",
+  "ace-step": "ACE-Step 1.5"
+};
+const recipeNames = {
+  "cinematic-science-cutaway": "برش علمی سینمایی",
+  "scientific-mechanism-cutaway": "نمایش سازوکار علمی",
+  "kinetic-type": "تایپوگرافی جنبشی",
+  "data-story": "روایت داده‌محور",
+  "editorial-explainer": "مستند تحریریه‌ای",
+  "cinematic-comparison": "مقایسهٔ سینمایی",
+  "motion-design-showreel": "شو‌ریل حرفه‌ای موشن‌دیزاین",
+  "real-footage-data-overlay": "تصاویر واقعی همراه داده",
+  "product-launch": "معرفی سینمایی محصول",
+  "cinematic-map-journey": "سفر سینمایی روی نقشه",
+  "voiceover-first-explainer": "روایت‌محور و گویندگی‌محور",
+  "cinematic-transition-library": "گذارهای سینمایی"
+};
 
 function buildBrief() {
   const topic = $("topic").value.trim();
@@ -39,6 +58,9 @@ function buildBrief() {
     style: $("style").value,
     aspectRatio: $("ratio").value,
     voice: $("voice").value,
+    musicEngine: $("music-engine").value,
+    promptRecipe: $("prompt-recipe").value,
+    planOnly: $("plan-only").checked,
     allowPaidAi: $("allow-paid-ai").checked
   };
   const reference = $("reference").value.trim();
@@ -55,7 +77,7 @@ function updatePaidAiState() {
   const enabled = $("allow-paid-ai").checked;
   $("metric-paid-ai").textContent = enabled ? "فعال با انتخاب شما" : "خیر";
   $("metric-paid-ai").classList.toggle("safe", !enabled);
-  document.querySelector(".consent-state").textContent = enabled
+  document.querySelector(".paid-consent:not(.plan-consent) .consent-state").textContent = enabled
     ? "فعال شد؛ اجرای AI ممکن است هزینه داشته باشد"
     : "غیرفعال تا زمان انتخاب شما";
 }
@@ -65,6 +87,9 @@ function updateBriefSummary(brief) {
   $("summary-style").textContent = styleNames[brief.style] || brief.style;
   $("summary-ratio").textContent = brief.aspectRatio;
   $("summary-voice").textContent = voiceNames[brief.voice] || brief.voice;
+  $("summary-music").textContent = musicNames[brief.musicEngine] || brief.musicEngine;
+  $("summary-recipe").textContent = recipeNames[brief.promptRecipe] || brief.promptRecipe;
+  $("summary-plan").textContent = brief.planOnly ? "فقط طرح و استوری‌بورد" : "ویدیوی کامل";
 }
 
 function markBriefStale() {
@@ -100,12 +125,16 @@ $("brief-form").addEventListener("submit", event => {
   $("download").disabled = false;
   $("copy").disabled = false;
   $("copy-workflow").disabled = false;
-  setStatus(
-    lastBrief.allowPaidAi
-      ? "تنظیمات آماده است. استفاده از AI پولی با انتخاب صریح شما فعال شده است."
-      : "تنظیمات آماده است. AI پولی خاموش است و هیچ کلیدی در فایل brief یا دستور قرار نمی‌گیرد.",
-    true
-  );
+  const modeMessage = lastBrief.planOnly
+    ? "حالت فقط طرح فعال است؛ MP4 رندر نمی‌شود. "
+    : "حالت تولید ویدیوی کامل انتخاب شده است. ";
+  const costMessage = lastBrief.allowPaidAi
+    ? "AI پولی با انتخاب صریح شما فعال است و مرحلهٔ تحقیق/برنامه‌ریزی ممکن است هزینه داشته باشد."
+    : "AI پولی خاموش است و هیچ کلیدی در فایل brief یا دستور قرار نمی‌گیرد.";
+  const musicMessage = lastBrief.musicEngine === "ace-step"
+    ? " ACE-Step نیازمند API خودمیزبان پیکربندی‌شده در Secrets است."
+    : "";
+  setStatus(modeMessage + costMessage + musicMessage, true);
 });
 
 $("download").addEventListener("click", () => {
@@ -154,6 +183,9 @@ $("reset").addEventListener("click", () => {
   $("summary-style").textContent = "هوشمند";
   $("summary-ratio").textContent = "16:9";
   $("summary-voice").textContent = "عصبی آنلاین";
+  $("summary-music").textContent = "مولد محلی";
+  $("summary-recipe").textContent = "برش علمی سینمایی";
+  $("summary-plan").textContent = "ویدیوی کامل";
   updatePaidAiState();
   setStatus("فرم پاک شد.");
 });

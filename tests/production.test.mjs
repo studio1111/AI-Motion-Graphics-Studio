@@ -419,3 +419,28 @@ test("Persian AI explainer local fallback fits a one-minute narration budget and
   assert.match(narration, /آینده/);
   assert.ok(plan.scenes.every(scene => scene.narration.length < 180), "No single narration scene should be a paragraph.");
 });
+
+test("plan-only can record ACE-Step as the intended soundtrack without a configured endpoint", async () => {
+  const tempRoot = await mkdtemp(join(tmpdir(), "motion-plan-only-ace-step-"));
+  try {
+    const options = parseArgs([
+      "--topic", "A science explainer without rendering",
+      "--language", "en",
+      "--duration", "30",
+      "--style", "scientific-2-5d",
+      "--aspect-ratio", "16:9",
+      "--voice", "edge-tts",
+      "--music-engine", "ace-step",
+      "--plan-only",
+      "--no-research",
+      "--output-dir", tempRoot
+    ], {});
+    const result = await produce(options, {});
+    assert.equal(result.qc.status, "PLAN_ONLY");
+    assert.equal(result.manifest.audioBed.status, "not_generated");
+    assert.equal(result.manifest.audioBed.engine, "ace-step");
+    assert.equal(result.manifest.voice.status, "not_run_plan_only");
+  } finally {
+    await rm(tempRoot, { recursive: true, force: true });
+  }
+});

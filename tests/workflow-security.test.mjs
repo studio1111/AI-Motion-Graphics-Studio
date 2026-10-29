@@ -34,12 +34,26 @@ test("every production workflow packages SHA-256 checksums with its artifacts", 
   assert.match(workflows[2], /path: \|[\s\S]*?SHA256SUMS\.txt/);
 });
 
-test("interactive production installs the selected local narration engine", async () => {
+test("interactive production installs the selected narration engine only for video renders", async () => {
   const workflow = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
-  assert.match(workflow, /if: inputs\.voice == 'edge-tts'/);
+  assert.ok(workflow.includes("if: ${{ inputs.voice == 'edge-tts' && !inputs.plan_only }}"));
   assert.match(workflow, /edge-tts==7\.3\.1/);
-  assert.match(workflow, /if: inputs\.voice == 'auto' && inputs\.language == 'fa'/);
+  assert.ok(workflow.includes("if: ${{ inputs.voice == 'auto' && inputs.language == 'fa' && !inputs.plan_only }}"));
   assert.match(workflow, /persian-speech==1\.1\.3/);
-  assert.match(workflow, /if: inputs\.voice == 'auto' && inputs\.language != 'fa'/);
+  assert.ok(workflow.includes("if: ${{ inputs.voice == 'auto' && inputs.language != 'fa' && !inputs.plan_only }}"));
   assert.match(workflow, /pocket-tts/);
+});
+
+test("primary production workflow wires soundtrack, prompt recipe and plan-only inputs", async () => {
+  const workflow = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  assert.match(workflow, /music_engine:[\s\S]*?default: procedural/);
+  assert.match(workflow, /prompt_recipe:[\s\S]*?default: cinematic-science-cutaway/);
+  assert.match(workflow, /plan_only:[\s\S]*?default: false/);
+  assert.match(workflow, /ACESTEP_API_URL:\s*\$\{\{\s*secrets\.ACESTEP_API_URL\s*\}\}/);
+  assert.match(workflow, /ACESTEP_API_KEY:\s*\$\{\{\s*secrets\.ACESTEP_API_KEY\s*\}\}/);
+  assert.match(workflow, /--prompt-recipe "\$PROMPT_RECIPE"/);
+  assert.match(workflow, /--music-engine "\$MUSIC_ENGINE"/);
+  assert.ok(workflow.includes("if: ${{ !inputs.plan_only }}"));
+  assert.match(workflow, /if \[\[ "\$PLAN_ONLY" == "true" \]\]/);
+  assert.match(workflow, /effective_voice="off"/);
 });
