@@ -18,7 +18,7 @@ The browser's **Allow paid AI** checkbox is unchecked by default. Unless you exp
 
 1. Open **Settings → Secrets and variables → Actions → New repository secret**.
 2. Add `ANTHROPIC_API_KEY` with an API key from Anthropic. Never paste it into the Pages UI, source code, an issue, or a workflow input.
-3. Optionally add `FIRECRAWL_API_KEY` to enable web research. Research is optional; search results are treated as candidate sources, not automatically verified facts.
+3. Optionally add `FIRECRAWL_API_KEY` to enable web research. Research is optional; search results are treated as candidate sources, not automatically verified facts. For an ACE-Step music server, add `ACESTEP_API_URL`; add `ACESTEP_API_KEY` only if your self-hosted service requires authentication.
 4. Either open **Actions → Motion Studio Production → Run workflow** and enter the form manually, or copy the generated **GitHub Actions command** from the studio and run it in a terminal where `gh auth status` confirms you are authenticated to this repository. The generated command uses `gh workflow run` with the fields selected in the page, so you do not have to retype them. Running it submits the topic text to GitHub Actions and may put that text in your terminal command history; review it before running if the topic is confidential.
 5. **Use AI is off by default.** Enable it only when you intentionally authorize possible Anthropic API charges and the secret is configured.
 6. When the run finishes, open its **Artifacts** section and download `motion-studio-output-<run-id>`. The artifact may include MP4, captions, audio, storyboard/manifests, `SHA256SUMS.txt` integrity checksums, and QC reports depending on the production path.
