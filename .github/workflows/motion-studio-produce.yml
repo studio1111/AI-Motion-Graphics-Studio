@@ -40,7 +40,7 @@ on:
         required: false
         type: string
       music_engine:
-        description: "Background score engine; ACE-Step requires a configured self-hosted API"
+        description: "Procedural is local; ACE-Step needs a self-hosted API URL and optional server auth key"
         required: true
         type: choice
         options: [procedural, auto, ace-step]
@@ -111,7 +111,7 @@ jobs:
       - name: Prepare Remotion browser
         if: ${{ !inputs.plan_only }}
         run: npx remotion browser ensure
-      - name: Produce and render video
+      - name: Produce video or plan-only deliverables
         env:
           TOPIC: ${{ inputs.topic }}
           LANGUAGE: ${{ inputs.language }}
@@ -147,7 +147,7 @@ jobs:
             args+=(--plan-only)
             echo "Plan-only mode: no MP4 render or narration engine setup will run."
           fi
-          if [[ "$MUSIC_ENGINE" == "ace-step" && -z "${ACESTEP_API_URL:-}" ]]; then
+          if [[ "$PLAN_ONLY" != "true" && "$MUSIC_ENGINE" == "ace-step" && -z "${ACESTEP_API_URL:-}" ]]; then
             echo "::error::ACE-Step was selected but ACESTEP_API_URL is missing from repository Actions Secrets."
             exit 2
           fi
