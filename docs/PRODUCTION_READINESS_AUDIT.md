@@ -10,6 +10,10 @@ npm run readiness -- --strict
 
 The audit is deliberately offline and safe: it never prints secret values, calls a provider, downloads a model, or spends money. It checks credential *presence* and a few local tools. Its result is not a connectivity test and does not claim an integration works.
 
+## Paid API safety defaults
+
+The GitHub Actions production workflow keeps **Use AI disabled by default**. Enable it only when you intentionally authorize possible Anthropic API charges. The local CLI also requires an explicit `--allow-paid-ai` flag. The readiness command's `ALLOW_PAID_AI=true` environment variable only changes its static report; it does not authorize or perform a provider request.
+
 ## Interpreting results
 
 - `credentials_present_not_connectivity_tested`: a non-empty environment variable exists. Authentication, quota, endpoint access and output quality remain unverified.
