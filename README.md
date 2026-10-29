@@ -33,7 +33,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 
 ## Browser studio and secure AI production
 
-- A Persian responsive UI for building a production brief lives in `site/` and is deployed to GitHub Pages by `.github/workflows/pages.yml` after merge to `main`. It exports a brief, a safe local CLI command, and a ready-to-run `gh workflow run` command that submits all selected settings without exposing API keys.
+- A Persian responsive UI for building a production brief lives in `site/` and is deployed to GitHub Pages by `.github/workflows/pages.yml` after merge to `main`. It exports a brief, a safe local CLI command, and a ready-to-run `gh workflow run` command that submits all selected settings without exposing API keys. The form includes curated prompt recipes, a local procedural music default, optional ACE-Step integration, and plan-only storyboard generation.
 - `.github/workflows/motion-studio-produce.yml` provides a guided Run workflow form, uses `ANTHROPIC_API_KEY` from repository Actions Secrets, renders the video, and uploads production artifacts with SHA-256 integrity checksums. Paid AI remains opt-in by default.
 - Setup, limitations, secret configuration, artifact retrieval and security boundaries: `docs/GITHUB_PAGES_AND_AI_SETUP.md`.
 
