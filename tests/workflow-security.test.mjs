@@ -28,7 +28,10 @@ test("every production workflow packages SHA-256 checksums with its artifacts", 
     assert.match(workflow, /Generate artifact integrity checksums/);
     assert.match(workflow, /sha256sum/);
     assert.match(workflow, /SHA256SUMS\.txt/);
+    assert.match(workflow, /if: always\(\)/);
   }
+  assert.match(workflows[0], /SHA256SUMS\.txt/);
+  assert.match(workflows[2], /path: \|[\s\S]*?SHA256SUMS\.txt/);
 });
 
 test("interactive production installs the selected local narration engine", async () => {
