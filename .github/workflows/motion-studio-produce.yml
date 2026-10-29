@@ -89,7 +89,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install neural voice engine
-        if: inputs.voice == 'edge-tts' && !inputs.plan_only
+        if: ${{ inputs.voice == 'edge-tts' && !inputs.plan_only }}
         run: python -m pip install --disable-pip-version-check edge-tts==7.3.1
       - name: Set up Python for local narration
         if: ${{ inputs.voice == 'auto' && !inputs.plan_only }}
