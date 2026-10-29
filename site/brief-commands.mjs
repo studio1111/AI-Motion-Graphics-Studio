@@ -13,6 +13,22 @@ const SUPPORTED_STYLES = new Set([
 ]);
 const SUPPORTED_RATIOS = new Set(["16:9", "9:16", "1:1"]);
 const SUPPORTED_VOICES = new Set(["edge-tts", "auto", "off"]);
+const SUPPORTED_MUSIC_ENGINES = new Set(["procedural", "auto", "ace-step"]);
+const DEFAULT_PROMPT_RECIPE = "cinematic-science-cutaway";
+const SUPPORTED_PROMPT_RECIPES = new Set([
+  DEFAULT_PROMPT_RECIPE,
+  "scientific-mechanism-cutaway",
+  "kinetic-type",
+  "data-story",
+  "editorial-explainer",
+  "cinematic-comparison",
+  "motion-design-showreel",
+  "real-footage-data-overlay",
+  "product-launch",
+  "cinematic-map-journey",
+  "voiceover-first-explainer",
+  "cinematic-transition-library"
+]);
 
 function validateBrief(brief) {
   if (!brief || typeof brief !== "object") throw new TypeError("A video brief is required.");
