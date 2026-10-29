@@ -140,8 +140,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out
-          : > out/SHA256SUMS.txt
-          find out public/generated -type f ! -name 'SHA256SUMS.txt' -print0 2>/dev/null | sort -z | xargs -0 -r sha256sum > out/SHA256SUMS.txt
+          roots=(out)
+          if [[ -d public/generated ]]; then roots+=(public/generated); fi
+          find "${roots[@]}" -type f ! -name 'SHA256SUMS.txt' -print0 | sort -z | xargs -0 -r sha256sum > out/SHA256SUMS.txt
       - name: Upload video, source manifest and generated assets
         if: always()
         uses: actions/upload-artifact@v4
