@@ -102,6 +102,7 @@ test("plan-only manifests retain the exact selected output and caption profiles"
     assert.equal(brief.renderQuality, "master");
     assert.equal(brief.resolution, "4k");
     assert.equal(brief.captionStyle, "broadcast");
+    assert.equal(brief.audioMixProfile, "voice-forward");
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
