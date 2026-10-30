@@ -23,6 +23,7 @@ When the `speech` executable from `persian-speech` is installed, `--voice auto` 
 - --render-quality: `balanced` (CRF 20 / fast), `high` (CRF 17 / slow), or `master` (CRF 15 / slower). Lower CRF preserves more detail at the cost of larger files; slower x264 presets increase encoding time.
 - --resolution: `1080p`, `1440p`, or `4k`. Remotion scales the composition output while preserving the selected aspect ratio. The composition layout remains based on the Full HD design canvas.
 - --caption-style: `cinematic`, `broadcast` (stronger contrast and larger type), or `minimal`.
+- --audio-mix-profile: `voice-forward` lowers the music bed and deepens speech ducking, `cinematic` balances score and narration, and `energetic` allows a more prominent soundtrack. The selected mix is recorded in the props and release metadata.
 
 - --brief: optional JSON brief with topic, language, durationSeconds, aspectRatio, style and sources.
 - --sources: optional JSON array of source URLs or source objects.
