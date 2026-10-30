@@ -14,6 +14,7 @@ import type { MotionPalette, MotionScene, MotionVideoProps } from "./types";
 import { splitCaptionSegments } from "./captions.mjs";
 import { getCameraMotion } from "./motion-profiles.mjs";
 import { getMusicBedGain, getVoiceFadeEnvelope } from "./audio-mix.mjs";
+import { resolveCaptionStyle } from "./caption-styles.mjs";
 
 const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
 
@@ -922,6 +923,7 @@ const SceneView: React.FC<{
   const { fps, width, height } = useVideoConfig();
   const vertical = height > width;
   const rtl = isRtlLanguage(props.language);
+  const captionTheme = resolveCaptionStyle(props.captionStyle || "cinematic");
   const camera = getCameraMotion(props.styleId, frame, scene.durationInFrames, index);
   const entrance = interpolate(frame, [0, 18], [0, 1], clamp);
   const sceneProgress = (offset + frame) / Math.max(1, props.durationInFrames);
@@ -1007,18 +1009,27 @@ const SceneView: React.FC<{
               style={{
                 maxWidth: vertical ? "96%" : "78%",
                 minWidth: vertical ? "56%" : "38%",
-                minHeight: vertical ? 54 : 58,
-                padding: vertical ? "10px 16px" : "12px 22px",
-                background: rgba(palette.background, 0.9),
-                border: "1px solid " + rgba(palette.foreground, 0.16),
-                borderRadius: 5,
+                minHeight: vertical ? 58 : 62,
+                padding: vertical ? captionTheme.verticalPadding : captionTheme.horizontalPadding,
+                background: rgba(palette.background, captionTheme.backgroundAlpha),
+                border: captionTheme.borderWidth
+                  ? captionTheme.borderWidth + "px solid " + rgba(palette.foreground, captionTheme.borderAlpha)
+                  : "none",
+                borderBottom: captionTheme.id === "broadcast"
+                  ? "4px solid " + palette.accent
+                  : undefined,
+                borderRadius: captionTheme.borderRadius,
                 color: palette.foreground,
                 fontFamily: typography.body,
-                fontSize: vertical ? 22 : 24,
-                lineHeight: 1.32,
+                fontSize: vertical ? captionTheme.verticalFontSize : captionTheme.horizontalFontSize,
+                fontWeight: captionTheme.fontWeight,
+                lineHeight: 1.34,
                 textAlign: "center",
                 whiteSpace: "pre-wrap",
-                boxShadow: "0 8px 30px " + rgba(palette.background, 0.22)
+                textShadow: captionTheme.textShadow,
+                boxShadow: captionTheme.id === "minimal"
+                  ? "none"
+                  : "0 8px 30px " + rgba(palette.background, 0.22)
               }}
             >
               {captionForFrame(scene.narration, frame, scene.audioDurationInFrames || scene.durationInFrames)}
