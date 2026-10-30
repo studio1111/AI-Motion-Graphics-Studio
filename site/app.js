@@ -208,6 +208,9 @@ function buildBrief() {
     aspectRatio: $("ratio").value,
     voice: $("voice").value,
     musicEngine: $("music-engine").value,
+    renderQuality: $("render-quality").value,
+    resolution: $("resolution").value,
+    captionStyle: $("caption-style").value,
     promptRecipe: $("prompt-recipe").value,
     planOnly: $("plan-only").checked,
     allowPaidAi: $("allow-paid-ai").checked
@@ -237,6 +240,9 @@ function updateBriefSummary(brief) {
   $("summary-ratio").textContent = brief.aspectRatio;
   $("summary-voice").textContent = voiceNames[brief.voice] || brief.voice;
   $("summary-music").textContent = musicNames[brief.musicEngine] || brief.musicEngine;
+  $("summary-quality").textContent = brief.renderQuality;
+  $("summary-resolution").textContent = brief.resolution.toUpperCase();
+  $("summary-caption").textContent = brief.captionStyle;
   const selectedRecipe = promptRecipes.find(recipe => recipe.id === brief.promptRecipe);
   $("summary-recipe").textContent = selectedRecipe?.title || recipeNames[brief.promptRecipe] || brief.promptRecipe;
   $("summary-plan").textContent = brief.planOnly ? "فقط طرح و استوری‌بورد" : "ویدیوی کامل";
