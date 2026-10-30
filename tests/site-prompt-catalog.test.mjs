@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { HELP_TEXT } from "../scripts/produce.mjs";
 import { readFile } from "node:fs/promises";
 
 const [sourceText, siteText, html, app, workflow] = await Promise.all([
@@ -9,6 +10,11 @@ const [sourceText, siteText, html, app, workflow] = await Promise.all([
   readFile(new URL("../site/app.js", import.meta.url), "utf8"),
   readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8")
 ]);
+
+test("CLI help advertises the current prompt catalog size", () => {
+  assert.match(HELP_TEXT, /100 portable recipes/);
+  assert.doesNotMatch(HELP_TEXT, /96 portable recipes/);
+});
 
 test("Pages catalog stays synchronized with the canonical prompt library", () => {
   const source = JSON.parse(sourceText);
