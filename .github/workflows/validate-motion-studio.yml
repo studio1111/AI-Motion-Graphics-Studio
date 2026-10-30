@@ -27,6 +27,11 @@ jobs:
           node-version: 20
       - name: Install pinned dependencies
         run: npm install --no-audit --no-fund
+      - name: Validate browser studio and catalog sync syntax
+        run: |
+          node --check site/app.js
+          node --check site/brief-commands.mjs
+          node --check scripts/sync-site-prompt-catalog.mjs
       - name: Validate skills and production engine
         run: npm run validate
       - name: Install media tools and readable system fonts
