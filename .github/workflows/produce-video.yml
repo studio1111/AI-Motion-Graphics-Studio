@@ -125,13 +125,13 @@ jobs:
       FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
       - name: Set up Python for optional narration engines
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install local Persian narration engine
@@ -173,7 +173,7 @@ jobs:
           find "${roots[@]}" -type f ! -name 'SHA256SUMS.txt' -print0 | sort -z | xargs -0 -r sha256sum > SHA256SUMS.txt
       - name: Upload video, source manifest and generated assets
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: motion-graphics-${{ github.run_id }}
           path: |
