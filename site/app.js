@@ -357,6 +357,9 @@ $("reset").addEventListener("click", () => {
   $("summary-music").textContent = "مولد محلی";
   $("summary-recipe").textContent = "برش علمی سینمایی";
   $("summary-plan").textContent = "ویدیوی کامل";
+  $("summary-quality").textContent = "high";
+  $("summary-resolution").textContent = "1080P";
+  $("summary-caption").textContent = "cinematic";
   updatePaidAiState();
   setStatus("فرم پاک شد.");
 });
