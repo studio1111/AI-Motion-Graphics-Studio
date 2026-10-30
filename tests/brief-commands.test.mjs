@@ -71,3 +71,11 @@ test("brief command builders validate and forward render quality, resolution and
   assert.throws(() => buildWorkflowDispatchCommand({ ...brief, resolution: "8k" }), /Unsupported output resolution/);
   assert.throws(() => buildWorkflowDispatchCommand({ ...brief, captionStyle: "invalid" }), /Unsupported caption style/);
 });
+
+
+test("brief commands validate and forward the selected audio mix profile", () => {
+  const brief = { ...validBrief, audioMixProfile: "voice-forward" };
+  assert.match(buildLocalCliCommand(brief), /--audio-mix-profile voice-forward/);
+  assert.match(buildWorkflowDispatchCommand(brief), /-f 'audio_mix_profile=voice-forward'/);
+  assert.throws(() => buildWorkflowDispatchCommand({ ...brief, audioMixProfile: "unbounded" }), /Unsupported audio mix profile/);
+});
