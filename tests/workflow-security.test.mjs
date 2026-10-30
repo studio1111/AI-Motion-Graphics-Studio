@@ -80,3 +80,13 @@ test("production workflows expose and forward quality, resolution and caption co
     assert.match(workflow, /--caption-style/);
   }
 });
+
+
+test("production workflows expose and forward narration-aware audio mix profiles", async () => {
+  const production = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  const manual = await readFile(new URL("../.github/workflows/produce-video.yml", import.meta.url), "utf8");
+  for (const workflow of [production, manual]) {
+    assert.match(workflow, /audio_mix_profile:[\s\S]*?options: \[voice-forward, cinematic, energetic\]/);
+    assert.match(workflow, /--audio-mix-profile/);
+  }
+});
