@@ -57,3 +57,12 @@ test("primary production workflow wires soundtrack, prompt recipe and plan-only 
   assert.match(workflow, /if \[\[ "\$PLAN_ONLY" == "true" \]\]/);
   assert.match(workflow, /effective_voice="off"/);
 });
+
+
+test("production workflows use the repository's supported installer when no npm lockfile is committed", async () => {
+  const production = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  const validation = await readFile(new URL("../.github/workflows/validate-motion-studio.yml", import.meta.url), "utf8");
+  assert.match(production, /npm install --no-audit --no-fund/);
+  assert.doesNotMatch(production, /npm ci(?:\s|$)/);
+  assert.match(validation, /npm install --no-audit --no-fund/);
+});
