@@ -12,7 +12,7 @@ test("manual production workflow keeps paid APIs opt-in and repository permissio
 
 test("manual production artifacts have bounded retention and an explicit missing-output policy", async () => {
   const workflow = await readFile(new URL("../.github/workflows/produce-video.yml", import.meta.url), "utf8");
-  assert.match(workflow, /uses:\s*actions\/upload-artifact@v4/);
+  assert.match(workflow, /uses:\s*actions\/upload-artifact@v7/);
   assert.match(workflow, /if-no-files-found:\s*warn/);
   assert.match(workflow, /retention-days:\s*7/);
 });
