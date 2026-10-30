@@ -46,10 +46,9 @@ on:
         options: [procedural, auto, ace-step]
         default: procedural
       prompt_recipe:
-        description: "Creative recipe from the studio's prompt library"
+        description: "Recipe ID from the validated 96-entry prompt catalog"
         required: true
-        type: choice
-        options: [cinematic-science-cutaway, scientific-mechanism-cutaway, kinetic-type, data-story, editorial-explainer, cinematic-comparison, motion-design-showreel, real-footage-data-overlay, product-launch, cinematic-map-journey, voiceover-first-explainer, cinematic-transition-library]
+        type: string
         default: cinematic-science-cutaway
       plan_only:
         description: "Create storyboard and manifests without rendering an MP4; paid AI may still incur API charges if enabled"
