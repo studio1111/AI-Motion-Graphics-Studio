@@ -40,4 +40,6 @@ test("site catalog is loaded as data, rendered with text-safe DOM APIs and passe
   assert.match(recipeInput, /type: string/);
   assert.doesNotMatch(recipeInput, /options:/);
   assert.match(workflow, /--prompt-recipe "\$PROMPT_RECIPE"/);
+  assert.match(workflow, /validated 100-entry prompt catalog/);
+  assert.doesNotMatch(workflow, /validated 96-entry prompt catalog/);
 });
