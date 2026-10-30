@@ -7,7 +7,7 @@ The executable entry point is scripts/produce.mjs. It builds a storyboard and a 
     npm install
     npx remotion browser ensure
     npm run validate
-    npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9
+    npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style auto --aspect-ratio 16:9 --render-quality high --resolution 1080p --caption-style cinematic
     npm run produce -- --topic "A concept-led motion design showreel" --language en --duration 30 --prompt-recipe motion-design-showreel --plan-only --voice off
 
 When the `speech` executable from `persian-speech` is installed, `--voice auto` uses a local Persian (Farsi) voice for `fa`. The package documents an MIT-licensed runtime/model distribution and a Mana-TTS corpus listed as CC0. The model downloads on first use, so initial synthesis needs network access. For supported non-Persian languages, the pipeline uses Pocket TTS. The GitHub workflow installs the appropriate local TTS package only when narration is enabled.
@@ -20,6 +20,10 @@ When the `speech` executable from `persian-speech` is installed, `--voice auto` 
 - --style: auto or a preset such as cinematic-documentary, scientific-2-5d, data-journalism, or vertical-social. An explicit preset remains authoritative.
 - --prompt-recipe: optional exact ID from the portable 96-recipe catalog, e.g. `motion-design-showreel`, `product-ui-state-morph`, or `kinetic-data-symphony`. When `--style auto` is used, recipe category maps to a supported Remotion preset. The selected record is written to `prompt-recipe.json` and passed to configured AI storyboard generation. The local fallback does not implement all recipe-specific effects; the manifest and QC report make this explicit.
 - --aspect-ratio: 16:9, 9:16, or 1:1.
+- --render-quality: `balanced` (CRF 20 / fast), `high` (CRF 17 / slow), or `master` (CRF 15 / slower). Lower CRF preserves more detail at the cost of larger files; slower x264 presets increase encoding time.
+- --resolution: `1080p`, `1440p`, or `4k`. Remotion scales the composition output while preserving the selected aspect ratio. The composition layout remains based on the Full HD design canvas.
+- --caption-style: `cinematic`, `broadcast` (stronger contrast and larger type), or `minimal`.
+
 - --brief: optional JSON brief with topic, language, durationSeconds, aspectRatio, style and sources.
 - --sources: optional JSON array of source URLs or source objects.
 - --voice: auto, off, pocket-tts, or persian-speech. In GitHub Actions, the narration toggle now maps to `off` when disabled, Pocket TTS for requested supported non-Persian languages, and Persian Speech for requested Farsi narration.
@@ -44,7 +48,7 @@ Each run has its own folder under out. It contains brief.json, storyboard.json, 
 
 ## Honest quality boundary
 
-Technical PASS means the file exists, matches expected metadata, passes a full decode and has a measurable audio peak above the silence threshold. Extracting frame samples is not the same as visually reviewing them, and an audio peak check is not a listening or mix-quality review. The QC report leaves creativeReview and audioListening as NOT_RUN. The conceptual fallback is not a sourced factual documentary. Fonts, models and paid APIs are not assumed installed or free.
+Technical PASS means the file exists, matches expected metadata, passes a full decode and has a measurable audio peak above the silence threshold. Extracting frame samples is not the same as visually reviewing them, and an audio peak check is not a listening or mix-quality review. The QC report records the selected render profile and leaves creativeReview and audioListening as NOT_RUN. The conceptual fallback is not a sourced factual documentary. Fonts, models and paid APIs are not assumed installed or free.
 
 
 ### Topic-specific local fallback
