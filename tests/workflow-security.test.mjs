@@ -47,7 +47,7 @@ test("interactive production installs the selected narration engine only for vid
 test("primary production workflow wires soundtrack, prompt recipe and plan-only inputs", async () => {
   const workflow = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
   assert.match(workflow, /music_engine:[\s\S]*?default: procedural/);
-  assert.match(workflow, /prompt_recipe:[\s\S]*?default: cinematic-science-cutaway/);
+  assert.match(workflow, /prompt_recipe:[\s\S]*?type: string[\s\S]*?default: cinematic-science-cutaway/);
   assert.match(workflow, /plan_only:[\s\S]*?default: false/);
   assert.match(workflow, /ACESTEP_API_URL:\s*\$\{\{\s*secrets\.ACESTEP_API_URL\s*\}\}/);
   assert.match(workflow, /ACESTEP_API_KEY:\s*\$\{\{\s*secrets\.ACESTEP_API_KEY\s*\}\}/);
