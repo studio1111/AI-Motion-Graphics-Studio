@@ -170,14 +170,15 @@ export function promptRecipeStyleHint(recipe,ratio="16:9"){
   if(["product-film","product-ui","architecture"].includes(category))return "premium-3d-product";
   if(["data-storytelling","data","finance"].includes(category))return "data-journalism";
   if(["science","education","educational","technology","diagram","technical-explainer"].includes(category))return "scientific-2-5d";
+  if(["science-and-data"].includes(category))return "data-journalism";
   if(["maps","history"].includes(category))return "maps-timeline";
-  if(["documentary","editorial","storyboard"].includes(category))return "cinematic-documentary";
+  if(["documentary","editorial","storyboard","cinematic-storytelling","sound-and-editing"].includes(category))return "cinematic-documentary";
   if(["collage"].includes(category))return "tactile-collage";
   if(["character","comedy"].includes(category))return "character-2d";
   if(["brand","event-brand","corporate"].includes(category))return "swiss-modernist";
   if(["abstract","looping-motion","music","showreel","transitions","retro-game","retro-futurism","particles","sci-fi","gaming"].includes(category))return "procedural-generative";
   if(["sports","nature","food","fashion","real-footage","photo-essay"].includes(category))return "hybrid-live-action";
-  if(["social"].includes(category))return "vertical-social";
+  if(["social","platform-optimization"].includes(category))return "vertical-social";
   return "auto";
 }
 export function chooseStyle(style,topic,ratio="16:9"){
