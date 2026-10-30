@@ -11,7 +11,7 @@ const [html, js, workflow, pages] = await Promise.all([
 ]);
 
 test("Pages studio provides accessible brief controls and production navigation", () => {
-  for (const id of ["topic", "language", "duration", "style", "ratio", "voice", "reference", "allow-paid-ai", "music-engine", "prompt-recipe", "plan-only", "download", "copy", "copy-workflow", "status"]) {
+  for (const id of ["topic", "language", "duration", "style", "ratio", "voice", "reference", "allow-paid-ai", "music-engine", "prompt-recipe", "prompt-recipe-search", "prompt-recipe-count", "plan-only", "command-fallback", "download", "copy", "copy-workflow", "status"]) {
     assert.match(html, new RegExp('id="' + id + '"'));
   }
   assert.match(html, /actions\/workflows\/motion-studio-produce\.yml/);
@@ -27,6 +27,10 @@ test("browser code builds a brief without embedding or persisting credentials", 
   assert.match(js, /musicEngine/);
   assert.match(js, /promptRecipe/);
   assert.match(js, /planOnly/);
+  assert.match(js, /fetch\("\.\/prompt-recipes\.json"/);
+  assert.match(js, /renderPromptRecipes/);
+  assert.match(js, /command-fallback/);
+  assert.doesNotMatch(js, /\.innerHTML\s*=/i);
   assert.doesNotMatch(js, /ANTHROPIC_API_KEY|FIRECRAWL_API_KEY|localStorage|sessionStorage/);
 });
 
