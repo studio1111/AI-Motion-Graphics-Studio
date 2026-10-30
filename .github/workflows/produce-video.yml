@@ -43,6 +43,24 @@ on:
         type: choice
         options: ["16:9", "9:16", "1:1"]
         default: "16:9"
+      render_quality:
+        description: Encoding profile
+        required: true
+        type: choice
+        options: [balanced, high, master]
+        default: high
+      resolution:
+        description: Final output resolution
+        required: true
+        type: choice
+        options: [1080p, 1440p, 4k]
+        default: 1080p
+      caption_style:
+        description: Subtitle presentation theme
+        required: true
+        type: choice
+        options: [cinematic, broadcast, minimal]
+        default: cinematic
       allow_paid_ai:
         description: Explicitly allow configured Firecrawl/Claude API calls that may incur charges
         required: true
@@ -88,6 +106,9 @@ jobs:
       MOTION_STUDIO_ALLOW_PAID_API: ${{ inputs.allow_paid_ai }}
       MOTION_STUDIO_VOICE: ${{ inputs.voice_engine }}
       MOTION_STUDIO_MUSIC_ENGINE: ${{ inputs.music_engine }}
+      MOTION_STUDIO_RENDER_QUALITY: ${{ inputs.render_quality }}
+      MOTION_STUDIO_RESOLUTION: ${{ inputs.resolution }}
+      MOTION_STUDIO_CAPTION_STYLE: ${{ inputs.caption_style }}
       MOTION_STUDIO_PROMPT_RECIPE: ${{ inputs.prompt_recipe }}
       MOTION_STUDIO_EDGE_RATE: "-6%"
       ACESTEP_API_URL: ${{ secrets.ACESTEP_API_URL }}
@@ -130,10 +151,10 @@ jobs:
         run: npx remotion browser ensure
       - name: Produce and render video
         if: ${{ !inputs.plan_only }}
-        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE" --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE"
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE" --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --render-quality "$MOTION_STUDIO_RENDER_QUALITY" --resolution "$MOTION_STUDIO_RESOLUTION" --caption-style "$MOTION_STUDIO_CAPTION_STYLE"
       - name: Produce storyboard and manifest only
         if: ${{ inputs.plan_only }}
-        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice off --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --plan-only
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice off --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --render-quality "$MOTION_STUDIO_RENDER_QUALITY" --resolution "$MOTION_STUDIO_RESOLUTION" --caption-style "$MOTION_STUDIO_CAPTION_STYLE" --plan-only
       - name: Generate artifact integrity checksums
         if: always()
         shell: bash
