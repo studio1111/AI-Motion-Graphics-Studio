@@ -55,3 +55,27 @@ test("command builders reject unknown recipe IDs and unsupported music engines",
   assert.throws(() => buildLocalCliCommand({ ...validBrief, musicEngine: "remote-random" }), /Unsupported music engine/);
   assert.throws(() => buildWorkflowDispatchCommand({ ...validBrief, planOnly: "true" }), /planOnly must be a boolean/);
 });
+
+
+test("brief command builders validate and forward render quality, resolution and caption style", () => {
+  const brief = { ...validBrief, renderQuality: "master", resolution: "4k", captionStyle: "broadcast" };
+  const local = buildLocalCliCommand(brief);
+  assert.match(local, /--render-quality master/);
+  assert.match(local, /--resolution 4k/);
+  assert.match(local, /--caption-style broadcast/);
+  const workflow = buildWorkflowDispatchCommand(brief);
+  assert.match(workflow, /-f 'render_quality=master'/);
+  assert.match(workflow, /-f 'resolution=4k'/);
+  assert.match(workflow, /-f 'caption_style=broadcast'/);
+  assert.throws(() => buildLocalCliCommand({ ...brief, renderQuality: "invalid" }), /Unsupported render quality/);
+  assert.throws(() => buildWorkflowDispatchCommand({ ...brief, resolution: "8k" }), /Unsupported output resolution/);
+  assert.throws(() => buildWorkflowDispatchCommand({ ...brief, captionStyle: "invalid" }), /Unsupported caption style/);
+});
+
+
+test("brief commands validate and forward the selected audio mix profile", () => {
+  const brief = { ...validBrief, audioMixProfile: "voice-forward" };
+  assert.match(buildLocalCliCommand(brief), /--audio-mix-profile voice-forward/);
+  assert.match(buildWorkflowDispatchCommand(brief), /-f 'audio_mix_profile=voice-forward'/);
+  assert.throws(() => buildWorkflowDispatchCommand({ ...brief, audioMixProfile: "unbounded" }), /Unsupported audio mix profile/);
+});

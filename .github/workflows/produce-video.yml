@@ -43,6 +43,30 @@ on:
         type: choice
         options: ["16:9", "9:16", "1:1"]
         default: "16:9"
+      render_quality:
+        description: Encoding profile
+        required: true
+        type: choice
+        options: [balanced, high, master]
+        default: high
+      resolution:
+        description: Final output resolution
+        required: true
+        type: choice
+        options: [1080p, 1440p, 4k]
+        default: 1080p
+      caption_style:
+        description: Subtitle presentation theme
+        required: true
+        type: choice
+        options: [cinematic, broadcast, minimal]
+        default: cinematic
+      audio_mix_profile:
+        description: Music level and voice-aware ducking profile
+        required: true
+        type: choice
+        options: [voice-forward, cinematic, energetic]
+        default: cinematic
       allow_paid_ai:
         description: Explicitly allow configured Firecrawl/Claude API calls that may incur charges
         required: true
@@ -62,7 +86,7 @@ on:
         options: [auto, procedural, ace-step]
         default: auto
       prompt_recipe:
-        description: Style recipe ID from the 96-recipe prompt library
+        description: Style recipe ID from the 100-recipe prompt library
         required: true
         type: string
         default: cinematic-science-cutaway
@@ -88,6 +112,10 @@ jobs:
       MOTION_STUDIO_ALLOW_PAID_API: ${{ inputs.allow_paid_ai }}
       MOTION_STUDIO_VOICE: ${{ inputs.voice_engine }}
       MOTION_STUDIO_MUSIC_ENGINE: ${{ inputs.music_engine }}
+      MOTION_STUDIO_RENDER_QUALITY: ${{ inputs.render_quality }}
+      MOTION_STUDIO_RESOLUTION: ${{ inputs.resolution }}
+      MOTION_STUDIO_CAPTION_STYLE: ${{ inputs.caption_style }}
+      MOTION_STUDIO_AUDIO_MIX_PROFILE: ${{ inputs.audio_mix_profile }}
       MOTION_STUDIO_PROMPT_RECIPE: ${{ inputs.prompt_recipe }}
       MOTION_STUDIO_EDGE_RATE: "-6%"
       ACESTEP_API_URL: ${{ secrets.ACESTEP_API_URL }}
@@ -97,13 +125,13 @@ jobs:
       FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
       - name: Set up Python for optional narration engines
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install local Persian narration engine
@@ -130,10 +158,10 @@ jobs:
         run: npx remotion browser ensure
       - name: Produce and render video
         if: ${{ !inputs.plan_only }}
-        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE" --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE"
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE" --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --render-quality "$MOTION_STUDIO_RENDER_QUALITY" --resolution "$MOTION_STUDIO_RESOLUTION" --caption-style "$MOTION_STUDIO_CAPTION_STYLE" --audio-mix-profile "$MOTION_STUDIO_AUDIO_MIX_PROFILE"
       - name: Produce storyboard and manifest only
         if: ${{ inputs.plan_only }}
-        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice off --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --plan-only
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice off --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --render-quality "$MOTION_STUDIO_RENDER_QUALITY" --resolution "$MOTION_STUDIO_RESOLUTION" --caption-style "$MOTION_STUDIO_CAPTION_STYLE" --audio-mix-profile "$MOTION_STUDIO_AUDIO_MIX_PROFILE" --plan-only
       - name: Generate artifact integrity checksums
         if: always()
         shell: bash
@@ -145,7 +173,7 @@ jobs:
           find "${roots[@]}" -type f ! -name 'SHA256SUMS.txt' -print0 | sort -z | xargs -0 -r sha256sum > SHA256SUMS.txt
       - name: Upload video, source manifest and generated assets
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: motion-graphics-${{ github.run_id }}
           path: |

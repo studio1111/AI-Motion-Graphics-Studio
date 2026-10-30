@@ -42,13 +42,13 @@ jobs:
       MOTION_STUDIO_ALLOW_PAID_API: "false"
     steps:
       - name: Check out the GitHub project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "20"
       - name: Set up Python for Persian narration
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install Persian speech engine
@@ -64,7 +64,7 @@ jobs:
       - name: Ensure Remotion browser
         run: npx remotion browser ensure
       - name: Produce and render with the repository engine
-        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE" --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE"
+        run: npm run produce -- --topic "$MOTION_TOPIC" --language "$MOTION_STUDIO_LANGUAGE" --duration "$MOTION_STUDIO_DURATION" --style "$MOTION_STUDIO_STYLE" --aspect-ratio "$MOTION_STUDIO_ASPECT_RATIO" --voice "$MOTION_STUDIO_VOICE" --prompt-recipe "$MOTION_STUDIO_PROMPT_RECIPE" --music-engine "$MOTION_STUDIO_MUSIC_ENGINE" --render-quality master --resolution 1080p --caption-style broadcast --audio-mix-profile voice-forward
       - name: Generate artifact integrity checksums
         if: always()
         shell: bash
@@ -76,7 +76,7 @@ jobs:
           find "${roots[@]}" -type f ! -name 'SHA256SUMS.txt' -print0 | sort -z | xargs -0 -r sha256sum > SHA256SUMS.txt
       - name: Upload rendered video and production reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ai-future-persian-motion-graphic-${{ github.run_id }}
           path: |

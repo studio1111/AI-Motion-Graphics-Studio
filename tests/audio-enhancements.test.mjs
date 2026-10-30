@@ -196,3 +196,19 @@ test("CLI exposes the optional neural edge voice without changing private local 
   assert.equal(parseArgs(["--voice", "edge-tts"], {}).voice, "edge-tts");
   assert.throws(() => parseArgs(["--voice", "unknown-engine"], {}), /Voice must be/);
 });
+
+
+test("music mix profiles make narration priority explicit and preserve smooth ducking", async () => {
+  const { resolveAudioMixProfile, getMusicBedGain } = await import("../src/production/audio-mix.mjs");
+  const ranges = [{ startFrame: 300, endFrame: 600 }];
+  const voiceForward = resolveAudioMixProfile("voice-forward");
+  const cinematic = resolveAudioMixProfile("cinematic");
+  const energetic = resolveAudioMixProfile("energetic");
+  assert.ok(voiceForward.musicWithVoice < cinematic.musicWithVoice);
+  assert.ok(energetic.musicWithVoice > cinematic.musicWithVoice);
+  assert.ok(getMusicBedGain(350, 900, 30, ranges, "voice-forward") < getMusicBedGain(350, 900, 30, ranges, "cinematic"));
+  assert.ok(getMusicBedGain(350, 900, 30, ranges, "energetic") > getMusicBedGain(350, 900, 30, ranges, "cinematic"));
+  assert.throws(() => resolveAudioMixProfile("unbounded"), /Unknown audio mix profile/);
+  assert.equal(parseArgs(["--audio-mix-profile", "voice-forward"], {}).audioMixProfile, "voice-forward");
+  assert.throws(() => parseArgs(["--audio-mix-profile", "unbounded"], {}), /Unknown audio mix profile/);
+});

@@ -41,6 +41,8 @@ export type MotionVideoProps = {
   scenes: MotionScene[];
   audioBedSrc?: string;
   captionsEnabled?: boolean;
+  captionStyle?: "cinematic" | "broadcast" | "minimal";
+  audioMixProfile?: "voice-forward" | "cinematic" | "energetic";
 };
 
 export const DEFAULT_MOTION_VIDEO_PROPS: MotionVideoProps = {
@@ -64,6 +66,8 @@ export const DEFAULT_MOTION_VIDEO_PROPS: MotionVideoProps = {
     mono: "IBM Plex Mono, DejaVu Sans Mono, Liberation Mono, monospace"
   },
   captionsEnabled: false,
+  captionStyle: "cinematic",
+  audioMixProfile: "cinematic",
   scenes: [
     { id: "smoke-01", kicker: "THE QUESTION", title: "Start with a better question.", body: "A strong visual story gives each movement a purpose.", narration: "", layout: "hero", durationInFrames: 60, bullets: ["Focus", "Contrast", "Meaning"], transition: "wipe" },
     { id: "smoke-02", kicker: "SEE THE SYSTEM", title: "Make the invisible visible.", body: "A diagram can reveal relationships that a paragraph leaves hidden.", narration: "", layout: "diagram", durationInFrames: 60, bullets: ["Input", "Process", "Outcome"], transition: "scale" },

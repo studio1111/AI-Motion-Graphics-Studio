@@ -29,6 +29,30 @@ on:
         type: choice
         options: ["16:9", "9:16", "1:1"]
         default: "16:9"
+      render_quality:
+        description: "Encoding profile: higher quality trades render time and file size"
+        required: true
+        type: choice
+        options: [balanced, high, master]
+        default: high
+      resolution:
+        description: "Final output resolution"
+        required: true
+        type: choice
+        options: [1080p, 1440p, 4k]
+        default: 1080p
+      caption_style:
+        description: "Subtitle presentation theme"
+        required: true
+        type: choice
+        options: [cinematic, broadcast, minimal]
+        default: cinematic
+      audio_mix_profile:
+        description: "Music level and voice-aware ducking profile"
+        required: true
+        type: choice
+        options: [voice-forward, cinematic, energetic]
+        default: cinematic
       voice:
         description: "Narration engine"
         required: true
@@ -46,7 +70,7 @@ on:
         options: [procedural, auto, ace-step]
         default: procedural
       prompt_recipe:
-        description: "Recipe ID from the validated 96-entry prompt catalog"
+        description: "Recipe ID from the validated 100-entry prompt catalog"
         required: true
         type: string
         default: cinematic-science-cutaway
@@ -72,9 +96,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Check out project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -84,7 +108,7 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-dejavu-core fonts-liberation fonts-noto-core fonts-noto-cjk
       - name: Set up Python for neural voice
         if: ${{ inputs.voice == 'edge-tts' && !inputs.plan_only }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Install neural voice engine
@@ -92,7 +116,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check edge-tts==7.3.1
       - name: Set up Python for local narration
         if: ${{ inputs.voice == 'auto' && !inputs.plan_only }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Install local Persian narration engine
@@ -101,8 +125,8 @@ jobs:
       - name: Install Pocket TTS for supported non-Persian languages
         if: ${{ inputs.voice == 'auto' && inputs.language != 'fa' && !inputs.plan_only }}
         run: python -m pip install --disable-pip-version-check pocket-tts
-      - name: Install project dependencies
-        run: npm ci
+      - name: Install project dependencies (repository has no lockfile)
+        run: npm install --no-audit --no-fund
       - name: Validate browser UI syntax
         run: node --check site/app.js
       - name: Validate project
@@ -120,6 +144,10 @@ jobs:
           VOICE: ${{ inputs.voice }}
           OPUS55_REFERENCE: ${{ inputs.opus55_reference }}
           MUSIC_ENGINE: ${{ inputs.music_engine }}
+          RENDER_QUALITY: ${{ inputs.render_quality }}
+          OUTPUT_RESOLUTION: ${{ inputs.resolution }}
+          CAPTION_STYLE: ${{ inputs.caption_style }}
+          AUDIO_MIX_PROFILE: ${{ inputs.audio_mix_profile }}
           PROMPT_RECIPE: ${{ inputs.prompt_recipe }}
           PLAN_ONLY: ${{ inputs.plan_only }}
           ACESTEP_API_URL: ${{ secrets.ACESTEP_API_URL }}
@@ -138,7 +166,7 @@ jobs:
           if [[ "$PLAN_ONLY" == "true" ]]; then
             effective_voice="off"
           fi
-          args=(--topic "$TOPIC" --language "$LANGUAGE" --duration "$DURATION" --style "$STYLE" --aspect-ratio "$ASPECT_RATIO" --voice "$effective_voice" --music-engine "$MUSIC_ENGINE" --prompt-recipe "$PROMPT_RECIPE" --output-dir "out/run-${GITHUB_RUN_ID}")
+          args=(--topic "$TOPIC" --language "$LANGUAGE" --duration "$DURATION" --style "$STYLE" --aspect-ratio "$ASPECT_RATIO" --voice "$effective_voice" --music-engine "$MUSIC_ENGINE" --render-quality "$RENDER_QUALITY" --resolution "$OUTPUT_RESOLUTION" --caption-style "$CAPTION_STYLE" --audio-mix-profile "$AUDIO_MIX_PROFILE" --prompt-recipe "$PROMPT_RECIPE" --output-dir "out/run-${GITHUB_RUN_ID}")
           if [[ -n "${OPUS55_REFERENCE//[[:space:]]/}" ]]; then
             args+=(--opus55-reference "$OPUS55_REFERENCE")
           fi
@@ -173,7 +201,7 @@ jobs:
           )
       - name: Upload video, captions and production reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: motion-studio-output-${{ github.run_id }}
           path: |

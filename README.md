@@ -15,11 +15,11 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
 - `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
-- `prompt-library/`: standalone, tool-agnostic prompt suite with 96 style recipes, six foundational and ten advanced master prompts, 15 scene templates, a 9-stage workflow pack, browser UI and copy-ready CLI.
+- `prompt-library/`: standalone, tool-agnostic prompt suite with 100 style recipes, six foundational and ten advanced master prompts, 15 scene templates, a 9-stage workflow pack, browser UI and copy-ready CLI.
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
 - `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`: repeatable evidence-aware rubric for analyzing reference pages and videos.
 - `prompt-library/index.html`: browser interface to search/filter styles, compose a master prompt with a specialist/scene module, copy it, or download Markdown.
-- `site/prompt-recipes.json`: synchronized copy of all 96 prompt recipes used by the Persian Pages studio; refresh it with `npm run prompts:sync-site`.
+- `site/prompt-recipes.json`: synchronized copy of all 100 prompt recipes used by the Persian Pages studio; refresh it with `npm run prompts:sync-site`.
 - `prompt-library/PERSIAN_QUICK_START.md`: راهنمای فارسی استفاده از کتابخانهٔ مستقل پرامپت‌ها.
 - `prompt-library/PRODUCTION_WORKFLOW_PACK.md`: copy-ready prompts for story, storyboard, motion, typography, audio, rendering and quality repair.
 - `prompt-library/ADVANCED_MASTER_PROMPTS.md`: ten detailed specialist directors for documentary, product, typography, data, T2V, I2V, audio, code, repair and QC.
@@ -31,6 +31,10 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/PRODUCTION_READINESS_AUDIT.md`: offline provider/tool readiness, secret-safe reporting, explicit paid-API gates, and separate creative/render release checks. Run `npm run readiness`.
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
 - `docs/AUDIO_PRODUCTION_PIPELINE.md`: Persian narration normalization, voice fades, smooth music ducking, two-pass loudness mastering, optional ACE-Step 1.5 API integration, and voice/model licensing notes.
+
+## Advanced render and subtitle controls
+
+The production engine exposes three H.264 encoding profiles (`balanced`, `high`, `master`) and three output resolutions (`1080p`, `1440p`, `4k`) for landscape, portrait and square formats. It records the chosen CRF, x264 preset, actual output dimensions and caption theme in the brief, manifest and QC report. Subtitle themes (`cinematic`, `broadcast`, `minimal`) adapt type size and contrast to the frame orientation. Soundtrack mix presets (`voice-forward`, `cinematic`, `energetic`) tune music level and narration-aware ducking. Higher resolutions and slower encoding presets increase render time and artifact size; use the 4K/master combination only when the runner budget and delivery target justify it.
 
 ## Browser studio and secure AI production
 
@@ -58,7 +62,7 @@ The `show` command combines the universal master prompt with the selected style 
 
 ## Use a style recipe in the production engine
 
-List available recipe IDs with `npm run prompts:list`, then let the storyboarding pipeline use one of the 96 recipes:
+List available recipe IDs with `npm run prompts:list`, then let the storyboarding pipeline use one of the 100 recipes:
 
 ```sh
 npm run produce -- --topic "An idea worth explaining" --language en --duration 30 --style auto --prompt-recipe motion-design-showreel --plan-only

@@ -11,7 +11,7 @@ const [html, js, workflow, pages] = await Promise.all([
 ]);
 
 test("Pages studio provides accessible brief controls and production navigation", () => {
-  for (const id of ["topic", "language", "duration", "style", "ratio", "voice", "reference", "allow-paid-ai", "music-engine", "prompt-recipe", "prompt-recipe-search", "prompt-recipe-count", "prompt-recipe-preview", "prompt-recipe-details", "copy-recipe", "plan-only", "command-fallback", "download", "copy", "copy-workflow", "status"]) {
+  for (const id of ["topic", "language", "duration", "style", "ratio", "voice", "render-quality", "resolution", "caption-style", "audio-mix-profile", "reference", "allow-paid-ai", "music-engine", "prompt-recipe", "prompt-recipe-search", "prompt-recipe-count", "prompt-recipe-preview", "prompt-recipe-details", "copy-recipe", "plan-only", "command-fallback", "download", "copy", "copy-workflow", "status"]) {
     assert.match(html, new RegExp('id="' + id + '"'));
   }
   assert.match(html, /actions\/workflows\/motion-studio-produce\.yml/);
@@ -25,6 +25,10 @@ test("browser code builds a brief without embedding or persisting credentials", 
   assert.match(js, /createObjectURL/);
   assert.match(js, /buildWorkflowDispatchCommand/);
   assert.match(js, /musicEngine/);
+  assert.match(js, /renderQuality/);
+  assert.match(js, /captionStyle/);
+  assert.match(js, /audioMixProfile/);
+  assert.match(js, /resolution/);
   assert.match(js, /promptRecipe/);
   assert.match(js, /planOnly/);
   assert.match(js, /fetch\("\.\/prompt-recipes\.json"/);
@@ -77,7 +81,7 @@ test("production workflow consumes repository secrets only at runtime and upload
   assert.match(workflow, /secrets\.ANTHROPIC_API_KEY/);
   assert.match(workflow, /secrets\.FIRECRAWL_API_KEY/);
   assert.match(workflow, /--allow-paid-ai/);
-  assert.match(workflow, /actions\/upload-artifact@v4/);
+  assert.match(workflow, /actions\/upload-artifact@v7/);
   assert.match(workflow, /edge-tts==7\.3\.1/);
-  assert.match(pages, /actions\/deploy-pages@v4/);
+  assert.match(pages, /actions\/deploy-pages@v5/);
 });

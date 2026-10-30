@@ -12,7 +12,7 @@ test("manual production workflow keeps paid APIs opt-in and repository permissio
 
 test("manual production artifacts have bounded retention and an explicit missing-output policy", async () => {
   const workflow = await readFile(new URL("../.github/workflows/produce-video.yml", import.meta.url), "utf8");
-  assert.match(workflow, /uses:\s*actions\/upload-artifact@v4/);
+  assert.match(workflow, /uses:\s*actions\/upload-artifact@v7/);
   assert.match(workflow, /if-no-files-found:\s*warn/);
   assert.match(workflow, /retention-days:\s*7/);
 });
@@ -56,4 +56,60 @@ test("primary production workflow wires soundtrack, prompt recipe and plan-only 
   assert.ok(workflow.includes("if: ${{ !inputs.plan_only }}"));
   assert.match(workflow, /if \[\[ "\$PLAN_ONLY" == "true" \]\]/);
   assert.match(workflow, /effective_voice="off"/);
+});
+
+
+test("production workflows use the repository's supported installer when no npm lockfile is committed", async () => {
+  const production = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  const validation = await readFile(new URL("../.github/workflows/validate-motion-studio.yml", import.meta.url), "utf8");
+  assert.match(production, /npm install --no-audit --no-fund/);
+  assert.doesNotMatch(production, /npm ci(?:\s|$)/);
+  assert.match(validation, /npm install --no-audit --no-fund/);
+});
+
+
+test("production workflows expose and forward quality, resolution and caption controls", async () => {
+  const production = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  const manual = await readFile(new URL("../.github/workflows/produce-video.yml", import.meta.url), "utf8");
+  for (const workflow of [production, manual]) {
+    assert.match(workflow, /render_quality:[\s\S]*?options: \[balanced, high, master\]/);
+    assert.match(workflow, /resolution:[\s\S]*?options: \[1080p, 1440p, 4k\]/);
+    assert.match(workflow, /caption_style:[\s\S]*?options: \[cinematic, broadcast, minimal\]/);
+    assert.match(workflow, /--render-quality/);
+    assert.match(workflow, /--resolution/);
+    assert.match(workflow, /--caption-style/);
+  }
+});
+
+
+test("production workflows expose and forward narration-aware audio mix profiles", async () => {
+  const production = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  const manual = await readFile(new URL("../.github/workflows/produce-video.yml", import.meta.url), "utf8");
+  for (const workflow of [production, manual]) {
+    assert.match(workflow, /audio_mix_profile:[\s\S]*?options: \[voice-forward, cinematic, energetic\]/);
+    assert.match(workflow, /--audio-mix-profile/);
+  }
+});
+
+
+test("GitHub workflows use current Node 24-compatible official action majors", async () => {
+  const paths = [
+    "../.github/workflows/build-ai-future-fa.yml",
+    "../.github/workflows/motion-studio-produce.yml",
+    "../.github/workflows/pages.yml",
+    "../.github/workflows/produce-video.yml",
+    "../.github/workflows/sync-opus55-catalog.yml",
+    "../.github/workflows/validate-motion-studio.yml"
+  ];
+  const workflows = await Promise.all(paths.map(path => readFile(new URL(path, import.meta.url), "utf8")));
+  const all = workflows.join("\n");
+  assert.match(all, /actions\/checkout@v7/);
+  assert.match(all, /actions\/setup-node@v7/);
+  assert.match(all, /actions\/setup-python@v7/);
+  assert.match(all, /actions\/upload-artifact@v7/);
+  assert.match(all, /actions\/configure-pages@v6/);
+  assert.match(all, /actions\/upload-pages-artifact@v5/);
+  assert.match(all, /actions\/deploy-pages@v5/);
+  assert.match(all, /peter-evans\/create-pull-request@v8/);
+  assert.doesNotMatch(all, /actions\/(?:checkout|setup-node|setup-python|upload-artifact)@v[1-6](?:\s|$)/);
 });

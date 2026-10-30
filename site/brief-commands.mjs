@@ -14,6 +14,10 @@ const SUPPORTED_STYLES = new Set([
 const SUPPORTED_RATIOS = new Set(["16:9", "9:16", "1:1"]);
 const SUPPORTED_VOICES = new Set(["edge-tts", "auto", "off"]);
 const SUPPORTED_MUSIC_ENGINES = new Set(["procedural", "auto", "ace-step"]);
+const SUPPORTED_RENDER_QUALITIES = new Set(["balanced", "high", "master"]);
+const SUPPORTED_RESOLUTIONS = new Set(["1080p", "1440p", "4k"]);
+const SUPPORTED_CAPTION_STYLES = new Set(["cinematic", "broadcast", "minimal"]);
+const SUPPORTED_AUDIO_MIX_PROFILES = new Set(["voice-forward", "cinematic", "energetic"]);
 const DEFAULT_PROMPT_RECIPE = "cinematic-science-cutaway";
 
 
@@ -39,6 +43,14 @@ function validateBrief(brief) {
   }
   const musicEngine = brief.musicEngine ?? "procedural";
   if (!SUPPORTED_MUSIC_ENGINES.has(musicEngine)) throw new RangeError("Unsupported music engine.");
+  const renderQuality = brief.renderQuality ?? "high";
+  if (!SUPPORTED_RENDER_QUALITIES.has(renderQuality)) throw new RangeError("Unsupported render quality.");
+  const resolution = brief.resolution ?? "1080p";
+  if (!SUPPORTED_RESOLUTIONS.has(resolution)) throw new RangeError("Unsupported output resolution.");
+  const captionStyle = brief.captionStyle ?? "cinematic";
+  if (!SUPPORTED_CAPTION_STYLES.has(captionStyle)) throw new RangeError("Unsupported caption style.");
+  const audioMixProfile = brief.audioMixProfile ?? "cinematic";
+  if (!SUPPORTED_AUDIO_MIX_PROFILES.has(audioMixProfile)) throw new RangeError("Unsupported audio mix profile.");
   const promptRecipe = brief.promptRecipe ?? DEFAULT_PROMPT_RECIPE;
   if (typeof promptRecipe !== "string" || !/^[a-z0-9][a-z0-9-]{1,119}$/.test(promptRecipe)) {
     throw new RangeError("Prompt recipe must be a lowercase library slug.");
@@ -54,6 +66,10 @@ function validateBrief(brief) {
     aspectRatio: brief.aspectRatio,
     voice: brief.voice,
     musicEngine,
+    renderQuality,
+    resolution,
+    captionStyle,
+    audioMixProfile,
     promptRecipe,
     planOnly: brief.planOnly === true,
     ...(reference ? { opus55Reference: reference } : {}),
@@ -75,6 +91,10 @@ export function buildLocalCliCommand(inputBrief) {
     "--aspect-ratio", brief.aspectRatio,
     "--voice", brief.voice,
     "--music-engine", brief.musicEngine,
+    "--render-quality", brief.renderQuality,
+    "--resolution", brief.resolution,
+    "--caption-style", brief.captionStyle,
+    "--audio-mix-profile", brief.audioMixProfile,
     "--prompt-recipe", brief.promptRecipe
   ];
   if (brief.opus55Reference) args.push("--opus55-reference", shellQuote(brief.opus55Reference));
@@ -93,6 +113,10 @@ export function buildWorkflowDispatchCommand(inputBrief) {
     ["aspect_ratio", brief.aspectRatio],
     ["voice", brief.voice],
     ["music_engine", brief.musicEngine],
+    ["render_quality", brief.renderQuality],
+    ["resolution", brief.resolution],
+    ["caption_style", brief.captionStyle],
+    ["audio_mix_profile", brief.audioMixProfile],
     ["prompt_recipe", brief.promptRecipe],
     ["plan_only", String(brief.planOnly)],
     ...(brief.opus55Reference ? [["opus55_reference", brief.opus55Reference]] : []),
