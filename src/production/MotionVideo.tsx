@@ -1072,7 +1072,7 @@ export const MotionVideo: React.FC<MotionVideoProps> = (props) => {
       {props.audioBedSrc ? (
         <Audio
           src={staticFile(props.audioBedSrc)}
-          volume={(frame) => getMusicBedGain(frame, totalFrames, fps, voiceRanges)}
+          volume={(frame) => getMusicBedGain(frame, totalFrames, fps, voiceRanges, props.audioMixProfile || "cinematic")}
         />
       ) : null}
     </AbsoluteFill>
