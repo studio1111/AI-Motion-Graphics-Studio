@@ -17,6 +17,7 @@ const SUPPORTED_MUSIC_ENGINES = new Set(["procedural", "auto", "ace-step"]);
 const SUPPORTED_RENDER_QUALITIES = new Set(["balanced", "high", "master"]);
 const SUPPORTED_RESOLUTIONS = new Set(["1080p", "1440p", "4k"]);
 const SUPPORTED_CAPTION_STYLES = new Set(["cinematic", "broadcast", "minimal"]);
+const SUPPORTED_AUDIO_MIX_PROFILES = new Set(["voice-forward", "cinematic", "energetic"]);
 const DEFAULT_PROMPT_RECIPE = "cinematic-science-cutaway";
 
 
@@ -48,6 +49,8 @@ function validateBrief(brief) {
   if (!SUPPORTED_RESOLUTIONS.has(resolution)) throw new RangeError("Unsupported output resolution.");
   const captionStyle = brief.captionStyle ?? "cinematic";
   if (!SUPPORTED_CAPTION_STYLES.has(captionStyle)) throw new RangeError("Unsupported caption style.");
+  const audioMixProfile = brief.audioMixProfile ?? "cinematic";
+  if (!SUPPORTED_AUDIO_MIX_PROFILES.has(audioMixProfile)) throw new RangeError("Unsupported audio mix profile.");
   const promptRecipe = brief.promptRecipe ?? DEFAULT_PROMPT_RECIPE;
   if (typeof promptRecipe !== "string" || !/^[a-z0-9][a-z0-9-]{1,119}$/.test(promptRecipe)) {
     throw new RangeError("Prompt recipe must be a lowercase library slug.");
@@ -66,6 +69,7 @@ function validateBrief(brief) {
     renderQuality,
     resolution,
     captionStyle,
+    audioMixProfile,
     promptRecipe,
     planOnly: brief.planOnly === true,
     ...(reference ? { opus55Reference: reference } : {}),
@@ -90,6 +94,7 @@ export function buildLocalCliCommand(inputBrief) {
     "--render-quality", brief.renderQuality,
     "--resolution", brief.resolution,
     "--caption-style", brief.captionStyle,
+    "--audio-mix-profile", brief.audioMixProfile,
     "--prompt-recipe", brief.promptRecipe
   ];
   if (brief.opus55Reference) args.push("--opus55-reference", shellQuote(brief.opus55Reference));
@@ -111,7 +116,8 @@ export function buildWorkflowDispatchCommand(inputBrief) {
     ["render_quality", brief.renderQuality],
     ["resolution", brief.resolution],
     ["caption_style", brief.captionStyle],
-    ["prompt_recipe", brief.promptRecipe],
+    ["audio_mix_profile", brief.audioMixProfile],
+    ["prompt_recipe", brief.promptRecipe]
     ["plan_only", String(brief.planOnly)],
     ...(brief.opus55Reference ? [["opus55_reference", brief.opus55Reference]] : []),
     ["use_ai", String(brief.allowPaidAi)]
