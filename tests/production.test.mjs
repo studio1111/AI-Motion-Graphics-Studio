@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { allocateFrames, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, validateVoiceGeneration, wavDuration, produce, promptRecipeStyleHint } from "../scripts/produce.mjs";
+import { allocateFrames, buildContactSheetFilter, buildLocalPlan, chooseStyle, createProceduralBedWav, detectTopicVisualFamily, normalizePlan, parseArgs, parsePeakVolumeDb, safeSlug, sampleTimes, splitCaptionSegments, validateStoryboard, validateVoiceGeneration, wavDuration, produce, promptRecipeStyleHint } from "../scripts/produce.mjs";
 
 test("topic-aware scene graphics remain wired into the Remotion composition",async()=>{
   const motion=await readFile(new URL("../src/production/MotionVideo.tsx",import.meta.url),"utf8");
@@ -445,4 +445,17 @@ test("plan-only can record ACE-Step as the intended soundtrack without a configu
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
+});
+
+test("visual QC contact sheet filter is deterministic and bounded", async () => {
+  assert.equal(
+    buildContactSheetFilter(3),
+    "[0:v]scale=640:-2[v0];[1:v]scale=640:-2[v1];[2:v]scale=640:-2[v2];[v0][v1][v2]hstack=inputs=3[out]"
+  );
+  assert.throws(() => buildContactSheetFilter(1), /between 2 and 6 frames/);
+  assert.throws(() => buildContactSheetFilter(7), /between 2 and 6 frames/);
+  const producer = await readFile(new URL("../scripts/produce.mjs", import.meta.url), "utf8");
+  assert.match(producer, /contact-sheet\.jpg/);
+  assert.match(producer, /path:relativePath/);
+  assert.match(producer, /frameContactSheet/);
 });
