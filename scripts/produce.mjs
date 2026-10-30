@@ -170,14 +170,15 @@ export function promptRecipeStyleHint(recipe,ratio="16:9"){
   if(["product-film","product-ui","architecture"].includes(category))return "premium-3d-product";
   if(["data-storytelling","data","finance"].includes(category))return "data-journalism";
   if(["science","education","educational","technology","diagram","technical-explainer"].includes(category))return "scientific-2-5d";
+  if(["science-and-data"].includes(category))return "data-journalism";
   if(["maps","history"].includes(category))return "maps-timeline";
-  if(["documentary","editorial","storyboard"].includes(category))return "cinematic-documentary";
+  if(["documentary","editorial","storyboard","cinematic-storytelling","sound-and-editing"].includes(category))return "cinematic-documentary";
   if(["collage"].includes(category))return "tactile-collage";
   if(["character","comedy"].includes(category))return "character-2d";
   if(["brand","event-brand","corporate"].includes(category))return "swiss-modernist";
   if(["abstract","looping-motion","music","showreel","transitions","retro-game","retro-futurism","particles","sci-fi","gaming"].includes(category))return "procedural-generative";
   if(["sports","nature","food","fashion","real-footage","photo-essay"].includes(category))return "hybrid-live-action";
-  if(["social"].includes(category))return "vertical-social";
+  if(["social","platform-optimization"].includes(category))return "vertical-social";
   return "auto";
 }
 export function chooseStyle(style,topic,ratio="16:9"){
@@ -593,7 +594,7 @@ async function checkVideo(file,expected,dir){
  report.durationSeconds=duration;return report;
 }
 
-export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..3600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech|edge-tts, --music-engine auto|procedural|ace-step, --render-quality balanced|high|master, --resolution 1080p|1440p|4k, --caption-style cinematic|broadcast|minimal, --audio-mix-profile voice-forward|cinematic|energetic, --prompt-recipe <recipe-id> (96 portable recipes), --opus55-reference <slug>, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
+export const HELP_TEXT="Motion Graphics Studio production CLI\n\nRequired: --topic \"Your topic\"\nOptions: --language fa|en, --duration 5..3600, --style auto|editorial|data|science|documentary|collage|product3d|character2d|swiss|generative|timeline|vertical|hybrid, --aspect-ratio 16:9|9:16|1:1, --brief JSON, --sources JSON, --voice auto|off|pocket-tts|persian-speech|edge-tts, --music-engine auto|procedural|ace-step, --render-quality balanced|high|master, --resolution 1080p|1440p|4k, --caption-style cinematic|broadcast|minimal, --audio-mix-profile voice-forward|cinematic|energetic, --prompt-recipe <recipe-id> (100 portable recipes), --opus55-reference <slug>, --allow-paid-ai, --plan-only, --no-research, --output-dir out\n\nPaid provider APIs are never called unless --allow-paid-ai or MOTION_STUDIO_ALLOW_PAID_API=true is set.";
 
 export async function produce(options,env=process.env){
  const warnings=[],runId=new Date().toISOString().replace(/[:.]/g,"-")+"-"+process.pid;let brief={};if(options.briefPath)brief=await readJson(resolve(options.briefPath));let sources=normalizeSources(brief.sources||brief.sourceUrls||[]);if(options.sourcesPath)sources=normalizeSources(sources.concat(normalizeSources(await readJson(resolve(options.sourcesPath)))));
