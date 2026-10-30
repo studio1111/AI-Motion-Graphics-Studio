@@ -32,6 +32,10 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/PROFESSIONAL_PRODUCTION_INTEGRATIONS.md`: provider roles, end-to-end production gates, cost/rights safeguards, QC rubric and the 1,000-video reference-study evidence standard.
 - `docs/AUDIO_PRODUCTION_PIPELINE.md`: Persian narration normalization, voice fades, smooth music ducking, two-pass loudness mastering, optional ACE-Step 1.5 API integration, and voice/model licensing notes.
 
+## Advanced render and subtitle controls
+
+The production engine exposes three H.264 encoding profiles (`balanced`, `high`, `master`) and three output resolutions (`1080p`, `1440p`, `4k`) for landscape, portrait and square formats. It records the chosen CRF, x264 preset, actual output dimensions and caption theme in the brief, manifest and QC report. Subtitle themes (`cinematic`, `broadcast`, `minimal`) adapt type size and contrast to the frame orientation. Higher resolutions and slower encoding presets increase render time and artifact size; use the 4K/master combination only when the runner budget and delivery target justify it.
+
 ## Browser studio and secure AI production
 
 - A Persian responsive UI for building a production brief lives in `site/` and is deployed to GitHub Pages by `.github/workflows/pages.yml` after merge to `main`. It exports a brief, a safe local CLI command, and a ready-to-run `gh workflow run` command that submits all selected settings without exposing API keys. The form includes curated prompt recipes, a local procedural music default, optional ACE-Step integration, and plan-only storyboard generation.
