@@ -76,12 +76,16 @@ function renderPromptRecipes(query = "") {
     : matches;
   const fragment = document.createDocumentFragment();
   if (selectedRecipe && !matches.some(recipe => recipe.id === selectedId)) {
-    const option = new Option("انتخاب فعلی · " + selectedRecipe.title, selectedRecipe.id);\n    option.defaultSelected = selectedRecipe.id === "cinematic-science-cutaway";\n    fragment.append(option);
+    const option = new Option("انتخاب فعلی · " + selectedRecipe.title, selectedRecipe.id);
+    option.defaultSelected = selectedRecipe.id === "cinematic-science-cutaway";
+    fragment.append(option);
   }
   for (const recipe of visible) {
     if (recipe.id === selectedId && selectedRecipe && !matches.some(item => item.id === selectedId)) continue;
     const category = categoryNames[recipe.category] || recipe.category;
-    const option = new Option(recipe.title + (category ? " · " + category : ""), recipe.id);\n    option.defaultSelected = recipe.id === "cinematic-science-cutaway";\n    fragment.append(option);
+    const option = new Option(recipe.title + (category ? " · " + category : ""), recipe.id);
+    option.defaultSelected = recipe.id === "cinematic-science-cutaway";
+    fragment.append(option);
   }
   if (!visible.length) {
     fragment.append(new Option("قالبی با این جست‌وجو پیدا نشد", selectedId, true, true));
