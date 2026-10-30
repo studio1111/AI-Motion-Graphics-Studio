@@ -10,12 +10,12 @@ const [sourceText, siteText, html, app, workflow] = await Promise.all([
   readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8")
 ]);
 
-test("Pages catalog stays synchronized with the canonical 96-recipe library", () => {
+test("Pages catalog stays synchronized with the canonical prompt library", () => {
   const source = JSON.parse(sourceText);
   const published = JSON.parse(siteText);
   assert.deepEqual(published, source, "run npm run prompts:sync-site after changing the canonical prompt library");
-  assert.equal(published.count, 96);
-  assert.equal(published.recipes.length, 96);
+  assert.equal(published.count, source.count);
+  assert.equal(published.recipes.length, source.recipes.length);
   const ids = published.recipes.map(recipe => recipe.id);
   assert.equal(new Set(ids).size, ids.length);
   assert.ok(ids.every(id => /^[a-z0-9][a-z0-9-]{1,119}$/.test(id)));
