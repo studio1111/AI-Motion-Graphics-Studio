@@ -211,6 +211,7 @@ function buildBrief() {
     renderQuality: $("render-quality").value,
     resolution: $("resolution").value,
     captionStyle: $("caption-style").value,
+    audioMixProfile: $("audio-mix-profile").value,
     promptRecipe: $("prompt-recipe").value,
     planOnly: $("plan-only").checked,
     allowPaidAi: $("allow-paid-ai").checked
@@ -243,6 +244,7 @@ function updateBriefSummary(brief) {
   $("summary-quality").textContent = brief.renderQuality;
   $("summary-resolution").textContent = brief.resolution.toUpperCase();
   $("summary-caption").textContent = brief.captionStyle;
+  $("summary-audio").textContent = brief.audioMixProfile;
   const selectedRecipe = promptRecipes.find(recipe => recipe.id === brief.promptRecipe);
   $("summary-recipe").textContent = selectedRecipe?.title || recipeNames[brief.promptRecipe] || brief.promptRecipe;
   $("summary-plan").textContent = brief.planOnly ? "فقط طرح و استوری‌بورد" : "ویدیوی کامل";
@@ -360,6 +362,7 @@ $("reset").addEventListener("click", () => {
   $("summary-quality").textContent = "high";
   $("summary-resolution").textContent = "1080P";
   $("summary-caption").textContent = "cinematic";
+  $("summary-audio").textContent = "cinematic";
   updatePaidAiState();
   setStatus("فرم پاک شد.");
 });
