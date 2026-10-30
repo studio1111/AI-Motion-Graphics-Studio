@@ -85,6 +85,7 @@ test("plan-only manifests retain the exact selected output and caption profiles"
       "--render-quality", "master",
       "--resolution", "4k",
       "--caption-style", "broadcast",
+      "--audio-mix-profile", "voice-forward",
       "--plan-only",
       "--no-research",
       "--output-dir", tempRoot
@@ -95,6 +96,8 @@ test("plan-only manifests retain the exact selected output and caption profiles"
     assert.equal(result.manifest.render.width, 3840);
     assert.equal(result.manifest.render.height, 2160);
     assert.equal(result.props.captionStyle, "broadcast");
+    assert.equal(result.props.audioMixProfile, "voice-forward");
+    assert.equal(result.manifest.render.audioMixProfile, "voice-forward");
     const brief = JSON.parse(await readFile(join(result.runDir, "brief.json"), "utf8"));
     assert.equal(brief.renderQuality, "master");
     assert.equal(brief.resolution, "4k");
