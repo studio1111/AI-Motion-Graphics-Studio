@@ -42,7 +42,10 @@ test("paid AI is an explicit opt-in in the browser brief and workflow", () => {
   assert.match(workflow, /if \[\[ "\$USE_AI" == "true" \]\]/);
   assert.match(workflow, /--allow-paid-ai/);
   assert.match(workflow, /music_engine:[\s\S]*?default: procedural/);
-  assert.match(workflow, /prompt_recipe:[\s\S]*?default: cinematic-science-cutaway/);
+  const recipeInput = workflow.match(/      prompt_recipe:[\\s\\S]*?(?=\\n      [a-z_]+:|\\npermissions:)/)?.[0] || "";
+  assert.match(recipeInput, /type: string/);
+  assert.match(recipeInput, /default: cinematic-science-cutaway/);
+  assert.doesNotMatch(recipeInput, /options:/);
   assert.match(workflow, /plan_only:[\s\S]*?default: false/);
 });
 
