@@ -18,7 +18,7 @@ test("portable prompt library has many unique, complete recipes", () => {
   assert.ok(data.recipes.length >= 90, "expected at least 90 reusable style recipes");
   assert.equal(data.count, data.recipes.length);
   assert.equal(new Set(data.recipes.map((r)=>r.id)).size, data.recipes.length);
-  for (const id of ["product-ui-state-morph","beat-driven-showreel","verified-data-burst","seamless-shape-loop","voiceover-first-explainer"]) {
+  for (const id of ["product-ui-state-morph","beat-driven-showreel","verified-data-burst","seamless-shape-loop","voiceover-first-explainer","cinematic-scene-continuity","voice-led-cinematic-edit","premium-science-visual-proof","mobile-first-motion-legibility"]) {
     assert.ok(data.recipes.some((r)=>r.id===id), `missing advanced recipe ${id}`);
   }
   for (const r of data.recipes) {
@@ -224,4 +224,23 @@ test("Persian quick-start documents cross-tool use and clear capability limits",
   assert.match(fa, /L0 تا L3/);
   assert.match(fa, /همهٔ ۹۶ سبک/);
   assert.match(fa, /API پولی/);
+});
+
+
+test("new quality recipes cover continuity, voice-led timing, evidence discipline and mobile readability", () => {
+  const required = {
+    "cinematic-scene-continuity": ["screen direction", "motivated camera move", "continuity sheet"],
+    "voice-led-cinematic-edit": ["timing map", "narration", "smooth attack and release"],
+    "premium-science-visual-proof": ["uncertainty", "illustrative", "limitations"],
+    "mobile-first-motion-legibility": ["small screen", "safe areas", "audio muted"]
+  };
+  for (const [id, phrases] of Object.entries(required)) {
+    const recipe = data.recipes.find((item) => item.id === id);
+    assert.ok(recipe, `missing quality recipe: ${id}`);
+    const combined = Object.values(recipe).join(" ").toLowerCase();
+    for (const phrase of phrases) assert.ok(combined.includes(phrase.toLowerCase()), `${id} missing ${phrase}`);
+    const shown = run(["show", id]);
+    assert.equal(shown.status, 0, shown.stderr);
+    assert.match(shown.stdout, /Universal Motion Graphics Master Prompt/);
+  }
 });
