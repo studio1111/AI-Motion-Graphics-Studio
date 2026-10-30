@@ -15,20 +15,7 @@ const SUPPORTED_RATIOS = new Set(["16:9", "9:16", "1:1"]);
 const SUPPORTED_VOICES = new Set(["edge-tts", "auto", "off"]);
 const SUPPORTED_MUSIC_ENGINES = new Set(["procedural", "auto", "ace-step"]);
 const DEFAULT_PROMPT_RECIPE = "cinematic-science-cutaway";
-const SUPPORTED_PROMPT_RECIPES = new Set([
-  DEFAULT_PROMPT_RECIPE,
-  "scientific-mechanism-cutaway",
-  "kinetic-type",
-  "data-story",
-  "editorial-explainer",
-  "cinematic-comparison",
-  "motion-design-showreel",
-  "real-footage-data-overlay",
-  "product-launch",
-  "cinematic-map-journey",
-  "voiceover-first-explainer",
-  "cinematic-transition-library"
-]);
+
 
 function validateBrief(brief) {
   if (!brief || typeof brief !== "object") throw new TypeError("A video brief is required.");
@@ -53,7 +40,9 @@ function validateBrief(brief) {
   const musicEngine = brief.musicEngine ?? "procedural";
   if (!SUPPORTED_MUSIC_ENGINES.has(musicEngine)) throw new RangeError("Unsupported music engine.");
   const promptRecipe = brief.promptRecipe ?? DEFAULT_PROMPT_RECIPE;
-  if (!SUPPORTED_PROMPT_RECIPES.has(promptRecipe)) throw new RangeError("Unsupported prompt recipe.");
+  if (typeof promptRecipe !== "string" || !/^[a-z0-9][a-z0-9-]{1,119}$/.test(promptRecipe)) {
+    throw new RangeError("Prompt recipe must be a lowercase library slug.");
+  }
   if (brief.planOnly !== undefined && typeof brief.planOnly !== "boolean") {
     throw new TypeError("planOnly must be a boolean.");
   }

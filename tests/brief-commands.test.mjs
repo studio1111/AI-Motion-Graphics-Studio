@@ -49,7 +49,9 @@ test("command builders pass music and prompt controls and support a plan-only ru
 });
 
 test("command builders reject unknown recipe IDs and unsupported music engines", () => {
-  assert.throws(() => buildWorkflowDispatchCommand({ ...validBrief, promptRecipe: "not-a-real-recipe" }), /Unsupported prompt recipe/);
+  assert.throws(() => buildWorkflowDispatchCommand({ ...validBrief, promptRecipe: "Not a slug!" }), /lowercase library slug/);
+  const extendedRecipe = buildWorkflowDispatchCommand({ ...validBrief, promptRecipe: "saas-ui" });
+  assert.match(extendedRecipe, /-f 'prompt_recipe=saas-ui'/);
   assert.throws(() => buildLocalCliCommand({ ...validBrief, musicEngine: "remote-random" }), /Unsupported music engine/);
   assert.throws(() => buildWorkflowDispatchCommand({ ...validBrief, planOnly: "true" }), /planOnly must be a boolean/);
 });
