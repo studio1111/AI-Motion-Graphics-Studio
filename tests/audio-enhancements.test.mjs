@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   buildAudioMasterFilter,
+  buildLoudnessProbeFilter,
+  verifyMasteredOutput,
   parseLoudnormMeasurements,
   TARGET_LOUDNESS_LUFS,
   TARGET_TRUE_PEAK_DBTP
@@ -22,6 +24,29 @@ test("audio master targets creator-friendly loudness and includes restrained voi
   assert.match(filter, /equalizer=f=2800/);
   assert.match(filter, /acompressor=/);
   assert.match(filter, /loudnorm=I=-16:TP=-1\.5:LRA=11/);
+});
+
+test("post-mastering verification measures the output without applying another processing pass", () => {
+  assert.equal(buildLoudnessProbeFilter(), "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json");
+  const good = {
+    inputI: -16.3,
+    inputTp: -1.2,
+    inputLra: 5,
+    inputThresh: -27,
+    targetOffset: 0
+  };
+  assert.deepEqual(verifyMasteredOutput(good), {
+    status: "PASS",
+    integratedLufs: -16.3,
+    truePeakDbtp: -1.2,
+    loudnessToleranceLu: 1.5,
+    truePeakToleranceDb: 0.7,
+    issues: []
+  });
+  const bad = verifyMasteredOutput({ ...good, inputI: -13.8, inputTp: -0.2 });
+  assert.equal(bad.status, "FAIL");
+  assert.equal(bad.issues.length, 2);
+  assert.throws(() => verifyMasteredOutput(good, { loudnessTolerance: -1 }), /cannot be negative/);
 });
 
 test("loudness analysis is parsed only when all required measurements are finite", () => {
