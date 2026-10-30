@@ -1,4 +1,4 @@
-# Prompt Catalog: 96 Ready-to-Use Motion Styles
+# Prompt Catalog: 100 Ready-to-Use Motion Styles
 
 This catalog is generated from `prompts.json` so the browsable index and CLI recipe set stay aligned. Every recipe is an original or source-informed studio adaptation, not a promise that every model can execute every effect. To retrieve a full master prompt paired with one recipe, run:
 
@@ -12,7 +12,7 @@ npm run prompts:export -- --category product-ui
 
 Select one primary visual grammar and at most two supporting influences. Match it to the story, audience, runtime, asset rights, and tools actually available.
 
-**Recipe count:** 96. **Specialist master prompts:** `ADVANCED_MASTER_PROMPTS.md`. **Scene-level templates:** `SCENE_PROMPT_TEMPLATES.md`. **Sequential production workflows:** `PRODUCTION_WORKFLOW_PACK.md`. **Reference review workbook:** `REFERENCE_ANALYSIS_WORKBOOK.md`.
+**Recipe count:** 100. **Specialist master prompts:** `ADVANCED_MASTER_PROMPTS.md`. **Scene-level templates:** `SCENE_PROMPT_TEMPLATES.md`. **Sequential production workflows:** `PRODUCTION_WORKFLOW_PACK.md`. **Reference review workbook:** `REFERENCE_ANALYSIS_WORKBOOK.md`.
 
 ## Abstract
 
@@ -1243,6 +1243,62 @@ Select one primary visual grammar and at most two supporting influences. Match i
 - **Story beats:** Graphic hook → headline transform → supporting detail → composition expands → final poster hold.
 - **Avoid:** Unreadable warping, excessive distortion, accidental misspellings, random grain or effects that weaken hierarchy.
 - **Adaptation:** Create a static design first, then specify what moves and what remains locked. Verify every final glyph in a rendered still.
+
+
+## 97. Cinematic Scene Continuity and Camera Grammar (`cinematic-scene-continuity`)
+
+- **Category:** cinematic-storytelling
+- **Duration:** 30-180s
+- **Visual language:** Compose every shot with a clear foreground, subject plane, and background depth; preserve screen direction, eyelines, scale logic, and a stable visual motif across the sequence.
+- **Motion:** Assign each shot one motivated camera move; use matched movement, shape, or sound to bridge cuts. Alternate wide orientation, medium action, and detail evidence. Reserve speed ramps for meaningful transitions and settle motion before important text.
+- **Typography:** Use a disciplined title hierarchy, generous safe margins, and short phrases. Keep essential text on screen long enough to read at the target frame rate and viewing distance.
+- **Color:** Define a base palette, one semantic accent, and consistent highlight/shadow behavior. Carry color motifs between scenes while allowing controlled shifts at story turning points.
+- **Sound:** Use room tone or a designed ambience bed to glue shots together. Align transient accents with visible contact or motion, avoid stacking impacts, and leave brief negative space before major reveals.
+- **Story beats:** Establish geography and visual question; introduce a motivated change; escalate through evidence or scale; create a clear turning point; resolve with a memorable visual echo of the opening.
+- **Avoid:** Random camera movement, direction reversals without a motivated cut, repeated identical shot sizes, meaningless speed ramps, abrupt color shifts, and transitions that obscure story information.
+- **Adaptation:** Choose camera grammar based on the subject and runtime. Maintain a continuity sheet for screen direction, lens feel, key light, palette, and recurring motif. If a shot cannot be generated or rendered reliably, simplify its motion rather than compromising continuity.
+
+
+## 98. Voice-Led Cinematic Editorial and Sound Arc (`voice-led-cinematic-edit`)
+
+- **Category:** sound-and-editing
+- **Duration:** 30-240s
+- **Visual language:** Build imagery around the spoken idea, using visual evidence, scale changes, graphic metaphors, and deliberate breathing room instead of illustrating every word literally.
+- **Motion:** Create a timing map from narration beats. Let important nouns trigger reveals, let sentence endings create visual punctuation, and use transitions at semantic boundaries. Keep motion restrained beneath dense speech and open the frame during pauses.
+- **Typography:** Prioritize caption readability and line breaks by meaning. Highlight only key terms, synchronize emphasis to spoken stress, and never let decorative typography compete with the narrator.
+- **Color:** Keep the base grade stable; use restrained accent changes to signal new chapters, evidence, or emotional turns rather than every sentence.
+- **Sound:** Treat narration as the timing authority. Lower music under speech with smooth attack and release, preserve consonant clarity, avoid transient collisions with plosives, and reserve stronger hits for chapter changes or intentional silence-to-impact moments.
+- **Story beats:** Cold open with a compelling claim or question; establish stakes; move through three escalating ideas; create a pause before the key insight; conclude with a concise resolution and an audio tail that does not cut off.
+- **Avoid:** Music masking speech, constant whooshes, cuts on every word, captions that flash too quickly, loudness jumps between scenes, and emotional cues that contradict the narration.
+- **Adaptation:** Use a timecoded narration transcript when available. For each phrase record start/end time, emphasis word, visual purpose, and sound cue. Without transcript timing, estimate conservatively and mark timing for later review instead of pretending it is exact.
+
+
+## 99. Premium Scientific Visualization with Evidence Discipline (`premium-science-visual-proof`)
+
+- **Category:** science-and-data
+- **Duration:** 45-240s
+- **Visual language:** Move from an intuitive overview into a clean cutaway, mechanism, or data view. Use scale cues, labels, and consistent spatial references so abstract systems remain understandable.
+- **Motion:** Reveal one causal step at a time; show input, mechanism, and outcome in a consistent direction. Use camera push-ins only when they reveal new structure. Pause on the decisive mechanism and return to the overview to reconnect the explanation.
+- **Typography:** Separate measured values, explanatory labels, and illustrative annotations. Display units, uncertainty, and time ranges where relevant; use concise labels that remain legible on mobile.
+- **Color:** Assign stable semantic colors to components and preserve them across all scenes. Use contrast to distinguish function, not to imply unsupported danger or importance.
+- **Sound:** Use restrained tonal cues to mark state changes. Keep effects subordinate to explanation and avoid making a visual metaphor sound like a measured physical event.
+- **Story beats:** Pose the scientific question; define the system boundary; reveal the mechanism; test the explanation against evidence or a comparison; state limitations; summarize what the viewer can confidently conclude.
+- **Avoid:** Invented numbers, unlabeled illustrative models presented as real data, misleading scale, unexplained jargon, contradictory component colors, and certainty beyond the source evidence.
+- **Adaptation:** Tag every factual claim as sourced, calculated, illustrative, or unknown. Only sourced or reproducibly calculated values may appear as factual data. Mark illustrative geometry as conceptual and retain caveats when simplifying a complex system.
+
+
+## 100. Mobile-First Motion Graphics Readability Pass (`mobile-first-motion-legibility`)
+
+- **Category:** platform-optimization
+- **Duration:** 15-180s
+- **Visual language:** Design the composition for a small screen first: one dominant subject, clear silhouette, strong separation from background, and limited competing detail.
+- **Motion:** Use fewer simultaneous moving elements, slower text entrances, clear settling states, and transitions that preserve orientation. Keep critical action away from interface overlays and crop-sensitive edges.
+- **Typography:** Set a minimum readable type scale relative to frame height, use short caption lines, strong contrast, and consistent safe areas. Avoid thin weights over moving imagery and keep key labels visible through the full reading interval.
+- **Color:** Check contrast in both bright and dark scenes. Use redundant cues such as shape, position, or labels in addition to color so meaning survives low-quality displays and color-vision differences.
+- **Sound:** Assume some viewers watch muted: make the visual story understandable without audio. When sound is enabled, keep speech intelligible on phone speakers and avoid relying on sub-bass for essential cues.
+- **Story beats:** Deliver the premise immediately; keep one idea per beat; vary visual scale to reset attention; make the central takeaway unmistakable; end with a clean hold rather than a rushed final frame.
+- **Avoid:** Tiny UI replicas, edge-hugging text, rapid microcopy, color-only meaning, essential information carried only by sound, and dense compositions that collapse on a phone.
+- **Adaptation:** Review portrait, square, and landscape crops separately. Test at actual mobile display size and with audio muted. Increase duration or simplify copy before shrinking essential text.
 
 ## General production rule
 

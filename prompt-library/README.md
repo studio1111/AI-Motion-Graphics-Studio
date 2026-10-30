@@ -1,6 +1,6 @@
 # Portable Motion Graphics Prompt Library
 
-A standalone copy-and-paste prompt kit for any text AI assistant or creative/video tool. It is not locked to one model. The library contains **96 structured style recipes**, six foundational master prompts, ten advanced specialist master prompts, 15 shot-level templates and a nine-stage production workflow pack.
+A standalone copy-and-paste prompt kit for any text AI assistant or creative/video tool. It is not locked to one model. The library contains **100 structured style recipes**, six foundational master prompts, ten advanced specialist master prompts, 15 shot-level templates and a nine-stage production workflow pack.
 
 ## What's inside
 
@@ -10,7 +10,7 @@ A standalone copy-and-paste prompt kit for any text AI assistant or creative/vid
 - `SCENE_PROMPT_TEMPLATES.md`: 15 modular shot templates, including continuity, transitions, evidence cards, data displays, image-to-video and deterministic rendering.
 - `PRODUCTION_WORKFLOW_PACK.md`: nine sequential stage prompts, designed to coordinate work across an AI assistant and the actual tools available.
 - `REFERENCE_ANALYSIS_WORKBOOK.md`: reusable evidence-level rubric and timing/observation matrix for studying references.
-- `prompts.json`: 96 structured recipes for scripts and the CLI.
+- `prompts.json`: 100 structured recipes for scripts and the CLI.
 - `CATALOG.md`: detailed, human-readable index for every recipe.
 - `index.html`: browser-based search, filter, prompt composition, copy and Markdown-download interface.
 - `HOW_TO_USE.md`: cross-tool instructions.
@@ -44,7 +44,7 @@ The `show` command composes the universal master prompt with the chosen recipe. 
 npm run produce -- --topic "A concept-led motion design showreel" --language en --duration 30 --prompt-recipe motion-design-showreel --plan-only --voice off
 ```
 
-The production engine records the exact recipe in its artifacts and maps the recipe category to an implemented Remotion style preset when `--style auto` is used. A configured AI storyboard generator receives the selected recipe's motion, typography, palette, story-beat and anti-pattern guidance. The local fallback does not implement all 96 recipes' unique motion instructions; the manifest/QC report states that limitation rather than pretending the advanced effects were rendered.
+The production engine records the exact recipe in its artifacts and maps the recipe category to an implemented Remotion style preset when `--style auto` is used. A configured AI storyboard generator receives the selected recipe's motion, typography, palette, story-beat and anti-pattern guidance. The local fallback does not implement all 100 recipes' unique motion instructions; the manifest/QC report states that limitation rather than pretending the advanced effects were rendered.
 
 ## Recommended workflow
 

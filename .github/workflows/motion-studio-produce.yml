@@ -70,7 +70,7 @@ on:
         options: [procedural, auto, ace-step]
         default: procedural
       prompt_recipe:
-        description: "Recipe ID from the validated 96-entry prompt catalog"
+        description: "Recipe ID from the validated 100-entry prompt catalog"
         required: true
         type: string
         default: cinematic-science-cutaway
