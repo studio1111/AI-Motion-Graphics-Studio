@@ -23,7 +23,7 @@ The browser's **Allow paid AI** checkbox is unchecked by default. Unless you exp
 5. **Use AI is off by default.** Enable it only when you intentionally authorize possible Anthropic API charges and the secret is configured.
 6. When the run finishes, open its **Artifacts** section and download `motion-studio-output-<run-id>`. The artifact may include MP4, captions, audio, storyboard/manifests, `SHA256SUMS.txt` integrity checksums, and QC reports depending on the production path.
 
-The workflow uses GitHub-hosted runner compute. GitHub Actions usage and AI provider API calls may incur limits or charges according to the account/provider plans. The workflow only uses the Anthropic key for the existing Claude storyboard integration; this does not imply that other AI providers are already wired into the production engine.
+The repository currently does not commit `package-lock.json`; use `npm install --no-audit --no-fund` rather than `npm ci` for local setup and the guided production workflow. Direct runtime dependencies are version-pinned in `package.json`, while transitive dependency resolution is not lockfile-reproducible until a lockfile is added.\n\nThe workflow uses GitHub-hosted runner compute. GitHub Actions usage and AI provider API calls may incur limits or charges according to the account/provider plans. The workflow only uses the Anthropic key for the existing Claude storyboard integration; this does not imply that other AI providers are already wired into the production engine.
 
 ## Reliability and security
 
