@@ -23,6 +23,7 @@ test("render quality profiles trade encoding time and bitrate predictably", () =
 });
 
 test("output resolutions preserve each aspect ratio and produce deterministic dimensions", () => {
+  assert.equal(resolveRenderSettings({ aspectRatio: "16 : 9" }).aspectRatio, "16:9");
   assert.deepEqual(
     ["1080p", "1440p", "4k"].map((resolution) => {
       const { width, height, scale } = resolveRenderSettings({ resolution, aspectRatio: "16:9" });
