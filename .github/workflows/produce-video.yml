@@ -86,7 +86,7 @@ on:
         options: [auto, procedural, ace-step]
         default: auto
       prompt_recipe:
-        description: Style recipe ID from the 96-recipe prompt library
+        description: Style recipe ID from the 100-recipe prompt library
         required: true
         type: string
         default: cinematic-science-cutaway
