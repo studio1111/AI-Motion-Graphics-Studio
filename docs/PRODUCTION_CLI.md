@@ -1,6 +1,6 @@
 # Motion Graphics Studio Production CLI
 
-The executable entry point is scripts/produce.mjs. It builds a storyboard and a Remotion prop manifest, optionally generates local voice, writes audio/captions, renders MP4, then runs technical checks.
+The executable entry point is scripts/produce.mjs. It builds a storyboard and a Remotion prop manifest, optionally generates local voice, writes audio/captions, renders MP4, then runs technical checks. The QC stage extracts timestamped frame samples and builds a portable `contact-sheet.jpg` preview for quick human visual review; the QC report records relative paths so downloaded artifacts remain navigable. The contact sheet is a review aid, not an automated creative-quality pass.
 
 ## Quick start
 
