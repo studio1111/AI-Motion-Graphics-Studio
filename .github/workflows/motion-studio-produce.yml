@@ -47,6 +47,12 @@ on:
         type: choice
         options: [cinematic, broadcast, minimal]
         default: cinematic
+      audio_mix_profile:
+        description: "Music level and voice-aware ducking profile"
+        required: true
+        type: choice
+        options: [voice-forward, cinematic, energetic]
+        default: cinematic
       voice:
         description: "Narration engine"
         required: true
@@ -141,6 +147,7 @@ jobs:
           RENDER_QUALITY: ${{ inputs.render_quality }}
           OUTPUT_RESOLUTION: ${{ inputs.resolution }}
           CAPTION_STYLE: ${{ inputs.caption_style }}
+          AUDIO_MIX_PROFILE: ${{ inputs.audio_mix_profile }}
           PROMPT_RECIPE: ${{ inputs.prompt_recipe }}
           PLAN_ONLY: ${{ inputs.plan_only }}
           ACESTEP_API_URL: ${{ secrets.ACESTEP_API_URL }}
@@ -159,7 +166,7 @@ jobs:
           if [[ "$PLAN_ONLY" == "true" ]]; then
             effective_voice="off"
           fi
-          args=(--topic "$TOPIC" --language "$LANGUAGE" --duration "$DURATION" --style "$STYLE" --aspect-ratio "$ASPECT_RATIO" --voice "$effective_voice" --music-engine "$MUSIC_ENGINE" --render-quality "$RENDER_QUALITY" --resolution "$OUTPUT_RESOLUTION" --caption-style "$CAPTION_STYLE" --prompt-recipe "$PROMPT_RECIPE" --output-dir "out/run-${GITHUB_RUN_ID}")
+          args=(--topic "$TOPIC" --language "$LANGUAGE" --duration "$DURATION" --style "$STYLE" --aspect-ratio "$ASPECT_RATIO" --voice "$effective_voice" --music-engine "$MUSIC_ENGINE" --render-quality "$RENDER_QUALITY" --resolution "$OUTPUT_RESOLUTION" --caption-style "$CAPTION_STYLE" --audio-mix-profile "$AUDIO_MIX_PROFILE" --prompt-recipe "$PROMPT_RECIPE" --output-dir "out/run-${GITHUB_RUN_ID}")
           if [[ -n "${OPUS55_REFERENCE//[[:space:]]/}" ]]; then
             args+=(--opus55-reference "$OPUS55_REFERENCE")
           fi
