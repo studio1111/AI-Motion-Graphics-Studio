@@ -76,12 +76,16 @@ function renderPromptRecipes(query = "") {
     : matches;
   const fragment = document.createDocumentFragment();
   if (selectedRecipe && !matches.some(recipe => recipe.id === selectedId)) {
-    fragment.append(new Option("انتخاب فعلی · " + selectedRecipe.title, selectedRecipe.id));
+    const option = new Option("انتخاب فعلی · " + selectedRecipe.title, selectedRecipe.id);
+    option.defaultSelected = selectedRecipe.id === "cinematic-science-cutaway";
+    fragment.append(option);
   }
   for (const recipe of visible) {
     if (recipe.id === selectedId && selectedRecipe && !matches.some(item => item.id === selectedId)) continue;
     const category = categoryNames[recipe.category] || recipe.category;
-    fragment.append(new Option(recipe.title + (category ? " · " + category : ""), recipe.id));
+    const option = new Option(recipe.title + (category ? " · " + category : ""), recipe.id);
+    option.defaultSelected = recipe.id === "cinematic-science-cutaway";
+    fragment.append(option);
   }
   if (!visible.length) {
     fragment.append(new Option("قالبی با این جست‌وجو پیدا نشد", selectedId, true, true));
@@ -92,6 +96,67 @@ function renderPromptRecipes(query = "") {
   $("prompt-recipe-count").textContent = normalizedQuery
     ? matches.length + " قالب پیدا شد از " + promptRecipes.length + " قالب"
     : promptRecipes.length + " قالب آمادهٔ انتخاب است";
+  renderPromptPreview();
+}
+
+function renderPromptPreview() {
+  const root = $("prompt-recipe-details");
+  const recipe = promptRecipes.find(item => item.id === $("prompt-recipe").value);
+  root.replaceChildren();
+  if (!recipe) {
+    root.textContent = "جزئیات قالب پس از بارگذاری کتابخانه نمایش داده می‌شود.";
+    $("copy-recipe").disabled = true;
+    return;
+  }
+  const category = categoryNames[recipe.category] || recipe.category || "عمومی";
+  const meta = document.createElement("p");
+  meta.className = "recipe-meta";
+  meta.textContent = category + (recipe.duration ? " · " + recipe.duration : "");
+  root.append(meta);
+  const fields = [
+    ["visual_language", "زبان بصری"],
+    ["motion_grammar", "دستور زبان حرکت"],
+    ["typography", "تایپوگرافی"],
+    ["color_system", "سامانهٔ رنگ"],
+    ["sound_design", "طراحی صدا"],
+    ["story_beats", "ضرب‌آهنگ روایت"],
+    ["avoid", "مواردی که باید پرهیز شوند"],
+    ["adaptation", "روش تطبیق و اجرا"]
+  ];
+  for (const [key, label] of fields) {
+    const value = String(recipe[key] || "").trim();
+    if (!value) continue;
+    const section = document.createElement("section");
+    const heading = document.createElement("h3");
+    const paragraph = document.createElement("p");
+    heading.textContent = label;
+    paragraph.textContent = value;
+    section.append(heading, paragraph);
+    root.append(section);
+  }
+  $("copy-recipe").disabled = false;
+}
+
+function recipeAsMarkdown(recipe) {
+  const sections = [
+    ["Visual language", "visual_language"],
+    ["Motion grammar", "motion_grammar"],
+    ["Typography", "typography"],
+    ["Color system", "color_system"],
+    ["Sound design", "sound_design"],
+    ["Story beats", "story_beats"],
+    ["Avoid", "avoid"],
+    ["Adaptation", "adaptation"]
+  ];
+  return [
+    "# " + recipe.title,
+    "",
+    "Recipe ID: " + recipe.id,
+    "Category: " + (recipe.category || "general"),
+    "Duration: " + (recipe.duration || "unspecified"),
+    ...sections.flatMap(([label, key]) => recipe[key] ? ["", "## " + label, "", String(recipe[key])] : []),
+    ""
+  ].join("\n");
 }
 
 async function loadPromptRecipes() {
@@ -204,7 +269,7 @@ async function copyCommand(command, successMessage) {
     fallback.hidden = false;
     fallback.focus();
     fallback.select();
-    setStatus("کپی خودکار در این مرورگر در دسترس نیست. دستور داخل کادر زیر انتخاب شده؛ آن را کپی کن.");
+    setStatus("کپی خودکار در این مرورگر در دسترس نیست. متن داخل کادر زیر انتخاب شده؛ آن را کپی کن.");
   }
 }
 
@@ -268,6 +333,10 @@ $("copy-workflow").addEventListener("click", async () => {
 
 $("reset").addEventListener("click", () => {
   $("brief-form").reset();
+  $("prompt-recipe-search").value = "";
+  renderPromptRecipes("");
+  $("prompt-recipe").value = "cinematic-science-cutaway";
+  renderPromptPreview();
   lastBrief = null;
   $("download").disabled = true;
   $("copy").disabled = true;
@@ -295,5 +364,13 @@ $("brief-form").addEventListener("input", event => {
 
 updatePaidAiState();
 $("prompt-recipe-search").addEventListener("input", event => renderPromptRecipes(event.target.value));
-$("prompt-recipe").addEventListener("change", markBriefStale);
+$("prompt-recipe").addEventListener("change", () => {
+  markBriefStale();
+  renderPromptPreview();
+});
+$("copy-recipe").addEventListener("click", async () => {
+  const recipe = promptRecipes.find(item => item.id === $("prompt-recipe").value);
+  if (!recipe) return;
+  await copyCommand(recipeAsMarkdown(recipe), "مشخصات کامل قالب کپی شد؛ می‌توانی آن را در ابزار AI دلخواهت استفاده کنی.");
+});
 void loadPromptRecipes();
