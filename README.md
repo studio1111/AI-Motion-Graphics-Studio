@@ -34,7 +34,7 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 
 ## Advanced render and subtitle controls
 
-The production engine exposes three H.264 encoding profiles (`balanced`, `high`, `master`) and three output resolutions (`1080p`, `1440p`, `4k`) for landscape, portrait and square formats. It records the chosen CRF, x264 preset, actual output dimensions and caption theme in the brief, manifest and QC report. Subtitle themes (`cinematic`, `broadcast`, `minimal`) adapt type size and contrast to the frame orientation. Higher resolutions and slower encoding presets increase render time and artifact size; use the 4K/master combination only when the runner budget and delivery target justify it.
+The production engine exposes three H.264 encoding profiles (`balanced`, `high`, `master`) and three output resolutions (`1080p`, `1440p`, `4k`) for landscape, portrait and square formats. It records the chosen CRF, x264 preset, actual output dimensions and caption theme in the brief, manifest and QC report. Subtitle themes (`cinematic`, `broadcast`, `minimal`) adapt type size and contrast to the frame orientation. Soundtrack mix presets (`voice-forward`, `cinematic`, `energetic`) tune music level and narration-aware ducking. Higher resolutions and slower encoding presets increase render time and artifact size; use the 4K/master combination only when the runner budget and delivery target justify it.
 
 ## Browser studio and secure AI production
 
