@@ -26,9 +26,15 @@ test("Pages catalog stays synchronized with the canonical 96-recipe library", ()
 test("site catalog is loaded as data, rendered with text-safe DOM APIs and passed as a recipe ID", () => {
   assert.match(html, /id="prompt-recipe-search"/);
   assert.match(html, /id="prompt-recipe-count"[^>]*aria-live="polite"/);
+  assert.match(html, /id="prompt-recipe-preview"/);
+  assert.match(html, /id="prompt-recipe-details"/);
+  assert.match(html, /id="copy-recipe"/);
   assert.match(app, /fetch\("\.\/prompt-recipes\.json"/);
   assert.match(app, /new Option\(/);
   assert.match(app, /renderPromptRecipes/);
+  assert.match(app, /renderPromptPreview/);
+  assert.match(app, /recipeAsMarkdown/);
+  assert.match(app, /textContent = value/);
   assert.doesNotMatch(app, /\.innerHTML\s*=/i);
   const recipeInput = workflow.match(/      prompt_recipe:[\s\S]*?(?=\n      [a-z_]+:|\npermissions:)/)?.[0] || "";
   assert.match(recipeInput, /type: string/);
