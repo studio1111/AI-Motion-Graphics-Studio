@@ -209,4 +209,6 @@ test("music mix profiles make narration priority explicit and preserve smooth du
   assert.ok(getMusicBedGain(350, 900, 30, ranges, "voice-forward") < getMusicBedGain(350, 900, 30, ranges, "cinematic"));
   assert.ok(getMusicBedGain(350, 900, 30, ranges, "energetic") > getMusicBedGain(350, 900, 30, ranges, "cinematic"));
   assert.throws(() => resolveAudioMixProfile("unbounded"), /Unknown audio mix profile/);
+  assert.equal(parseArgs(["--audio-mix-profile", "voice-forward"], {}).audioMixProfile, "voice-forward");
+  assert.throws(() => parseArgs(["--audio-mix-profile", "unbounded"], {}), /Unknown audio mix profile/);
 });
