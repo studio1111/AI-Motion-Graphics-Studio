@@ -81,7 +81,7 @@ test("production workflow consumes repository secrets only at runtime and upload
   assert.match(workflow, /secrets\.ANTHROPIC_API_KEY/);
   assert.match(workflow, /secrets\.FIRECRAWL_API_KEY/);
   assert.match(workflow, /--allow-paid-ai/);
-  assert.match(workflow, /actions\/upload-artifact@v4/);
+  assert.match(workflow, /actions\/upload-artifact@v7/);
   assert.match(workflow, /edge-tts==7\.3\.1/);
   assert.match(pages, /actions\/deploy-pages@v4/);
 });
