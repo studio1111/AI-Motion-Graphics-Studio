@@ -26,7 +26,7 @@ export function resolveRenderSettings({
 } = {}) {
   const selectedQuality = String(quality || "high").toLowerCase();
   const selectedResolution = String(resolution || "1080p").toLowerCase();
-  const selectedRatio = String(aspectRatio || "16:9").replace(/\\s+/g, "");
+  const selectedRatio = String(aspectRatio || "16:9").trim().replace(/\s+/g, "");
 
   const qualityProfile = QUALITY_PROFILES[selectedQuality];
   if (!qualityProfile) {
