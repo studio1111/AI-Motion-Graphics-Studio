@@ -431,6 +431,7 @@ test("plan-only can record ACE-Step as the intended soundtrack without a configu
       "--aspect-ratio", "16:9",
       "--voice", "edge-tts",
       "--music-engine", "ace-step",
+      "--prompt-recipe", "saas-ui",
       "--plan-only",
       "--no-research",
       "--output-dir", tempRoot
@@ -439,6 +440,7 @@ test("plan-only can record ACE-Step as the intended soundtrack without a configu
     assert.equal(result.qc.status, "PLAN_ONLY");
     assert.equal(result.manifest.audioBed.status, "not_generated");
     assert.equal(result.manifest.audioBed.engine, "ace-step");
+    assert.equal(result.manifest.selectedPromptRecipe.id, "saas-ui");
     assert.equal(result.manifest.voice.status, "not_run_plan_only");
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
