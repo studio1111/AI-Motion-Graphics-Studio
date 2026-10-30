@@ -41,6 +41,35 @@ const preFilters = [
   "acompressor=threshold=0.14:ratio=2.4:attack=18:release=180:makeup=1"
 ].join(",");
 
+export function buildLoudnessProbeFilter() {
+  return `loudnorm=I=${TARGET_LOUDNESS_LUFS}:TP=${TARGET_TRUE_PEAK_DBTP}:LRA=${TARGET_LOUDNESS_RANGE_LU}:print_format=json`;
+}
+
+export function verifyMasteredOutput(measurements, options = {}) {
+  assertMeasurements(measurements);
+  const loudnessTolerance = Number.isFinite(options.loudnessTolerance) ? options.loudnessTolerance : 1.5;
+  const truePeakTolerance = Number.isFinite(options.truePeakTolerance) ? options.truePeakTolerance : 0.7;
+  if (loudnessTolerance < 0 || truePeakTolerance < 0) {
+    throw new RangeError("Audio verification tolerances cannot be negative.");
+  }
+  const issues = [];
+  if (Math.abs(measurements.inputI - TARGET_LOUDNESS_LUFS) > loudnessTolerance) {
+    issues.push(`Integrated loudness ${measurements.inputI} LUFS is outside the target ${TARGET_LOUDNESS_LUFS} ± ${loudnessTolerance} LU.`);
+  }
+  const allowedTruePeak = TARGET_TRUE_PEAK_DBTP + truePeakTolerance;
+  if (measurements.inputTp > allowedTruePeak) {
+    issues.push(`True peak ${measurements.inputTp} dBTP exceeds the allowed ceiling ${allowedTruePeak} dBTP.`);
+  }
+  return {
+    status: issues.length ? "FAIL" : "PASS",
+    integratedLufs: measurements.inputI,
+    truePeakDbtp: measurements.inputTp,
+    loudnessToleranceLu: loudnessTolerance,
+    truePeakToleranceDb: truePeakTolerance,
+    issues
+  };
+}
+
 export function buildAudioMasterFilter(measurements = null) {
   const base = `loudnorm=I=${TARGET_LOUDNESS_LUFS}:TP=${TARGET_TRUE_PEAK_DBTP}:LRA=${TARGET_LOUDNESS_RANGE_LU}`;
   if (!measurements) return preFilters + "," + base + ":print_format=json";
@@ -112,6 +141,22 @@ export async function masterAudioVideo(inputPath, options = {}) {
     const outputStat = await stat(tempPath);
     if (!outputStat.size) throw new Error("FFmpeg returned an empty mastered video.");
 
+    const verification = await runProcess(ffmpeg, [
+      "-hide_banner", "-nostats", "-i", tempPath, "-map", "0:a:0",
+      "-af", buildLoudnessProbeFilter(), "-f", "null", "-"
+    ], timeoutMs);
+    if (verification.code !== 0) {
+      throw new Error("FFmpeg post-mastering verification failed: " + String(verification.stderr).slice(-1200));
+    }
+    const verifiedMeasurements = parseLoudnormMeasurements(verification.stderr);
+    if (!verifiedMeasurements) {
+      throw new Error("Post-mastering verification did not return valid loudness measurements.");
+    }
+    const outputVerification = verifyMasteredOutput(verifiedMeasurements);
+    if (outputVerification.status !== "PASS") {
+      throw new Error("Mastered audio did not meet output targets: " + outputVerification.issues.join(" "));
+    }
+
     // Keep the original available until the mastered container has rendered successfully.
     const backup = source + ".unmastered.bak";
     await rm(backup, { force: true });
@@ -130,6 +175,7 @@ export async function masterAudioVideo(inputPath, options = {}) {
       targetTruePeakDbtp: TARGET_TRUE_PEAK_DBTP,
       targetLoudnessRangeLu: TARGET_LOUDNESS_RANGE_LU,
       measurements,
+      outputVerification,
       audioCodec: "aac",
       audioBitrate: "256k",
       sampleRate: 48000,
