@@ -15,11 +15,11 @@ A programmatic motion-graphics studio built on Remotion, with style presets, pro
 - `docs/MOTION_DESIGN_SYSTEM.md`: craft, rhythm, typography, sound and accessibility rules.
 - `docs/AUTONOMOUS_PRODUCTION_PIPELINE.md`: stages, gates, and implementation status.
 - `prompts/STYLE_RECIPE_LIBRARY.md`: fourteen scene prompt recipes.
-- `prompt-library/`: standalone, tool-agnostic prompt suite with 96 style recipes, six foundational and ten advanced master prompts, 15 scene templates, a 9-stage workflow pack, browser UI and copy-ready CLI.
+- `prompt-library/`: standalone, tool-agnostic prompt suite with 100 style recipes, six foundational and ten advanced master prompts, 15 scene templates, a 9-stage workflow pack, browser UI and copy-ready CLI.
 - `docs/REFERENCE_PATTERN_MATRIX.md`: current article-level trend evidence and limitations.
 - `prompt-library/REFERENCE_ANALYSIS_WORKBOOK.md`: repeatable evidence-aware rubric for analyzing reference pages and videos.
 - `prompt-library/index.html`: browser interface to search/filter styles, compose a master prompt with a specialist/scene module, copy it, or download Markdown.
-- `site/prompt-recipes.json`: synchronized copy of all 96 prompt recipes used by the Persian Pages studio; refresh it with `npm run prompts:sync-site`.
+- `site/prompt-recipes.json`: synchronized copy of all 100 prompt recipes used by the Persian Pages studio; refresh it with `npm run prompts:sync-site`.
 - `prompt-library/PERSIAN_QUICK_START.md`: راهنمای فارسی استفاده از کتابخانهٔ مستقل پرامپت‌ها.
 - `prompt-library/PRODUCTION_WORKFLOW_PACK.md`: copy-ready prompts for story, storyboard, motion, typography, audio, rendering and quality repair.
 - `prompt-library/ADVANCED_MASTER_PROMPTS.md`: ten detailed specialist directors for documentary, product, typography, data, T2V, I2V, audio, code, repair and QC.
@@ -62,7 +62,7 @@ The `show` command combines the universal master prompt with the selected style 
 
 ## Use a style recipe in the production engine
 
-List available recipe IDs with `npm run prompts:list`, then let the storyboarding pipeline use one of the 96 recipes:
+List available recipe IDs with `npm run prompts:list`, then let the storyboarding pipeline use one of the 100 recipes:
 
 ```sh
 npm run produce -- --topic "An idea worth explaining" --language en --duration 30 --style auto --prompt-recipe motion-design-showreel --plan-only
