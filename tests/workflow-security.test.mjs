@@ -66,3 +66,17 @@ test("production workflows use the repository's supported installer when no npm 
   assert.doesNotMatch(production, /npm ci(?:\s|$)/);
   assert.match(validation, /npm install --no-audit --no-fund/);
 });
+
+
+test("production workflows expose and forward quality, resolution and caption controls", async () => {
+  const production = await readFile(new URL("../.github/workflows/motion-studio-produce.yml", import.meta.url), "utf8");
+  const manual = await readFile(new URL("../.github/workflows/produce-video.yml", import.meta.url), "utf8");
+  for (const workflow of [production, manual]) {
+    assert.match(workflow, /render_quality:[\s\S]*?options: \[balanced, high, master\]/);
+    assert.match(workflow, /resolution:[\s\S]*?options: \[1080p, 1440p, 4k\]/);
+    assert.match(workflow, /caption_style:[\s\S]*?options: \[cinematic, broadcast, minimal\]/);
+    assert.match(workflow, /--render-quality/);
+    assert.match(workflow, /--resolution/);
+    assert.match(workflow, /--caption-style/);
+  }
+});
