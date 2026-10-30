@@ -90,3 +90,26 @@ test("production workflows expose and forward narration-aware audio mix profiles
     assert.match(workflow, /--audio-mix-profile/);
   }
 });
+
+
+test("GitHub workflows use current Node 24-compatible official action majors", async () => {
+  const paths = [
+    "../.github/workflows/build-ai-future-fa.yml",
+    "../.github/workflows/motion-studio-produce.yml",
+    "../.github/workflows/pages.yml",
+    "../.github/workflows/produce-video.yml",
+    "../.github/workflows/sync-opus55-catalog.yml",
+    "../.github/workflows/validate-motion-studio.yml"
+  ];
+  const workflows = await Promise.all(paths.map(path => readFile(new URL(path, import.meta.url), "utf8")));
+  const all = workflows.join("\\n");
+  assert.match(all, /actions\\/checkout@v7/);
+  assert.match(all, /actions\\/setup-node@v7/);
+  assert.match(all, /actions\\/setup-python@v7/);
+  assert.match(all, /actions\\/upload-artifact@v7/);
+  assert.match(all, /actions\\/configure-pages@v6/);
+  assert.match(all, /actions\\/upload-pages-artifact@v5/);
+  assert.match(all, /actions\\/deploy-pages@v5/);
+  assert.match(all, /peter-evans\\/create-pull-request@v8/);
+  assert.doesNotMatch(all, /actions\\/(?:checkout|setup-node|setup-python|upload-artifact)@v[1-6](?:\\s|$)/);
+});
