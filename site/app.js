@@ -2,6 +2,7 @@ import { buildLocalCliCommand, buildWorkflowDispatchCommand } from "./brief-comm
 
 const $ = id => document.getElementById(id);
 let lastBrief = null;
+let promptRecipes = [];
 
 const labels = {
   fa: "فارسی", en: "English", de: "آلمانی", es: "اسپانیایی",
@@ -20,7 +21,7 @@ const styleNames = {
   "vertical-social": "عمودی شبکه‌های اجتماعی"
 };
 const voiceNames = {
-  "edge-tts": "عصبی آنلاین",
+  "edge-tts": "گویندگی آنلاین",
   auto: "موتور محلی",
   off: "خاموش"
 };
@@ -43,6 +44,89 @@ const recipeNames = {
   "voiceover-first-explainer": "روایت‌محور و گویندگی‌محور",
   "cinematic-transition-library": "گذارهای سینمایی"
 };
+
+const categoryNames = {
+  typography: "تایپوگرافی",
+  "product-film": "فیلم محصول",
+  "product-ui": "رابط و محصول دیجیتال",
+  documentary: "مستند",
+  transitions: "گذارها",
+  science: "علم و فناوری",
+  data: "داده",
+  editorial: "تحریریه‌ای",
+  abstract: "انتزاعی",
+  branding: "هویت بصری",
+  "image-to-video": "تصویر به ویدیو",
+  storytelling: "داستان‌گویی",
+  sound: "طراحی صدا",
+  "social-video": "شبکه‌های اجتماعی"
+};
+
+function renderPromptRecipes(query = "") {
+  const select = $("prompt-recipe");
+  const selectedId = select.value || "cinematic-science-cutaway";
+  const normalizedQuery = String(query).trim().toLocaleLowerCase();
+  const matches = promptRecipes.filter(recipe =>
+    [recipe.id, recipe.title, recipe.category, categoryNames[recipe.category] || ""]
+      .some(value => String(value).toLocaleLowerCase().includes(normalizedQuery))
+  );
+  const selectedRecipe = promptRecipes.find(recipe => recipe.id === selectedId);
+  const visible = selectedRecipe && !matches.some(recipe => recipe.id === selectedId)
+    ? [selectedRecipe, ...matches]
+    : matches;
+  const fragment = document.createDocumentFragment();
+  if (selectedRecipe && !matches.some(recipe => recipe.id === selectedId)) {
+    fragment.append(new Option("انتخاب فعلی · " + selectedRecipe.title, selectedRecipe.id));
+  }
+  for (const recipe of visible) {
+    if (recipe.id === selectedId && selectedRecipe && !matches.some(item => item.id === selectedId)) continue;
+    const category = categoryNames[recipe.category] || recipe.category;
+    fragment.append(new Option(recipe.title + (category ? " · " + category : ""), recipe.id));
+  }
+  if (!visible.length) {
+    fragment.append(new Option("قالبی با این جست‌وجو پیدا نشد", selectedId, true, true));
+  }
+  select.replaceChildren(fragment);
+  if (visible.some(recipe => recipe.id === selectedId)) select.value = selectedId;
+  else if (visible.length) select.value = visible[0].id;
+  $("prompt-recipe-count").textContent = normalizedQuery
+    ? matches.length + " قالب پیدا شد از " + promptRecipes.length + " قالب"
+    : promptRecipes.length + " قالب آمادهٔ انتخاب است";
+}
+
+async function loadPromptRecipes() {
+  const select = $("prompt-recipe");
+  const fallback = Array.from(select.options).map(option => ({
+    id: option.value,
+    title: option.textContent,
+    category: ""
+  }));
+  try {
+    const response = await fetch("./prompt-recipes.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const catalog = await response.json();
+    if (!Array.isArray(catalog.recipes) || !catalog.recipes.length) {
+      throw new Error("Invalid prompt catalog");
+    }
+    const ids = new Set();
+    for (const recipe of catalog.recipes) {
+      if (!recipe || !/^[a-z0-9][a-z0-9-]{1,119}$/.test(recipe.id) ||
+          typeof recipe.title !== "string" || !recipe.title.trim() || ids.has(recipe.id)) {
+        throw new Error("Invalid prompt recipe entry");
+      }
+      ids.add(recipe.id);
+    }
+    promptRecipes = catalog.recipes;
+    if (!ids.has(select.value)) select.value = ids.has("cinematic-science-cutaway")
+      ? "cinematic-science-cutaway"
+      : catalog.recipes[0].id;
+    renderPromptRecipes($("prompt-recipe-search").value);
+  } catch {
+    promptRecipes = fallback;
+    $("prompt-recipe-count").textContent =
+      "کتابخانهٔ کامل بارگذاری نشد؛ فهرست پایه در دسترس است.";
+  }
+}
 
 function buildBrief() {
   const topic = $("topic").value.trim();
@@ -88,7 +172,8 @@ function updateBriefSummary(brief) {
   $("summary-ratio").textContent = brief.aspectRatio;
   $("summary-voice").textContent = voiceNames[brief.voice] || brief.voice;
   $("summary-music").textContent = musicNames[brief.musicEngine] || brief.musicEngine;
-  $("summary-recipe").textContent = recipeNames[brief.promptRecipe] || brief.promptRecipe;
+  const selectedRecipe = promptRecipes.find(recipe => recipe.id === brief.promptRecipe);
+  $("summary-recipe").textContent = selectedRecipe?.title || recipeNames[brief.promptRecipe] || brief.promptRecipe;
   $("summary-plan").textContent = brief.planOnly ? "فقط طرح و استوری‌بورد" : "ویدیوی کامل";
 }
 
@@ -101,6 +186,8 @@ function markBriefStale() {
   $("download").disabled = true;
   $("copy").disabled = true;
   $("copy-workflow").disabled = true;
+  $("command-fallback").hidden = true;
+  $("command-fallback").value = "";
   updatePaidAiState();
   setStatus("تنظیمات تغییر کرده‌اند. برای تولید دستور جدید، دوباره «آماده‌سازی تنظیمات» را بزن.");
 }
@@ -108,9 +195,16 @@ function markBriefStale() {
 async function copyCommand(command, successMessage) {
   try {
     await navigator.clipboard.writeText(command);
+    $("command-fallback").hidden = true;
+    $("command-fallback").value = "";
     setStatus(successMessage, true);
   } catch {
-    setStatus("کپی خودکار در این مرورگر در دسترس نیست. دستور را از کادر زیر انتخاب و کپی کن:\n" + command);
+    const fallback = $("command-fallback");
+    fallback.value = command;
+    fallback.hidden = false;
+    fallback.focus();
+    fallback.select();
+    setStatus("کپی خودکار در این مرورگر در دسترس نیست. دستور داخل کادر زیر انتخاب شده؛ آن را کپی کن.");
   }
 }
 
@@ -178,6 +272,8 @@ $("reset").addEventListener("click", () => {
   $("download").disabled = true;
   $("copy").disabled = true;
   $("copy-workflow").disabled = true;
+  $("command-fallback").hidden = true;
+  $("command-fallback").value = "";
   $("metric-duration").textContent = "۹۰ ثانیه";
   $("summary-language").textContent = "فارسی";
   $("summary-style").textContent = "هوشمند";
@@ -191,10 +287,13 @@ $("reset").addEventListener("click", () => {
 });
 
 $("brief-form").addEventListener("input", event => {
-  markBriefStale();
+  if (event.target.id !== "prompt-recipe-search") markBriefStale();
   if (event.target.id === "duration") {
     $("metric-duration").textContent = event.target.value + " ثانیه";
   }
 });
 
 updatePaidAiState();
+$("prompt-recipe-search").addEventListener("input", event => renderPromptRecipes(event.target.value));
+$("prompt-recipe").addEventListener("change", markBriefStale);
+void loadPromptRecipes();
