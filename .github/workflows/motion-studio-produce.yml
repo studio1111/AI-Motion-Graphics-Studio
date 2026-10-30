@@ -29,6 +29,24 @@ on:
         type: choice
         options: ["16:9", "9:16", "1:1"]
         default: "16:9"
+      render_quality:
+        description: "Encoding profile: higher quality trades render time and file size"
+        required: true
+        type: choice
+        options: [balanced, high, master]
+        default: high
+      resolution:
+        description: "Final output resolution"
+        required: true
+        type: choice
+        options: [1080p, 1440p, 4k]
+        default: 1080p
+      caption_style:
+        description: "Subtitle presentation theme"
+        required: true
+        type: choice
+        options: [cinematic, broadcast, minimal]
+        default: cinematic
       voice:
         description: "Narration engine"
         required: true
@@ -120,6 +138,9 @@ jobs:
           VOICE: ${{ inputs.voice }}
           OPUS55_REFERENCE: ${{ inputs.opus55_reference }}
           MUSIC_ENGINE: ${{ inputs.music_engine }}
+          RENDER_QUALITY: ${{ inputs.render_quality }}
+          OUTPUT_RESOLUTION: ${{ inputs.resolution }}
+          CAPTION_STYLE: ${{ inputs.caption_style }}
           PROMPT_RECIPE: ${{ inputs.prompt_recipe }}
           PLAN_ONLY: ${{ inputs.plan_only }}
           ACESTEP_API_URL: ${{ secrets.ACESTEP_API_URL }}
@@ -138,7 +159,7 @@ jobs:
           if [[ "$PLAN_ONLY" == "true" ]]; then
             effective_voice="off"
           fi
-          args=(--topic "$TOPIC" --language "$LANGUAGE" --duration "$DURATION" --style "$STYLE" --aspect-ratio "$ASPECT_RATIO" --voice "$effective_voice" --music-engine "$MUSIC_ENGINE" --prompt-recipe "$PROMPT_RECIPE" --output-dir "out/run-${GITHUB_RUN_ID}")
+          args=(--topic "$TOPIC" --language "$LANGUAGE" --duration "$DURATION" --style "$STYLE" --aspect-ratio "$ASPECT_RATIO" --voice "$effective_voice" --music-engine "$MUSIC_ENGINE" --render-quality "$RENDER_QUALITY" --resolution "$OUTPUT_RESOLUTION" --caption-style "$CAPTION_STYLE" --prompt-recipe "$PROMPT_RECIPE" --output-dir "out/run-${GITHUB_RUN_ID}")
           if [[ -n "${OPUS55_REFERENCE//[[:space:]]/}" ]]; then
             args+=(--opus55-reference "$OPUS55_REFERENCE")
           fi
