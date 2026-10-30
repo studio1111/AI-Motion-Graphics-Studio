@@ -9,3 +9,13 @@
 .command-fallback{direction:ltr;text-align:left;unicode-bidi:plaintext;min-height:94px;margin-top:10px;font:12px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;white-space:pre-wrap}
 .command-fallback[hidden]{display:none}
 textarea:focus-visible,input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.recipe-preview{margin-top:14px;border:1px solid #2b3344;border-radius:8px;background:#0b0e16;padding:11px 13px}
+.recipe-preview>summary{cursor:pointer;color:#c9d3e5;font-size:11px;font-weight:700}
+.recipe-preview>summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.recipe-details{display:grid;gap:10px;margin-top:13px}
+.recipe-details section{border-top:1px solid #252c3a;padding-top:9px}
+.recipe-details h3{font-size:11px;color:var(--accent);margin:0 0 4px}
+.recipe-details p{font-size:11px;line-height:1.9;color:#c2cada;margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.recipe-details .recipe-meta{color:var(--purple);font-size:10px}
+#copy-recipe{margin-top:12px}
