@@ -38,7 +38,7 @@ The workflow uses GitHub-hosted runner compute. GitHub Actions usage and AI prov
 ## Local use
 
 ```sh
-npm ci
+npm install --no-audit --no-fund
 npm run validate
 npm run produce -- --topic "Why do cities get warmer?" --language en --duration 90 --style scientific-2-5d --aspect-ratio 16:9 --voice off --plan-only
 ```
