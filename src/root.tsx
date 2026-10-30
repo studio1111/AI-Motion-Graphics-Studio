@@ -1,6 +1,8 @@
 import React from "react";
 import { Composition, interpolate, useCurrentFrame } from "remotion";
 import { MotionVideo } from "./production/MotionVideo";
+import { SkyBlueFilm } from "./sky-blue";
+import { AiCapabilitiesFilm } from "./ai-capabilities";
 import { DEFAULT_MOTION_VIDEO_PROPS, type MotionVideoProps } from "./production/types";
 
 const Demo: React.FC = () => {
@@ -32,6 +34,8 @@ const videoMetadata = ({ props }: { props: MotionVideoProps }) => ({
 export const MotionStudioRoot: React.FC = () => (
   <>
     <Composition id="MotionDemo" component={Demo} durationInFrames={90} fps={30} width={1920} height={1080} />
+    <Composition id="SkyBlueFilm" component={SkyBlueFilm} durationInFrames={2700} fps={30} width={1920} height={1080} />
+    <Composition id="AiCapabilitiesFilm" component={AiCapabilitiesFilm} durationInFrames={1950} fps={30} width={1920} height={1080} />
     <Composition<MotionVideoProps>
       id="MotionVideo"
       component={MotionVideo}
