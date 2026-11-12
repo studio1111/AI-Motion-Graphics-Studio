@@ -5,7 +5,7 @@ import { delimiter, join, resolve, basename } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
-import { wavDuration } from "../src/production/wav.mjs";
+import { inspectPcmWav, wavDuration } from "../src/production/wav.mjs";
 import { validateSokhanTranslationDocument } from "../src/production/sokhan-translation.mjs";
 import { buildNarrationEnhancementFilter, getEnhancedNarrationPath } from "../src/production/voice-processing.mjs";
 
@@ -143,10 +143,12 @@ async function main() {
       throw new Error("FFmpeg audio enhancement failed for " + segment.id + ": " + String(enhanced.stderr || enhanced.error || "unknown error").slice(-500));
     }
     const audio = await readFile(enhancedPath);
-    const durationSeconds = wavDuration(audio);
-    if (!durationSeconds || !Number.isFinite(durationSeconds) || durationSeconds <= 0) {
+    const audioQc = inspectPcmWav(audio);
+    const durationSeconds = audioQc?.durationSeconds;
+    if (!audioQc || !durationSeconds || !Number.isFinite(durationSeconds) || durationSeconds <= 0 || audioQc.isSilent || audioQc.isClipped) {
       await rm(enhancedPath, { force: true });
-      throw new Error("Generated audio for " + segment.id + " is not a valid non-empty WAV file.");
+      const reason = !audioQc ? "invalid WAV format" : audioQc.isSilent ? "digital silence" : audioQc.isClipped ? "clipping exceeds the 0.1% threshold" : "invalid duration";
+      throw new Error("Audio QC failed for " + segment.id + ": " + reason + ".");
     }
     await rename(enhancedPath, finalPath);
     manifest.segments.push({
@@ -154,7 +156,8 @@ async function main() {
       sourceText: segment.sourceText,
       narration: text,
       audioFile: base + ".wav",
-      durationSeconds: Number(durationSeconds.toFixed(3))
+      durationSeconds: Number(durationSeconds.toFixed(3)),
+      audioQc: { peakAmplitude: Number(audioQc.peakAmplitude.toFixed(5)), rmsAmplitude: Number(audioQc.rmsAmplitude.toFixed(5)), clippedSamples: audioQc.clippedSamples }
     });
     console.log("Generated " + segment.id + " (" + durationSeconds.toFixed(2) + " s)");
   }
