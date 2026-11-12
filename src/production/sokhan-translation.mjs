@@ -39,9 +39,14 @@ export function applySokhanTranslations(scenes, document) {
     throw new TypeError("At least one storyboard scene is required for Sokhan translation.");
   }
   const validated = validateSokhanTranslationDocument(document);
+  if (validated.reviewStatus !== "approved") {
+    throw new Error("Sokhan translation requires reviewStatus=approved before production.");
+  }
   const byId = new Map(validated.segments.map(segment => [segment.id, segment]));
   const narratedScenes = scenes.filter(scene => String(scene?.narration ?? "").trim());
+  const sceneIds = new Set(narratedScenes.map(scene => String(scene.id ?? "")));
   const missing = narratedScenes.filter(scene => !byId.has(String(scene.id ?? "")));
+  const unknown = validated.segments.filter(segment => !sceneIds.has(segment.id));
   if (missing.length) {
     throw new Error("Sokhan translation document is missing translation for scene(s): " + missing.map(scene => String(scene.id ?? "(no id)")).join(", "));
   }
