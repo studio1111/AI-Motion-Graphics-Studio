@@ -46,6 +46,14 @@ export function applySokhanTranslations(scenes, document) {
     throw new Error("Sokhan translation document is missing translation for scene(s): " + missing.map(scene => String(scene.id ?? "(no id)")).join(", "));
   }
 
+  const stale = narratedScenes.filter(scene => {
+    const segment = byId.get(String(scene.id ?? ""));
+    return segment && String(scene.narration ?? "").trim() !== segment.sourceText;
+  });
+  if (stale.length) {
+    throw new Error("Sokhan translation source text does not match current scene(s): " + stale.map(scene => String(scene.id)).join(", "));
+  }
+
   return scenes.map(scene => {
     const segment = byId.get(String(scene?.id ?? ""));
     if (!segment) return { ...scene };
