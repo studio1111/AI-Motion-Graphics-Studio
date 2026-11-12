@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -128,6 +129,48 @@ class SokhanTranslationTests(unittest.TestCase):
         )
         self.assertIn("یادگیری ماشین", prompt)
         self.assertIn("terminology data", prompt)
+
+
+    def test_translation_cache_key_changes_with_model_revision_backend_and_glossary(self):
+        base = SOKHAN.translation_cache_key(
+            "Source text.", "ollama", "qwen3:4b", "sha256:one", {}
+        )
+        self.assertEqual(
+            base,
+            SOKHAN.translation_cache_key(
+                "Source text.", "ollama", "qwen3:4b", "sha256:one", {}
+            ),
+        )
+        self.assertNotEqual(
+            base,
+            SOKHAN.translation_cache_key(
+                "Source text.", "ollama", "qwen3:4b", "sha256:two", {}
+            ),
+        )
+        self.assertNotEqual(
+            base,
+            SOKHAN.translation_cache_key(
+                "Source text.", "llama.cpp", "qwen3:4b", "sha256:one", {}
+            ),
+        )
+        self.assertNotEqual(
+            base,
+            SOKHAN.translation_cache_key(
+                "Source text.", "ollama", "qwen3:4b", "sha256:one",
+                {"AI": "هوش مصنوعی"}
+            ),
+        )
+
+    def test_translation_cache_round_trip_is_atomic_and_does_not_store_source_text(self):
+        with tempfile.TemporaryDirectory() as directory:
+            key = SOKHAN.translation_cache_key(
+                "PRIVATE SOURCE TEXT", "ollama", "qwen3:4b", "sha256:one", {}
+            )
+            cache_path = SOKHAN.write_translation_cache(directory, key, "ترجمهٔ فارسی")
+            self.assertEqual(SOKHAN.read_translation_cache(directory, key), "ترجمهٔ فارسی")
+            self.assertNotIn("PRIVATE SOURCE TEXT", cache_path.read_text(encoding="utf-8"))
+            cache_path.write_text("{invalid", encoding="utf-8")
+            self.assertIsNone(SOKHAN.read_translation_cache(directory, key))
 
     def test_rejects_empty_source(self):
         with self.assertRaisesRegex(ValueError, "no translatable text"):
