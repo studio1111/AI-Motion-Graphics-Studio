@@ -41,7 +41,7 @@ test("rejects a RIFF container without the WAVE signature", () => {
 
 test("rejects a data chunk whose declared payload is truncated", () => {
   const buffer = wavFixture(1);
-  buffer.writeUInt32LE(48_000, 40);
+  buffer.writeUInt32LE(48_002, 40);
   assert.equal(wavDuration(buffer), null);
 });
 
