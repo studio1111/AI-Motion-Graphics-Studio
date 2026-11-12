@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { wavDuration } from "../scripts/sokhan-voice.mjs";
+import { runCommand, wavDuration } from "../scripts/sokhan-voice.mjs";
 
 function wavFixture(seconds = 2) {
   const sampleRate = 24000;
@@ -64,4 +64,33 @@ test("rejects unsupported sample format, channel count, sample rate and bit dept
   wrongDepth.writeUInt16LE(8, 34);
   wrongDepth.writeUInt32LE(24_000, 28);
   assert.equal(wavDuration(wrongDepth), null);
+});
+
+test("runs child processes with bounded output and captures successful results", async () => {
+  const result = await runCommand(process.execPath, [
+    "-e", "process.stdout.write('ok'); process.stderr.write('warning')"
+  ], 5000);
+  assert.equal(result.code, 0);
+  assert.equal(result.stdout, "ok");
+  assert.equal(result.stderr, "warning");
+  assert.equal(result.timedOut, false);
+});
+
+test("reports non-zero child exit codes", async () => {
+  const result = await runCommand(process.execPath, ["-e", "process.exit(7)"], 5000);
+  assert.equal(result.code, 7);
+  assert.equal(result.timedOut, false);
+});
+
+test("terminates timed-out child processes and reports the timeout", async () => {
+  const result = await runCommand(process.execPath, ["-e", "setTimeout(() => {}, 10000)"], 50);
+  assert.equal(result.timedOut, true);
+  assert.equal(result.code, null);
+  assert.ok(result.signal === "SIGTERM" || result.signal === "SIGKILL");
+});
+
+test("reports missing executables without throwing an unhandled process error", async () => {
+  const result = await runCommand("/sokhan/definitely/missing/executable", [], 1000);
+  assert.equal(result.code, null);
+  assert.match(result.error, /ENOENT/);
 });
