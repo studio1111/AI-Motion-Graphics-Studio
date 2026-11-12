@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import unittest
 from pathlib import Path
 
@@ -46,7 +47,9 @@ class SokhanTranslationTests(unittest.TestCase):
         self.assertIn("یادگیری ماشین", payload["messages"][0]["content"])
 
     def test_parses_openai_compatible_translation_response(self):
-        raw = b'{"choices":[{"message":{"content":"{\\\"translation\\\":\\\"سلام\\\"}"}}]}'
+        raw = json.dumps({
+            "choices": [{"message": {"content": json.dumps({"translation": "سلام"}, ensure_ascii=False)}}]
+        }, ensure_ascii=False).encode("utf-8")
         self.assertEqual(
             SOKHAN.parse_backend_response(raw, "llama.cpp"),
             "سلام",
