@@ -631,7 +631,7 @@ export async function produce(options,env=process.env){
  }
  if(duration>600&&options.planOnly&&plan.contentMode!=="ai_generated")warnings.push("Plan-only output is a generic scaffold; a long-form render requires a valid topic-specific storyboard.");
  const urls=new Set(sources.map(s=>s.url));plan.scenes=plan.scenes.map(s=>({...s,sourceRefs:(s.sourceRefs||[]).filter(u=>urls.has(u))}));if(plan.contentMode==="conceptual_template")warnings.push("Conceptual output only; factual claims have not been researched. Provide sources or explicitly opt into configured research/AI services for topic-specific scripts.");
- await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,promptRecipeId:promptRecipe?.id||null,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
+ await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,sourceLanguage,promptRecipeId:promptRecipe?.id||null,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
  let voice={status:"not_attempted",engine:null,generatedScenes:0,warnings:[]};if(options.planOnly)voice.status="not_run_plan_only";else voice=await makeVoice(plan.scenes,language,options.voice,runId,fps,warnings);
  const voiceErrors=options.planOnly?[]:validateVoiceGeneration(options.voice,voice);
  if(voiceErrors.length){
@@ -650,7 +650,7 @@ export async function produce(options,env=process.env){
   plan.scenes=runtimeFit.scenes;
   if(runtimeFit.addedFrames>0)warnings.push("The narration finished before the target; extended the final scene with an instrumental outro hold of "+(runtimeFit.addedFrames/fps).toFixed(2)+" seconds to match the requested runtime.");
  }
- await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,promptRecipeId:promptRecipe?.id||null,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
+ await writeFile(join(dir,"storyboard.json"),JSON.stringify({title:plan.title,subtitle:plan.subtitle,styleId,language,sourceLanguage,promptRecipeId:promptRecipe?.id||null,contentMode:plan.contentMode,researchStatus:research.status,scenes:plan.scenes},null,2)+"\n");
  const totalFrames=sumFrames(plan.scenes),actualDuration=totalFrames/fps;let audioBedSrc;let musicInfo={status:options.planOnly?"not_generated":"pending",engine:selectedMusicEngine};
  if(!options.planOnly){
   const assets=resolve("public","generated",runId);await mkdir(assets,{recursive:true});
