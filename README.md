@@ -132,7 +132,7 @@ The upstream repository declares the MIT License for its software and dataset. K
 
 ## Sokhan — local English-to-Persian translation and voice
 
-The first Sokhan release adds an offline-first English-to-Persian workflow. It uses a local Ollama model to create an editable Persian draft, requires human approval before speech synthesis, and reuses the existing Persian Speech / Mana-Persian-Piper runtime for WAV narration.
+The first Sokhan release adds an offline-first English-to-Persian workflow. It uses a local Ollama model or a local llama.cpp OpenAI-compatible server to create an editable Persian draft, requires human approval before speech synthesis, and reuses the existing Persian Speech / Mana-Persian-Piper runtime for WAV narration. The llama.cpp path is documented for Android/Termux.
 
 See [Sokhan v1 setup, usage and quality gates](docs/SOKHAN_V1_ENGLISH_TO_PERSIAN.md).
 
@@ -146,4 +146,4 @@ npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json 
 npm run sokhan:voice -- --input narration-fa.json --output-dir out/sokhan-voice
 ```
 
-The translation endpoint is restricted to localhost. No cloud translation or paid TTS API is used. Model weights are downloaded by the local runtime and are not committed to Git. Persian quality still requires human review and listening tests; the implementation does not claim HeyGen Voice Turbo parity.
+Both translation backends are restricted to localhost. No cloud translation or paid TTS API is used. Model weights are downloaded by the local runtime and are not committed to Git. Persian quality still requires human review and listening tests; the implementation does not claim HeyGen Voice Turbo parity.
