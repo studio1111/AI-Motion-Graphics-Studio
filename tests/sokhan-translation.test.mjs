@@ -74,3 +74,15 @@ test("rejects translation segments for unknown scene IDs", () => {
     }]
   }), /unknown scene id/);
 });
+
+
+test("validates the per-segment review audit trail when the review UI provides it", () => {
+  assert.throws(() => applySokhanTranslations(scenes, {
+    ...document,
+    reviewedSegmentIds: ["scene-1"]
+  }), /reviewedSegmentIds/);
+  assert.doesNotThrow(() => applySokhanTranslations(scenes, {
+    ...document,
+    reviewedSegmentIds: ["scene-1", "scene-2"]
+  }));
+});
