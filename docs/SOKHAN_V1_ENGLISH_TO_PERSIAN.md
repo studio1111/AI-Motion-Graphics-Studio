@@ -65,6 +65,8 @@ npm run sokhan:translate -- --backend llama.cpp \
 
 For reproducibility, pass `--model-revision sha256:<GGUF-file-hash>` after recording the local model file hash. The selected backend, model name and optional revision are stored in the translation draft. Model weights are not committed or downloaded in CI.
 
+The Termux instructions above cover local translation only. Persian TTS on Termux is not yet validated: the voice step requires the `speech` executable from `persian-speech` plus FFmpeg. If that runtime cannot be installed on Android, create and review the Persian draft on the phone, then run voice generation on a supported Linux environment; the application will report `not_installed` rather than silently substitute another voice.
+
 ## Create and review a translation
 
 For a standalone script, save the English narration in a UTF-8 text file. Blank lines create separate translation segments. For a Remotion production, first create an English storyboard with `--plan-only`, then pass its `storyboard.json` to the translator; this preserves exact scene IDs so reviewed translations can be reattached safely:
