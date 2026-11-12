@@ -11,6 +11,7 @@ const document = {
   sourceLanguage: "en",
   targetLanguage: "fa",
   model: "qwen3:4b",
+  reviewStatus: "approved",
   segments: [
     { id: "scene-1", sourceText: "The source sentence.", translation: "جملهٔ مبدأ." },
     { id: "scene-2", sourceText: "A second source sentence.", translation: "جملهٔ دوم." }
