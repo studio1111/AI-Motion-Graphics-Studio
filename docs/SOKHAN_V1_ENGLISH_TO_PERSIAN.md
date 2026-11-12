@@ -33,7 +33,7 @@ For a lower-memory translation model, set `SOKHAN_OLLAMA_MODEL` to a locally ins
 
 ## Create and review a translation
 
-Save the English narration in a UTF-8 text file. Blank lines create separate translation segments:
+For a standalone script, save the English narration in a UTF-8 text file. Blank lines create separate translation segments. For a Remotion production, first create an English storyboard with `--plan-only`, then pass its `storyboard.json` to the translator; this preserves exact scene IDs so reviewed translations can be reattached safely:
 
 ```text
 The city stores heat in roads and rooftops.
@@ -45,6 +45,8 @@ Create the editable Persian draft:
 
 ```sh
 npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json
+# Or translate an existing English storyboard and preserve scene IDs:
+npm run sokhan:translate -- --input out/source/<run-id>/storyboard.json --output narration-fa.json
 ```
 
 Optional settings:
@@ -77,6 +79,14 @@ npm run sokhan:voice -- --input narration-fa.json --output-dir out/sokhan-voice
 
 The voice command refuses documents not explicitly marked `approved`. It generates one enhanced mono 24 kHz PCM WAV per segment and writes `voice-manifest.json`. A failed segment stops the run; the tool does not silently publish a partial manifest.
 
+For the integrated Remotion path, use the exact English storyboard from the first step and its reviewed translation document:
+
+```sh
+npm run produce -- --topic "Your topic" --language en --storyboard out/source/<run-id>/storyboard.json --translation-file narration-fa.json --voice persian-speech --output-dir out/sokhan-final
+```
+
+The production CLI verifies every translated segment ID and its original English source text before replacing scene narration. It then generates Persian voice, captions, timing, Remotion props, video and the usual technical QC. The source storyboard must match the translated source exactly; stale or incomplete translations are rejected. This v1 integration translates narration, not the visual title/body/bullet copy.
+
 Optional executable overrides:
 
 ```sh
@@ -92,7 +102,7 @@ SOKHAN_SPEECH_BIN=/absolute/path/to/speech FFMPEG_PATH=/absolute/path/to/ffmpeg 
 - The translator connects only to loopback HTTP Ollama. It does not accept arbitrary remote URLs, credentials, or cloud endpoints.
 - Input is treated as untrusted source text. Embedded instructions are translated as text and must not change the translation task.
 - The existing voice enhancement filter is reused; its technical processing is not a substitute for listening tests.
-- This first release produces standalone WAV assets and a timing manifest. It does not yet automatically replace every Remotion scene's narration; production-pipeline wiring and listening/RTL review remain release gates.
+- The production CLI can now attach reviewed Persian narration to an exact English storyboard and render the video. Visual title/body/bullet copy remains in its source language in v1; full visual-copy translation and human RTL review remain follow-up gates.
 - Do not claim parity with HeyGen Voice Turbo. Sokhan is an independent local pipeline.
 
 ## Acceptance checklist
