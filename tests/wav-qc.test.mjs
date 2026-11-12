@@ -42,10 +42,10 @@ test("rejects truncated or inconsistent RIFF/data chunk lengths", () => {
 });
 
 test("rejects non-PCM, stereo, wrong-rate and wrong-bit-depth audio", () => {
-  assert.equal(wavDuration(pcmWav({ encoding: 3 })), null);
-  assert.equal(wavDuration(pcmWav({ channels: 2 })), null);
-  assert.equal(wavDuration(pcmWav({ sampleRate: 16000 })), null);
-  assert.equal(wavDuration(pcmWav({ bits: 8 })), null);
+  assert.equal(inspectPcmWav(pcmWav({ encoding: 3 })), null);
+  assert.equal(inspectPcmWav(pcmWav({ channels: 2 })), null);
+  assert.equal(inspectPcmWav(pcmWav({ sampleRate: 16000 })), null);
+  assert.equal(inspectPcmWav(pcmWav({ bits: 8 })), null);
 });
 
 function fillSamples(buffer, sampleAt) {
