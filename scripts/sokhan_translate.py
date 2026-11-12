@@ -172,7 +172,7 @@ def build_backend_payload(source: str, model: str, glossary: dict[str, str] | No
             "prompt": prompt,
             "stream": False,
             "format": "json",
-            "options": {"temperature": 0.15, "num_predict": 1024},
+            "options": {"temperature": 0.15, "num_predict": 2048},
         }
     if backend == "llama.cpp":
         return {
@@ -180,7 +180,7 @@ def build_backend_payload(source: str, model: str, glossary: dict[str, str] | No
             "messages": [{"role": "user", "content": prompt}],
             "stream": False,
             "temperature": 0.15,
-            "max_tokens": 1024,
+            "max_tokens": 2048,
             "response_format": {"type": "json_object"},
             "reasoning_effort": "none",
             "chat_template_kwargs": {"enable_thinking": False},
@@ -243,7 +243,7 @@ def main() -> int:
     parser.add_argument("--model", default="")
     parser.add_argument("--model-revision", default=os.environ.get("SOKHAN_MODEL_REVISION", ""))
     parser.add_argument("--endpoint", default="")
-    parser.add_argument("--timeout", type=int, default=180)
+    parser.add_argument("--timeout", type=int, default=600)
     parser.add_argument("--glossary", default="", help="Optional UTF-8 JSON glossary of English terms to exact Persian values")
     args = parser.parse_args()
 
