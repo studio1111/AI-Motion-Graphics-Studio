@@ -58,3 +58,18 @@ test("rejects stale source text so an old translation cannot attach to a changed
     { ...document, segments: [document.segments[0]] }
   ), /source text does not match/);
 });
+
+test("refuses production before explicit human approval", () => {
+  assert.throws(() => applySokhanTranslations(scenes, {
+    ...document, reviewStatus: "needs_human_review"
+  }), /reviewStatus=approved/);
+});
+
+test("rejects translation segments for unknown scene IDs", () => {
+  assert.throws(() => applySokhanTranslations(scenes, {
+    ...document,
+    segments: [...document.segments, {
+      id: "old-scene", sourceText: "Old source.", translation: "متن قدیمی."
+    }]
+  }), /unknown scene id/);
+});
