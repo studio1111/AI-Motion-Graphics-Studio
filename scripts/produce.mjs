@@ -7,7 +7,7 @@ import { pathToFileURL } from "node:url";
 import { loadOpus55Reference } from "../src/production/opus55-reference-library.mjs";
 import { splitCaptionSegments } from "../src/production/captions.mjs";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
-import { wavDuration } from "../src/production/wav.mjs";
+import { inspectPcmWav, wavDuration } from "../src/production/wav.mjs";
 import { applySokhanTranslations } from "../src/production/sokhan-translation.mjs";
 import { generateAceStepMusic, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { masterAudioVideo } from "../src/production/audio-mastering.mjs";
@@ -317,7 +317,7 @@ function executable(command){for(const d of (process.env.PATH||"").split(delimit
 function run(command,args,timeout=120000){return new Promise(resolvePromise=>{let stdout="",stderr="",settled=false;let child;try{child=spawn(command,args,{stdio:["ignore","pipe","pipe"]});}catch(e){resolvePromise({code:null,error:String(e)});return;}const append=(a,b)=>(a+b.toString()).slice(-10000);child.stdout.on("data",d=>stdout=append(stdout,d));child.stderr.on("data",d=>stderr=append(stderr,d));let timedOut=false;const timer=setTimeout(()=>{timedOut=true;child.kill("SIGTERM");setTimeout(()=>{if(!settled)child.kill("SIGKILL");},3000).unref();},timeout);child.on("error",e=>{if(settled)return;settled=true;clearTimeout(timer);resolvePromise({code:null,stdout,stderr,error:String(e),timedOut});});child.on("close",code=>{if(settled)return;settled=true;clearTimeout(timer);resolvePromise({code,stdout,stderr,timedOut});});});}
 
 async function makeVoice(scenes,language,mode,runId,fps,warnings){
- const result={status:"disabled",engine:null,generatedScenes:0,warnings:[]};
+ const result={status:"disabled",engine:null,generatedScenes:0,segments:[],warnings:[]};
  if(mode==="off")return result;
  const locale=String(language).split("-")[0].toLowerCase();
  let engine=null;
@@ -381,9 +381,11 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
    result.status="partial";result.warnings.push(w);warnings.push(w);await rm(enhancedFile,{force:true});continue;
   }
   let enhancedBuffer;try{enhancedBuffer=await readFile(enhancedFile);}catch{}
-  const seconds=wavDuration(enhancedBuffer);
-  if(!seconds||seconds<=0){
-   const w="Narration enhancement generated an invalid WAV for "+s.id;
+  const audioQC=inspectPcmWav(enhancedBuffer);
+  const seconds=audioQC?.durationSeconds;
+  if(!audioQC||!seconds||seconds<=0||audioQC.isSilent||audioQC.isClipped){
+   const reason=!audioQC?"invalid WAV format":audioQC.isSilent?"digital silence":audioQC.isClipped?"clipping exceeds the 0.1% threshold":"invalid duration";
+   const w="Narration audio QC failed on "+s.id+": "+reason+".";
    result.status="partial";result.warnings.push(w);warnings.push(w);await rm(enhancedFile,{force:true});continue;
   }
   const enhancedName=name.replace(/\.(?:wav|mp3)$/i,".enhanced.wav");
@@ -391,6 +393,7 @@ async function makeVoice(scenes,language,mode,runId,fps,warnings){
   s.audioSrc="generated/"+runId+"/"+enhancedName;
   s.audioDurationInFrames=Math.ceil(seconds*fps);
   s.durationInFrames=s.audioDurationInFrames+Math.ceil(fps*1.1);
+  result.segments.push({id:s.id,durationSeconds:Number(seconds.toFixed(3)),audioQc:{peakAmplitude:Number(audioQC.peakAmplitude.toFixed(5)),rmsAmplitude:Number(audioQC.rmsAmplitude.toFixed(5)),clippedSamples:audioQC.clippedSamples}});
   result.generatedScenes++;
  }
  if(result.generatedScenes===narratedScenes.length&&narratedScenes.length>0)result.status="generated";
