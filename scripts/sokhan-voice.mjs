@@ -54,7 +54,7 @@ function run(command, args, timeoutMs = 240000) {
     const append = (current, chunk) => (current + chunk.toString()).slice(-4000);
     child.stdout.on("data", chunk => { stdout = append(stdout, chunk); });
     child.stderr.on("data", chunk => { stderr = append(stderr, chunk); });
-    const timer = setTimeout(() => child.kill("SIGTERM"), timeoutMs);
+    const timer = setTimeout(() => {\n      child.kill("SIGTERM");\n      setTimeout(() => { if (!settled) child.kill("SIGKILL"); }, 3000).unref();\n    }, timeoutMs);
     child.on("error", error => {
       if (settled) return;
       settled = true; clearTimeout(timer);
@@ -78,7 +78,7 @@ export function wavDuration(buffer) {
     if (chunk === "data") { dataSize = size; break; }
     offset += 8 + size + (size % 2);
   }
-  return byteRate > 0 && dataSize !== null && dataSize <= buffer.length ? dataSize / byteRate : null;
+  return byteRate > 0 && dataSize !== null && dataSize <= buffer.length - 8 - (buffer.indexOf(Buffer.from("data")) >= 0 ? buffer.indexOf(Buffer.from("data")) : 0) ? dataSize / byteRate : null;
 }
 
 function safeId(value, index) {
