@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
   canApproveDraft,
   createApprovedDraft,
@@ -47,6 +48,7 @@ test("creates an approved copy without mutating the original draft", () => {
   const draft = validDraft();
   const approved = createApprovedDraft(draft, new Set(["scene-01", "scene-02"]));
   assert.equal(approved.reviewStatus, "approved");
+  assert.deepEqual(approved.reviewedSegmentIds, ["scene-01", "scene-02"]);
   assert.equal(draft.reviewStatus, "needs_human_review");
   assert.throws(() => createApprovedDraft(draft, new Set(["scene-01"])), /reviewed/);
 });
@@ -66,5 +68,15 @@ test("editing a translation resets approval status", () => {
   const updated = updateDraftTranslation(draft, "scene-01", "ترجمهٔ ویرایش‌شده.");
   assert.equal(updated.segments[0].translation, "ترجمهٔ ویرایش‌شده.");
   assert.equal(updated.reviewStatus, "needs_human_review");
+  assert.equal("reviewedSegmentIds" in updated, false);
   assert.equal(draft.reviewStatus, "approved");
+});
+
+test("review page is local-only and exposes an accessible JSON workflow", async () => {
+  const html = await readFile(new URL("../site/sokhan-review.html", import.meta.url), "utf8");
+  const moduleSource = await readFile(new URL("../site/sokhan-review.mjs", import.meta.url), "utf8");
+  assert.match(html, /type="file"/);
+  assert.match(html, /aria-live="polite"/);
+  assert.match(html, /sokhan-review\.mjs/);
+  assert.doesNotMatch(moduleSource, /fetch\s*\(|XMLHttpRequest|localStorage|sessionStorage/);
 });
