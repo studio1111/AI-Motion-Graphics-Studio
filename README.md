@@ -128,3 +128,22 @@ npm run produce -- --topic "The future of science" --language en --duration 60 -
 ```
 
 The upstream repository declares the MIT License for its software and dataset. Keep its attribution and license notice when redistributing copied material; prompts and linked creator posts remain attributed to their respective authors. Reference-based AI storyboard generation requires explicit `--allow-paid-ai` and configured provider credentials. Without that opt-in, the normal local fallback remains active and the selected reference is recorded for traceability but not treated as implemented motion.
+
+
+## Sokhan — local English-to-Persian translation and voice
+
+The first Sokhan release adds an offline-first English-to-Persian workflow. It uses a local Ollama model to create an editable Persian draft, requires human approval before speech synthesis, and reuses the existing Persian Speech / Mana-Persian-Piper runtime for WAV narration.
+
+See [Sokhan v1 setup, usage and quality gates](docs/SOKHAN_V1_ENGLISH_TO_PERSIAN.md).
+
+Quick start:
+
+```sh
+ollama pull qwen3:4b
+python3 -m pip install persian-speech==1.1.3
+npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json
+# Review the JSON translations and set reviewStatus to "approved".
+npm run sokhan:voice -- --input narration-fa.json --output-dir out/sokhan-voice
+```
+
+The translation endpoint is restricted to localhost. No cloud translation or paid TTS API is used. Model weights are downloaded by the local runtime and are not committed to Git. Persian quality still requires human review and listening tests; the implementation does not claim HeyGen Voice Turbo parity.
