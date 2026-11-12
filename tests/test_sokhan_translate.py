@@ -32,6 +32,43 @@ class SokhanTranslationTests(unittest.TestCase):
             ["First sentence.", "Second sentence."],
         )
 
+
+    def test_validates_glossary_entries_and_rejects_empty_or_duplicate_terms(self):
+        self.assertEqual(
+            SOKHAN.validate_glossary({
+                "Artificial Intelligence": "هوش مصنوعی",
+                "Machine Learning": "یادگیری ماشین",
+            }),
+            {
+                "Artificial Intelligence": "هوش مصنوعی",
+                "Machine Learning": "یادگیری ماشین",
+            },
+        )
+        with self.assertRaisesRegex(ValueError, "non-empty"):
+            SOKHAN.validate_glossary({"": "مقدار"})
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            SOKHAN.validate_glossary({"AI": "هوش مصنوعی", "ai": "هوش مصنوعی"})
+
+    def test_applies_glossary_case_insensitively_without_replacing_inside_words(self):
+        result = SOKHAN.apply_glossary(
+            "Artificial intelligence helps; artificial intelligence is useful. "
+            "The word superintelligence must not be altered.",
+            {"Artificial Intelligence": "هوش مصنوعی"},
+        )
+        self.assertEqual(
+            result,
+            "هوش مصنوعی helps; هوش مصنوعی is useful. "
+            "The word superintelligence must not be altered.",
+        )
+
+    def test_translation_prompt_includes_glossary_as_terminology_not_instructions(self):
+        prompt = SOKHAN.build_translation_prompt(
+            "Explain machine learning.",
+            {"machine learning": "یادگیری ماشین"},
+        )
+        self.assertIn("یادگیری ماشین", prompt)
+        self.assertIn("terminology data", prompt)
+
     def test_rejects_empty_source(self):
         with self.assertRaisesRegex(ValueError, "no translatable text"):
             SOKHAN.split_segments(" \n\n ")
