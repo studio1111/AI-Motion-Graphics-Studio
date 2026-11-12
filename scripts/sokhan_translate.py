@@ -9,6 +9,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -164,6 +165,84 @@ def extract_source_segments(text: str, suffix: str) -> list[tuple[str, str]]:
     return [(f"segment-{index:04d}", part) for index, part in enumerate(split_segments(text), start=1)]
 
 
+def translation_cache_key(
+    source: str,
+    backend: str,
+    model: str,
+    model_revision: str,
+    glossary: dict[str, str] | None = None,
+) -> str:
+    glossary_digest = hashlib.sha256(
+        json.dumps(validate_glossary(glossary or {}), ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+    identity = {
+        "cacheSchemaVersion": 1,
+        "promptVersion": 1,
+        "sourceSha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
+        "backend": backend,
+        "model": model,
+        "modelRevision": model_revision or model,
+        "glossarySha256": glossary_digest,
+    }
+    canonical = json.dumps(identity, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _translation_cache_path(cache_dir: str | Path, key: str) -> Path:
+    if not re.fullmatch(r"[a-f0-9]{64}", key):
+        raise ValueError("Translation cache key must be a SHA-256 hex digest.")
+    return Path(cache_dir).expanduser().resolve() / "v1" / key[:2] / (key + ".json")
+
+
+def read_translation_cache(cache_dir: str | Path, key: str) -> str | None:
+    path = _translation_cache_path(cache_dir, key)
+    try:
+        if path.parent.is_symlink() or path.parent.parent.is_symlink() or path.is_symlink():
+            return None
+        if not path.is_file() or path.stat().st_size > 2_000_000:
+            return None
+        entry = json.loads(path.read_text(encoding="utf-8"))
+        if entry.get("schemaVersion") != 1 or entry.get("key") != key:
+            return None
+        translation = entry.get("translation")
+        return translation.strip() if isinstance(translation, str) and translation.strip() else None
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def write_translation_cache(cache_dir: str | Path, key: str, translation: str) -> Path:
+    if not isinstance(translation, str) or not translation.strip():
+        raise ValueError("Cannot cache an empty translation.")
+    path = _translation_cache_path(cache_dir, key)
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if path.parent.is_symlink() or path.parent.parent.is_symlink():
+        raise OSError("Translation cache directories must not be symbolic links.")
+    os.chmod(path.parent, 0o700)
+    entry = {
+        "schemaVersion": 1,
+        "key": key,
+        "translation": translation.strip(),
+    }
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=".tmp-",
+            delete=False,
+        ) as temporary:
+            temporary_path = Path(temporary.name)
+            temporary.write(json.dumps(entry, ensure_ascii=False) + "\\n")
+            temporary.flush()
+            os.fsync(temporary.fileno())
+        os.replace(temporary_path, path)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+    return path
+
+
 def build_backend_payload(source: str, model: str, glossary: dict[str, str] | None = None, backend: str = "ollama") -> dict:
     prompt = build_translation_prompt(source, glossary)
     if backend == "ollama":
@@ -245,6 +324,8 @@ def main() -> int:
     parser.add_argument("--endpoint", default="")
     parser.add_argument("--timeout", type=int, default=600)
     parser.add_argument("--glossary", default="", help="Optional UTF-8 JSON glossary of English terms to exact Persian values")
+    parser.add_argument("--cache-dir", default=os.environ.get("SOKHAN_CACHE_DIR", ""), help="Local translation cache directory")
+    parser.add_argument("--no-cache", action="store_true", help="Disable the local translation cache")
     args = parser.parse_args()
 
     model = args.model or (
@@ -283,13 +364,29 @@ def main() -> int:
         except json.JSONDecodeError as exc:
             parser.error("Glossary JSON is invalid: " + str(exc))
 
+    cache_dir = None
+    if not args.no_cache:
+        cache_dir = Path(args.cache_dir).expanduser().resolve() if args.cache_dir else Path.home() / ".cache" / "sokhan"
     translated = []
     for index, (segment_id, source) in enumerate(chunks, start=1):
-        print(f"Translating segment {index}/{len(chunks)}...", file=sys.stderr)
+        cache_key = translation_cache_key(source, args.backend, model, args.model_revision, glossary)
+        translation = read_translation_cache(cache_dir, cache_key) if cache_dir else None
+        cache_hit = translation is not None
+        if cache_hit:
+            print(f"Using cached translation for segment {index}/{len(chunks)}...", file=sys.stderr)
+        else:
+            print(f"Translating segment {index}/{len(chunks)}...", file=sys.stderr)
+            translation = translate_one(source, model, endpoint, args.timeout, glossary, args.backend)
+            if cache_dir:
+                try:
+                    write_translation_cache(cache_dir, cache_key, translation)
+                except OSError as exc:
+                    print("Warning: local translation cache could not be written: " + str(exc), file=sys.stderr)
         translated.append({
             "id": segment_id,
             "sourceText": source,
-            "translation": translate_one(source, model, endpoint, args.timeout, glossary, args.backend),
+            "translation": translation,
+            "cacheHit": cache_hit,
         })
 
     document = {
@@ -302,6 +399,7 @@ def main() -> int:
         "createdAt": datetime.now(timezone.utc).isoformat(),
         "sourceSha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "glossarySha256": hashlib.sha256(json.dumps(glossary, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest(),
+        "cacheEnabled": cache_dir is not None,
         "segments": translated,
         "reviewStatus": "needs_human_review",
     }
