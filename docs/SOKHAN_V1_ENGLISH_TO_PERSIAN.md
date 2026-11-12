@@ -98,14 +98,14 @@ SOKHAN_SPEECH_BIN=/absolute/path/to/speech FFMPEG_PATH=/absolute/path/to/ffmpeg 
 
 ## Model and dependency provenance
 
-The current Persian speech baseline is the MIT-licensed `persian-speech==1.1.3` wrapper, which documents Mana-Persian-Piper (MIT) and Mana-TTS (CC0-1.0). The upstream model card currently identifies the model as MIT and the dataset card identifies the corpus as CC0-1.0. The inspected model-card revision is `cafdcbdb455e4a9ab2ef18dccb3e21dce6a25ee9`.
+The current Persian speech baseline is the MIT-licensed `persian-speech==1.1.3` wrapper, which documents Mana-Persian-Piper (MIT) and Mana-TTS (CC0-1.0). The upstream model card currently identifies the model as MIT and the dataset card identifies the corpus as CC0-1.0. The inspected model repository revision containing the uploaded model files is `ad9dd8518bedf517bd7cbc9f63b8e5c844bf5bc0`; the MIT license is declared in the model card.
 
 - Package wheel SHA-256 published by PyPI for `persian-speech-1.1.3-py3-none-any.whl`: `066d6749ca7505bda0f750fb0017a4ff8806f70556ec6c30abe48cea55328597`.
 - Package source archive SHA-256: `817de08998be9ca8ed03058bc0d2447ac1e97454de7136716d2a5fd1c6ab3cb6`.
 - PyPI reported no provenance attestation for this release when checked. A published hash is an integrity check, not proof that the package has been security-audited.
 - The current `speech` CLI uses runtime-managed model downloads. The wrapper does not yet enforce the inspected Hugging Face commit at runtime; exact model-weight revision pinning remains a reproducibility task before calling this backend fully locked.
 
-Sources: [PyPI release 1.1.3](https://pypi.org/project/persian-speech/1.1.3/), [Mana-Persian-Piper model card at inspected revision](https://huggingface.co/MahtaFetrat/Mana-Persian-Piper/tree/cafdcbdb455e4a9ab2ef18dccb3e21dce6a25ee9), [Mana-TTS dataset card](https://huggingface.co/datasets/MahtaFetrat/Mana-TTS).
+Sources: [PyPI release 1.1.3](https://pypi.org/project/persian-speech/1.1.3/), [Mana-Persian-Piper model card at inspected revision](https://huggingface.co/MahtaFetrat/Mana-Persian-Piper/tree/ad9dd8518bedf517bd7cbc9f63b8e5c844bf5bc0), [Mana-TTS dataset card](https://huggingface.co/datasets/MahtaFetrat/Mana-TTS).
 
 ## Quality and safety boundaries
 
