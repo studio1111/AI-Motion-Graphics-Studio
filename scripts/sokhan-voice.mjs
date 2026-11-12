@@ -47,32 +47,52 @@ async function findExecutable(name, override) {
   return null;
 }
 
-function run(command, args, timeoutMs = 240000) {
+export function runCommand(command, args, timeoutMs = 240000) {
+  const timeout = Number(timeoutMs);
+  if (!Number.isFinite(timeout) || timeout <= 0) {
+    throw new RangeError("Subprocess timeout must be a positive finite number of milliseconds.");
+  }
+
   return new Promise(resolvePromise => {
-    let stdout = "", stderr = "", settled = false;
+    let stdout = "", stderr = "", settled = false, timedOut = false;
+    let timer = null, killTimer = null;
+    const finish = result => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      if (killTimer) clearTimeout(killTimer);
+      resolvePromise(result);
+    };
+
     let child;
-    try { child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] }); }
-    catch (error) { resolvePromise({ code: null, error: String(error) }); return; }
+    try {
+      child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
+    } catch (error) {
+      finish({ code: null, signal: null, stdout, stderr, error: String(error), timedOut });
+      return;
+    }
+
     const append = (current, chunk) => (current + chunk.toString()).slice(-4000);
     child.stdout.on("data", chunk => { stdout = append(stdout, chunk); });
     child.stderr.on("data", chunk => { stderr = append(stderr, chunk); });
-    const timer = setTimeout(() => {
+
+    timer = setTimeout(() => {
+      timedOut = true;
       child.kill("SIGTERM");
-      setTimeout(() => { if (!settled) child.kill("SIGKILL"); }, 3000).unref();
-    }, timeoutMs);
+      killTimer = setTimeout(() => {
+        if (!settled) child.kill("SIGKILL");
+      }, 3000);
+      killTimer.unref?.();
+    }, timeout);
+
     child.on("error", error => {
-      if (settled) return;
-      settled = true; clearTimeout(timer);
-      resolvePromise({ code: null, stdout, stderr, error: String(error) });
+      finish({ code: null, signal: null, stdout, stderr, error: String(error), timedOut });
     });
-    child.on("close", code => {
-      if (settled) return;
-      settled = true; clearTimeout(timer);
-      resolvePromise({ code, stdout, stderr });
+    child.on("close", (code, signal) => {
+      finish({ code, signal, stdout, stderr, timedOut });
     });
   });
 }
-
 
 
 export { wavDuration };
@@ -126,13 +146,13 @@ async function main() {
     const rawPath = join(outputDir, base + ".source.wav");
     const finalPath = join(outputDir, base + ".wav");
     const text = normalizeNarrationText(segment.translation, "fa");
-    const generated = await run(speech, [text, rawPath]);
+    const generated = await runCommand(speech, [text, rawPath]);
     if (generated.code !== 0) {
       await rm(rawPath, { force: true });
       throw new Error("Persian speech generation failed for " + segment.id + ": " + String(generated.stderr || generated.error || "unknown error").slice(-500));
     }
     const enhancedPath = getEnhancedNarrationPath(rawPath);
-    const enhanced = await run(ffmpeg, [
+    const enhanced = await runCommand(ffmpeg, [
       "-y", "-hide_banner", "-loglevel", "error", "-i", rawPath,
       "-af", buildNarrationEnhancementFilter(), "-ac", "1", "-ar", "24000",
       "-c:a", "pcm_s16le", enhancedPath
