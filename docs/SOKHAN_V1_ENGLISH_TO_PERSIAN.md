@@ -53,9 +53,11 @@ Optional settings:
 
 ```sh
 SOKHAN_OLLAMA_MODEL=qwen3:4b npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json --timeout 240
+# Optional terminology consistency across videos:
+SOKHAN_OLLAMA_MODEL=qwen3:4b npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json --glossary docs/sokhan-glossary.example.json
 ```
 
-The endpoint defaults to `http://127.0.0.1:11434`. Remote endpoints are rejected intentionally. The script limits input to 1 MB, each segment to 4,000 characters, and the document to 500 segments.
+The endpoint defaults to `http://127.0.0.1:11434`. Remote endpoints are rejected intentionally. The script limits input to 1 MB, each segment to 4,000 characters, and the document to 500 segments. An optional JSON glossary maps English terminology to exact Persian terms, is included in the translation prompt, applies deterministic replacements for English terms left untranslated, and is recorded by SHA-256 in the draft metadata. Glossaries are limited to 500 entries and 100 KB.
 
 Open `narration-fa.json`, edit every `translation`, and change:
 
