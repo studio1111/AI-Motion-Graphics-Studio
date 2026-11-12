@@ -7,6 +7,7 @@ import { pathToFileURL } from "node:url";
 import { loadOpus55Reference } from "../src/production/opus55-reference-library.mjs";
 import { splitCaptionSegments } from "../src/production/captions.mjs";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
+import { wavDuration } from "../src/production/wav.mjs";
 import { applySokhanTranslations } from "../src/production/sokhan-translation.mjs";
 import { generateAceStepMusic, resolveMusicEngine } from "../src/production/ace-step-client.mjs";
 import { masterAudioVideo } from "../src/production/audio-mastering.mjs";
@@ -15,7 +16,7 @@ import { extendFinalSceneToTarget } from "../src/production/narration-timing.mjs
 import { resolveRenderSettings } from "../src/production/render-quality.mjs";
 import { resolveCaptionStyle } from "../src/production/caption-styles.mjs";
 import { resolveAudioMixProfile } from "../src/production/audio-mix.mjs";
-export { splitCaptionSegments };
+export { splitCaptionSegments, wavDuration };
 
 export const LAYOUTS = new Set(["hero","editorial","diagram","timeline","compare","data","particles","map","interface","quote","outro"]);
 export const SUPPORTED_LANGUAGES = new Set(["fa","en","de","es","fr","it","pt","nl"]);
@@ -314,7 +315,7 @@ function dimensions(ratio){return ratio==="9:16"?{width:1080,height:1920}:ratio=
 function sumFrames(scenes){return scenes.reduce((n,s)=>n+Math.max(1,Math.round(s.durationInFrames||0)),0);}
 function executable(command){for(const d of (process.env.PATH||"").split(delimiter)){const p=join(d,command);try{if(spawnSync("test",["-x",p],{timeout:1500}).status===0)return p;}catch{}}return null;}
 function run(command,args,timeout=120000){return new Promise(resolvePromise=>{let stdout="",stderr="",settled=false;let child;try{child=spawn(command,args,{stdio:["ignore","pipe","pipe"]});}catch(e){resolvePromise({code:null,error:String(e)});return;}const append=(a,b)=>(a+b.toString()).slice(-10000);child.stdout.on("data",d=>stdout=append(stdout,d));child.stderr.on("data",d=>stderr=append(stderr,d));let timedOut=false;const timer=setTimeout(()=>{timedOut=true;child.kill("SIGTERM");setTimeout(()=>{if(!settled)child.kill("SIGKILL");},3000).unref();},timeout);child.on("error",e=>{if(settled)return;settled=true;clearTimeout(timer);resolvePromise({code:null,stdout,stderr,error:String(e),timedOut});});child.on("close",code=>{if(settled)return;settled=true;clearTimeout(timer);resolvePromise({code,stdout,stderr,timedOut});});});}
-export function wavDuration(b){if(!Buffer.isBuffer(b)||b.length<44||b.toString("ascii",0,4)!=="RIFF")return null;const byteRate=b.readUInt32LE(28);let dataSize=null;for(let i=12;i+8<=b.length;){const name=b.toString("ascii",i,i+4),n=b.readUInt32LE(i+4);if(name==="data"){dataSize=n;break;}i+=8+n+(n%2);}return byteRate&&dataSize!==null?dataSize/byteRate:null;}
+
 async function makeVoice(scenes,language,mode,runId,fps,warnings){
  const result={status:"disabled",engine:null,generatedScenes:0,warnings:[]};
  if(mode==="off")return result;
