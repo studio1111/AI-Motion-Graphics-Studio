@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { access, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
-import { delimiter, join, resolve, basename } from "node:path";
+import { delimiter, join, resolve, basename } from "node:path";\nimport { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { validateSokhanTranslationDocument } from "../src/production/sokhan-translation.mjs";
@@ -78,7 +78,7 @@ export function wavDuration(buffer) {
     if (chunk === "data") { dataSize = size; break; }
     offset += 8 + size + (size % 2);
   }
-  return byteRate > 0 && dataSize !== null ? dataSize / byteRate : null;
+  return byteRate > 0 && dataSize !== null && dataSize <= buffer.length ? dataSize / byteRate : null;
 }
 
 function safeId(value, index) {
