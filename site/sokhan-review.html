@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d14">
+  <meta name="description" content="بازبینی محلی و امن ترجمه‌های انگلیسی به فارسی Sokhan">
+  <title>بازبینی ترجمهٔ فارسی | Sokhan</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./sokhan-review.css">
+</head>
+<body>
+  <header class="topbar sokhan-topbar">
+    <a class="brand" href="./index.html" aria-label="بازگشت به استودیو">
+      <span class="brand-mark">S</span>
+      <span><b>SOKHAN</b><small>TRANSLATION REVIEW</small></span>
+    </a>
+    <nav class="sokhan-nav" aria-label="ناوبری">
+      <a class="github" href="./index.html">استودیو</a>
+      <a class="github" href="https://github.com/studio1111/AI-Motion-Graphics-Studio">مخزن گیت‌هاب</a>
+    </nav>
+  </header>
+
+  <main class="sokhan-review-main" data-sokhan-review>
+    <section class="sokhan-review-hero">
+      <span class="eyebrow"><i></i> ENGLISH → PERSIAN · LOCAL REVIEW</span>
+      <h1>بازبینی ترجمهٔ <span>فارسی</span></h1>
+      <p>فایل ترجمه را انتخاب کن، متن انگلیسی و فارسی هر صحنه را کنار هم بررسی کن و فقط پس از بازبینی تمام بخش‌ها، نسخهٔ تأییدشده را دریافت کن.</p>
+    </section>
+
+    <section class="panel sokhan-upload-panel" aria-labelledby="sokhan-upload-title">
+      <h2 id="sokhan-upload-title">۱. بارگذاری پیش‌نویس</h2>
+      <label for="sokhan-file">فایل JSON ترجمه</label>
+      <input id="sokhan-file" type="file" accept=".json,application/json">
+      <p class="hint">فقط فایل‌های Sokhan v1 با زبان مبدأ انگلیسی و مقصد فارسی پذیرفته می‌شوند؛ حداکثر حجم ۵ مگابایت.</p>
+      <p id="sokhan-status" class="status" role="status" aria-live="polite">هنوز فایلی انتخاب نشده است.</p>
+      <div class="sokhan-progress-row">
+        <strong id="sokhan-review-count">هنوز فایلی انتخاب نشده است</strong>
+        <span>تأیید نهایی تا بازبینی همهٔ صحنه‌ها غیرفعال می‌ماند.</span>
+      </div>
+    </section>
+
+    <section id="sokhan-segments" class="sokhan-segments" aria-label="بخش‌های ترجمه برای بازبینی"></section>
+
+    <section class="sokhan-approve-panel">
+      <div>
+        <h2>۲. تأیید نهایی</h2>
+        <p>با تغییر حتی یک ترجمه، تأیید آن بخش باطل می‌شود و باید دوباره بررسی شود.</p>
+      </div>
+      <button id="sokhan-approve" class="primary full" type="button" disabled>تأیید و دریافت فایل JSON</button>
+    </section>
+
+    <section class="security sokhan-privacy">
+      <span class="lock" aria-hidden="true">⌑</span>
+      <div>
+        <b>حریم خصوصی</b>
+        <p>فایل فقط داخل همین مرورگر پردازش می‌شود. متن‌ها به سرور ارسال نمی‌شوند، در فضای ابری ذخیره نمی‌شوند و در Local Storage قرار نمی‌گیرند.</p>
+      </div>
+    </section>
+
+    <footer class="sokhan-review-footer">
+      <span>SOKHAN · EN → FA · V1</span>
+      <span>Human review required before Persian TTS</span>
+    </footer>
+  </main>
+
+  <script type="module" src="./sokhan-review.mjs"></script>
+</body>
+</html>
