@@ -83,14 +83,23 @@ class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def local_endpoint(value: str) -> str:
+def local_endpoint(value: str, backend: str = "ollama") -> str:
+    if backend not in {"ollama", "llama.cpp"}:
+        raise ValueError("Translation backend must be ollama or llama.cpp.")
     parsed = urllib.parse.urlparse(value)
-    if parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "localhost", "::1"} or parsed.path not in {"", "/"}:
-        raise ValueError("Sokhan only permits a local Ollama endpoint on localhost (HTTP).")
+    allowed_paths = {"", "/"} if backend == "ollama" else {"", "/", "/v1"}
+    if parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "localhost", "::1"} or parsed.path not in allowed_paths:
+        raise ValueError("Sokhan only permits a local Ollama or llama.cpp endpoint on localhost (HTTP).")
     if parsed.username or parsed.password or parsed.query or parsed.fragment:
-        raise ValueError("Ollama endpoint must not contain credentials, query parameters, or fragments.")
-    return value.rstrip("/") + "/api/generate"
-
+        raise ValueError("Local model endpoint must not contain credentials, query parameters, or fragments.")
+    try:
+        _ = parsed.port
+    except ValueError as exc:
+        raise ValueError("Local model endpoint contains an invalid port.") from exc
+    base = value.rstrip("/")
+    if backend == "ollama":
+        return base + "/api/generate"
+    return base + "/chat/completions" if parsed.path == "/v1" else base + "/v1/chat/completions"
 
 def split_segments(text: str) -> list[str]:
     paragraphs = [re.sub(r"\s+", " ", part).strip() for part in re.split(r"\n\s*\n", text)]
@@ -155,15 +164,66 @@ def extract_source_segments(text: str, suffix: str) -> list[tuple[str, str]]:
     return [(f"segment-{index:04d}", part) for index, part in enumerate(split_segments(text), start=1)]
 
 
-def translate_one(source: str, model: str, endpoint: str, timeout: int, glossary: dict[str, str] | None = None) -> str:
+def build_backend_payload(source: str, model: str, glossary: dict[str, str] | None = None, backend: str = "ollama") -> dict:
     prompt = build_translation_prompt(source, glossary)
-    payload = json.dumps({
-        "model": model,
-        "prompt": prompt,
-        "stream": False,
-        "format": "json",
-        "options": {"temperature": 0.15},
-    }).encode("utf-8")
+    if backend == "ollama":
+        return {
+            "model": model,
+            "prompt": prompt,
+            "stream": False,
+            "format": "json",
+            "options": {"temperature": 0.15, "num_predict": 1024},
+        }
+    if backend == "llama.cpp":
+        return {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": False,
+            "temperature": 0.15,
+            "max_tokens": 1024,
+            "response_format": {"type": "json_object"},
+            "reasoning_effort": "none",
+            "chat_template_kwargs": {"enable_thinking": False},
+        }
+    raise ValueError("Translation backend must be ollama or llama.cpp.")
+
+
+def parse_backend_response(raw: bytes, backend: str = "ollama") -> str:
+    try:
+        envelope = json.loads(raw.decode("utf-8"))
+        if backend == "ollama":
+            content = envelope.get("response") if isinstance(envelope, dict) else None
+        elif backend == "llama.cpp":
+            content = envelope["choices"][0]["message"]["content"]
+        else:
+            raise ValueError("Translation backend must be ollama or llama.cpp.")
+        if not isinstance(content, str):
+            raise ValueError("Model response content is missing.")
+        try:
+            parsed = json.loads(content)
+        except json.JSONDecodeError:
+            final_content = content.rsplit("</think>", 1)[-1].strip()
+            start, end = final_content.find("{"), final_content.rfind("}")
+            if start < 0 or end <= start:
+                raise
+            parsed = json.loads(final_content[start:end + 1])
+        translation = parsed.get("translation") if isinstance(parsed, dict) else None
+    except (UnicodeDecodeError, json.JSONDecodeError, KeyError, IndexError, TypeError, AttributeError, ValueError) as exc:
+        raise RuntimeError("Local " + backend + " server returned an invalid translation response.") from exc
+    if not isinstance(translation, str) or not translation.strip():
+        raise RuntimeError("Local " + backend + " server returned an empty Persian translation.")
+    return translation.strip()
+
+
+def translate_one(
+    source: str,
+    model: str,
+    endpoint: str,
+    timeout: int,
+    glossary: dict[str, str] | None = None,
+    backend: str = "ollama",
+) -> str:
+    payload = json.dumps(build_backend_payload(source, model, glossary, backend), ensure_ascii=False).encode("utf-8")
     request = urllib.request.Request(
         endpoint, data=payload, headers={"Content-Type": "application/json"}, method="POST"
     )
@@ -172,29 +232,30 @@ def translate_one(source: str, model: str, endpoint: str, timeout: int, glossary
         with opener.open(request, timeout=timeout) as response:
             raw = response.read(2_000_000)
     except urllib.error.URLError as exc:
-        raise RuntimeError("Local Ollama request failed. Confirm Ollama is running and the model is installed.") from exc
-    try:
-        result = json.loads(raw.decode("utf-8"))
-        parsed = json.loads(result.get("response", ""))
-        translation = parsed.get("translation") if isinstance(parsed, dict) else None
-    except (UnicodeDecodeError, json.JSONDecodeError, AttributeError) as exc:
-        raise RuntimeError("Ollama returned an invalid translation response.") from exc
-    if not isinstance(translation, str) or not translation.strip():
-        raise RuntimeError("Ollama returned an empty Persian translation.")
-    return apply_glossary(translation.strip(), glossary or {})
+        raise RuntimeError("Local " + backend + " request failed. Confirm the local model server is running and the model is loaded.") from exc
+    return apply_glossary(parse_backend_response(raw, backend), glossary or {})
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Create an editable English-to-Persian Sokhan translation draft.")
     parser.add_argument("--input", required=True, help="UTF-8 English source text file")
     parser.add_argument("--output", required=True, help="Output JSON draft path")
-    parser.add_argument("--model", default=os.environ.get("SOKHAN_OLLAMA_MODEL", DEFAULT_MODEL))
-    parser.add_argument("--endpoint", default=os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434"))
+    parser.add_argument("--backend", choices=("ollama", "llama.cpp"), default=os.environ.get("SOKHAN_BACKEND", "ollama"))
+    parser.add_argument("--model", default="")
+    parser.add_argument("--model-revision", default=os.environ.get("SOKHAN_MODEL_REVISION", ""))
+    parser.add_argument("--endpoint", default="")
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument("--glossary", default="", help="Optional UTF-8 JSON glossary of English terms to exact Persian values")
     args = parser.parse_args()
 
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}", args.model):
+    model = args.model or (
+        os.environ.get("SOKHAN_OLLAMA_MODEL", DEFAULT_MODEL)
+        if args.backend == "ollama"
+        else os.environ.get("SOKHAN_LLAMA_MODEL", "local-model")
+    )
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}", model):
         parser.error("Model name contains unsupported characters.")
+    if args.model_revision and not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:/+-]{0,255}", args.model_revision):
+        parser.error("--model-revision contains unsupported characters.")
     if not 10 <= args.timeout <= 900:
         parser.error("--timeout must be between 10 and 900 seconds.")
 
@@ -204,7 +265,12 @@ def main() -> int:
         parser.error("Input and output paths must be different.")
     if not source_path.is_file() or source_path.stat().st_size > MAX_INPUT_BYTES:
         parser.error("Input must be an existing file no larger than 1 MB.")
-    endpoint = local_endpoint(args.endpoint)
+    endpoint_value = args.endpoint or (
+        os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+        if args.backend == "ollama"
+        else os.environ.get("SOKHAN_LLAMA_CPP_URL", "http://127.0.0.1:8080")
+    )
+    endpoint = local_endpoint(endpoint_value, args.backend)
     text = source_path.read_text(encoding="utf-8")
     chunks = extract_source_segments(text, source_path.suffix)
     glossary = {}
@@ -223,14 +289,16 @@ def main() -> int:
         translated.append({
             "id": segment_id,
             "sourceText": source,
-            "translation": translate_one(source, args.model, endpoint, args.timeout, glossary),
+            "translation": translate_one(source, model, endpoint, args.timeout, glossary, args.backend),
         })
 
     document = {
         "schemaVersion": 1,
         "sourceLanguage": "en",
         "targetLanguage": "fa",
-        "model": args.model,
+        "backend": args.backend,
+        "model": model,
+        "modelRevision": args.model_revision or None,
         "createdAt": datetime.now(timezone.utc).isoformat(),
         "sourceSha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "glossarySha256": hashlib.sha256(json.dumps(glossary, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest(),
