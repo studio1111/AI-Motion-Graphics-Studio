@@ -1,4 +1,4 @@
-export function validateDraft(document) {
+export function validateDraft(document, { allowEmptyTranslations = false } = {}) {
   if (!document || typeof document !== "object" || Array.isArray(document)) {
     throw new Error("The selected file must contain a Sokhan JSON object.");
   }
@@ -23,7 +23,7 @@ export function validateDraft(document) {
     if (ids.has(segment.id)) throw new Error("The draft contains a duplicate segment ID: " + segment.id);
     ids.add(segment.id);
     if (typeof segment.sourceText !== "string" || !segment.sourceText.trim() ||
-        typeof segment.translation !== "string" || !segment.translation.trim()) {
+        typeof segment.translation !== "string" || (!allowEmptyTranslations && !segment.translation.trim())) {
       throw new Error("Every segment must have non-empty English source and Persian translation text.");
     }
   }
@@ -54,7 +54,7 @@ export function createApprovedDraft(document, reviewedIds) {
 }
 
 export function updateDraftTranslation(document, segmentId, translation) {
-  validateDraft(document);
+  validateDraft(document, { allowEmptyTranslations: true });
   if (typeof translation !== "string") throw new TypeError("Translation must be text.");
   if (!document.segments.some(segment => segment.id === segmentId)) {
     throw new Error("Unknown segment ID: " + segmentId);
