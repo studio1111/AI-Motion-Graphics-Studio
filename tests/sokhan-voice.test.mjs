@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { runCommand, wavDuration } from "../scripts/sokhan-voice.mjs";
+import { runCommand } from "../scripts/sokhan-voice.mjs";
+import { inspectPcmWav, wavDuration } from "../src/production/wav.mjs";
 
 function wavFixture(seconds = 2) {
   const sampleRate = 24000;
@@ -49,21 +50,21 @@ test("rejects unsupported sample format, channel count, sample rate and bit dept
   const pcm = wavFixture(1);
   const float = Buffer.from(pcm);
   float.writeUInt16LE(3, 20);
-  assert.equal(wavDuration(float), null);
+  assert.equal(inspectPcmWav(float), null);
 
   const stereo = Buffer.from(pcm);
   stereo.writeUInt16LE(2, 22);
-  assert.equal(wavDuration(stereo), null);
+  assert.equal(inspectPcmWav(stereo), null);
 
   const wrongRate = Buffer.from(pcm);
   wrongRate.writeUInt32LE(16_000, 24);
   wrongRate.writeUInt32LE(32_000, 28);
-  assert.equal(wavDuration(wrongRate), null);
+  assert.equal(inspectPcmWav(wrongRate), null);
 
   const wrongDepth = Buffer.from(pcm);
   wrongDepth.writeUInt16LE(8, 34);
   wrongDepth.writeUInt32LE(24_000, 28);
-  assert.equal(wavDuration(wrongDepth), null);
+  assert.equal(inspectPcmWav(wrongDepth), null);
 });
 
 test("runs child processes with bounded output and captures successful results", async () => {
