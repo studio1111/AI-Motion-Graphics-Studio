@@ -21,6 +21,11 @@ MAX_SEGMENTS = 500
 MAX_SEGMENT_CHARS = 4_000
 
 
+class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers, new_url):
+        return None
+
+
 def local_endpoint(value: str) -> str:
     parsed = urllib.parse.urlparse(value)
     if parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "localhost", "::1"} or parsed.path not in {"", "/"}:
@@ -113,7 +118,8 @@ def translate_one(source: str, model: str, endpoint: str, timeout: int) -> str:
         endpoint, data=payload, headers={"Content-Type": "application/json"}, method="POST"
     )
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirectHandler)
+        with opener.open(request, timeout=timeout) as response:
             raw = response.read(2_000_000)
     except urllib.error.URLError as exc:
         raise RuntimeError("Local Ollama request failed. Confirm Ollama is running and the model is installed.") from exc
