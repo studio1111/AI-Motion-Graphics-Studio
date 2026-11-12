@@ -31,6 +31,22 @@ export function validateSokhanTranslationDocument(document) {
     return { ...segment, id, sourceText, translation };
   });
 
+  if (document.reviewedSegmentIds !== undefined) {
+    if (!Array.isArray(document.reviewedSegmentIds)) {
+      throw new TypeError("reviewedSegmentIds must be an array when present.");
+    }
+    const reviewed = new Set();
+    for (const id of document.reviewedSegmentIds) {
+      if (typeof id !== "string" || !id.trim() || reviewed.has(id)) {
+        throw new TypeError("reviewedSegmentIds must contain unique non-empty scene IDs.");
+      }
+      reviewed.add(id);
+    }
+    if (reviewed.size !== segments.length || segments.some(segment => !reviewed.has(segment.id))) {
+      throw new TypeError("reviewedSegmentIds must include every translation segment before approval.");
+    }
+  }
+
   return { ...document, segments };
 }
 
