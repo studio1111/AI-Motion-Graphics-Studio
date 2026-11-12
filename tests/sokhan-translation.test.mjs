@@ -51,3 +51,10 @@ test("rejects empty translations", () => {
     ...document, segments: [{ ...document.segments[0], translation: " " }]
   }), /non-empty/);
 });
+
+test("rejects stale source text so an old translation cannot attach to a changed script", () => {
+  assert.throws(() => applySokhanTranslations(
+    [{ id: "scene-1", narration: "A changed source sentence." }],
+    { ...document, segments: [document.segments[0]] }
+  ), /source text does not match/);
+});
