@@ -140,6 +140,7 @@ The current Persian speech baseline is the MIT-licensed `persian-speech==1.1.3` 
 - Package source archive SHA-256: `817de08998be9ca8ed03058bc0d2447ac1e97454de7136716d2a5fd1c6ab3cb6`.
 - PyPI reported no provenance attestation for this release when checked. A published hash is an integrity check, not proof that the package has been security-audited.
 - The current `speech` CLI uses runtime-managed model downloads. The wrapper does not yet enforce the inspected Hugging Face commit at runtime; exact model-weight revision pinning remains a reproducibility task before calling this backend fully locked.
+- The optional Android translation backend uses the official `Qwen/Qwen3-4B-GGUF` repository. Its Q4_K_M variant is approximately 2.5 GB and is published under Apache-2.0. GGUF files are not committed; record the local file's SHA-256 with `--model-revision` to make the translation cache and draft metadata revision-aware.
 
 Sources: [PyPI release 1.1.3](https://pypi.org/project/persian-speech/1.1.3/), [Mana-Persian-Piper model card at inspected revision](https://huggingface.co/MahtaFetrat/Mana-Persian-Piper/tree/ad9dd8518bedf517bd7cbc9f63b8e5c844bf5bc0), [Mana-TTS dataset card](https://huggingface.co/datasets/MahtaFetrat/Mana-TTS).
 
