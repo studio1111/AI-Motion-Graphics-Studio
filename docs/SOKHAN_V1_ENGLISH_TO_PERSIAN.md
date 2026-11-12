@@ -67,6 +67,12 @@ For reproducibility, pass `--model-revision sha256:<GGUF-file-hash>` after recor
 
 The Termux instructions above cover local translation only. Persian TTS on Termux is not yet validated: the voice step requires the `speech` executable from `persian-speech` plus FFmpeg. If that runtime cannot be installed on Android, create and review the Persian draft on the phone, then run voice generation on a supported Linux environment; the application will report `not_installed` rather than silently substitute another voice.
 
+## Browser review studio
+
+The static page `site/sokhan-review.html` is linked from the main Studio navigation. Open it from the published site or serve the `site/` directory over a local HTTP server. Select the generated translation JSON, compare each English source with its Persian draft, edit the Persian text, and check the review box for every segment. The final download is marked `reviewStatus: approved` and includes `reviewedSegmentIds`; editing any segment resets approval and removes the audit list.
+
+The page processes the file entirely in the browser. It does not call a server, use local storage, or upload the text. It accepts only English-to-Persian Sokhan v1 files and limits uploads to 5 MB. The production validator verifies the review-ID list when it is present; manually approved legacy drafts without that optional field remain backward-compatible.
+
 ## Create and review a translation
 
 For a standalone script, save the English narration in a UTF-8 text file. Blank lines create separate translation segments. For a Remotion production, first create an English storyboard with `--plan-only`, then pass its `storyboard.json` to the translator; this preserves exact scene IDs so reviewed translations can be reattached safely:
