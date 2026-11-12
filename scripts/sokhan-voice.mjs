@@ -55,7 +55,10 @@ function run(command, args, timeoutMs = 240000) {
     const append = (current, chunk) => (current + chunk.toString()).slice(-4000);
     child.stdout.on("data", chunk => { stdout = append(stdout, chunk); });
     child.stderr.on("data", chunk => { stderr = append(stderr, chunk); });
-    const timer = setTimeout(() => {\n      child.kill("SIGTERM");\n      setTimeout(() => { if (!settled) child.kill("SIGKILL"); }, 3000).unref();\n    }, timeoutMs);
+    const timer = setTimeout(() => {
+      child.kill("SIGTERM");
+      setTimeout(() => { if (!settled) child.kill("SIGKILL"); }, 3000).unref();
+    }, timeoutMs);
     child.on("error", error => {
       if (settled) return;
       settled = true; clearTimeout(timer);
