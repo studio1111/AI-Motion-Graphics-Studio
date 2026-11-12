@@ -32,3 +32,36 @@ test("rejects truncated or non-WAV data", () => {
   assert.equal(wavDuration(Buffer.from("not audio")), null);
   assert.equal(wavDuration(wavFixture(2).subarray(0, 60)), null);
 });
+
+test("rejects a RIFF container without the WAVE signature", () => {
+  const buffer = wavFixture(1);
+  buffer.write("AVI ", 8);
+  assert.equal(wavDuration(buffer), null);
+});
+
+test("rejects a data chunk whose declared payload is truncated", () => {
+  const buffer = wavFixture(1);
+  buffer.writeUInt32LE(48_000, 40);
+  assert.equal(wavDuration(buffer), null);
+});
+
+test("rejects unsupported sample format, channel count, sample rate and bit depth", () => {
+  const pcm = wavFixture(1);
+  const float = Buffer.from(pcm);
+  float.writeUInt16LE(3, 20);
+  assert.equal(wavDuration(float), null);
+
+  const stereo = Buffer.from(pcm);
+  stereo.writeUInt16LE(2, 22);
+  assert.equal(wavDuration(stereo), null);
+
+  const wrongRate = Buffer.from(pcm);
+  wrongRate.writeUInt32LE(16_000, 24);
+  wrongRate.writeUInt32LE(32_000, 28);
+  assert.equal(wavDuration(wrongRate), null);
+
+  const wrongDepth = Buffer.from(pcm);
+  wrongDepth.writeUInt16LE(8, 34);
+  wrongDepth.writeUInt32LE(24_000, 28);
+  assert.equal(wavDuration(wrongDepth), null);
+});
