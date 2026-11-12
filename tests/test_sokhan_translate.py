@@ -55,6 +55,32 @@ class SokhanTranslationTests(unittest.TestCase):
             "سلام",
         )
 
+
+    def test_builds_ollama_payload_without_changing_existing_backend_contract(self):
+        payload = SOKHAN.build_backend_payload(
+            "Translate this sentence.",
+            "qwen3:4b",
+            {},
+            "ollama",
+        )
+        self.assertEqual(payload["model"], "qwen3:4b")
+        self.assertEqual(payload["stream"], False)
+        self.assertEqual(payload["format"], "json")
+        self.assertEqual(payload["options"]["temperature"], 0.15)
+        self.assertIn("Translate this sentence.", payload["prompt"])
+
+    def test_parses_existing_ollama_response_contract(self):
+        raw = json.dumps({
+            "response": json.dumps({"translation": "سلام"}, ensure_ascii=False)
+        }, ensure_ascii=False).encode("utf-8")
+        self.assertEqual(SOKHAN.parse_backend_response(raw, "ollama"), "سلام")
+
+    def test_accepts_llama_cpp_v1_base_url(self):
+        self.assertEqual(
+            SOKHAN.local_endpoint("http://localhost:8080/v1", "llama.cpp"),
+            "http://localhost:8080/v1/chat/completions",
+        )
+
     def test_rejects_remote_llama_cpp_endpoint(self):
         with self.assertRaisesRegex(ValueError, "localhost"):
             SOKHAN.local_endpoint("https://example.com", "llama.cpp")
