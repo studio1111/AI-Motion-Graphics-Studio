@@ -70,15 +70,15 @@ function run(command, args, timeoutMs = 240000) {
 
 export function wavDuration(buffer) {
   if (!Buffer.isBuffer(buffer) || buffer.length < 44 || buffer.toString("ascii", 0, 4) !== "RIFF" || buffer.toString("ascii", 8, 12) !== "WAVE") return null;
-  let byteRate = 0, dataSize = null;
+  let byteRate = 0, dataSize = null, dataOffset = null;
   for (let offset = 12; offset + 8 <= buffer.length;) {
     const chunk = buffer.toString("ascii", offset, offset + 4);
     const size = buffer.readUInt32LE(offset + 4);
     if (chunk === "fmt " && size >= 16 && offset + 24 <= buffer.length) byteRate = buffer.readUInt32LE(offset + 16);
-    if (chunk === "data") { dataSize = size; break; }
+    if (chunk === "data") { dataSize = size; dataOffset = offset; break; }
     offset += 8 + size + (size % 2);
   }
-  return byteRate > 0 && dataSize !== null && dataSize <= buffer.length - 8 - (buffer.indexOf(Buffer.from("data")) >= 0 ? buffer.indexOf(Buffer.from("data")) : 0) ? dataSize / byteRate : null;
+  return byteRate > 0 && dataSize !== null && dataSize <= buffer.length - dataOffset - 8 ? dataSize / byteRate : null;
 }
 
 function safeId(value, index) {
