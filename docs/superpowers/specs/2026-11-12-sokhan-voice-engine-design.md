@@ -1,7 +1,7 @@
 # Sokhan Voice Engine — English-to-Persian Design
 
 **Date:** 2026-11-12  
-**Status:** Scope confirmed; design approval pending  
+**Status:** User-approved; v1 implementation in progress (2026-11-12)  
 **Repository:** studio1111/AI-Motion-Graphics-Studio  
 **Branch:** design/sokhan-voice-engine
 
