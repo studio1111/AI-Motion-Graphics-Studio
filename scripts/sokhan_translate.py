@@ -59,6 +59,40 @@ def split_segments(text: str) -> list[str]:
     return segments
 
 
+
+
+def extract_source_segments(text: str, suffix: str) -> list[tuple[str, str]]:
+    if suffix.lower() == ".json":
+        try:
+            document = json.loads(text)
+        except json.JSONDecodeError as exc:
+            raise ValueError("Storyboard JSON is invalid.") from exc
+        scenes = document.get("scenes") if isinstance(document, dict) else None
+        if not isinstance(scenes, list) or not scenes:
+            raise ValueError("Storyboard JSON must contain a non-empty scenes array.")
+        result = []
+        seen = set()
+        for index, scene in enumerate(scenes, start=1):
+            if not isinstance(scene, dict):
+                raise ValueError(f"Storyboard scene {index} must be an object.")
+            scene_id = str(scene.get("id", "")).strip()
+            narration = str(scene.get("narration", "")).strip()
+            if not narration:
+                continue
+            if not scene_id or scene_id in seen:
+                raise ValueError(f"Storyboard scene {index} has a missing or duplicate id.")
+            if len(narration) > MAX_SEGMENT_CHARS:
+                raise ValueError(f"Storyboard narration for {scene_id} exceeds 4,000 characters.")
+            seen.add(scene_id)
+            result.append((scene_id, narration))
+        if not result:
+            raise ValueError("Storyboard contains no narrated scenes.")
+        if len(result) > MAX_SEGMENTS:
+            raise ValueError("Storyboard contains more than 500 narrated scenes.")
+        return result
+    return [(f"segment-{index:04d}", part) for index, part in enumerate(split_segments(text), start=1)]
+
+
 def translate_one(source: str, model: str, endpoint: str, timeout: int) -> str:
     prompt = (
         "/no_think\\nTranslate the English source below into fluent, natural contemporary Persian (fa-IR). "
