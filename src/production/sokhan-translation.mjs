@@ -50,6 +50,9 @@ export function applySokhanTranslations(scenes, document) {
   if (missing.length) {
     throw new Error("Sokhan translation document is missing translation for scene(s): " + missing.map(scene => String(scene.id ?? "(no id)")).join(", "));
   }
+  if (unknown.length) {
+    throw new Error("Sokhan translation document contains unknown scene id(s): " + unknown.map(segment => segment.id).join(", "));
+  }
 
   const stale = narratedScenes.filter(scene => {
     const segment = byId.get(String(scene.id ?? ""));
