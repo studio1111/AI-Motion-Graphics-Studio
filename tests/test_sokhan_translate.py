@@ -36,6 +36,25 @@ class SokhanTranslationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "no translatable text"):
             SOKHAN.split_segments(" \n\n ")
 
+    def test_preserves_storyboard_scene_ids(self):
+        storyboard = {
+            "scenes": [
+                {"id": "scene-01", "narration": "English narration one."},
+                {"id": "scene-02", "narration": "English narration two."},
+                {"id": "scene-03", "narration": ""}
+            ]
+        }
+        segments = SOKHAN.extract_source_segments(
+            __import__("json").dumps(storyboard), ".json"
+        )
+        self.assertEqual([item[0] for item in segments], ["scene-01", "scene-02"])
+        self.assertEqual(segments[0][1], "English narration one.")
+
+    def test_rejects_duplicate_storyboard_scene_ids(self):
+        storyboard = '{"scenes":[{"id":"same","narration":"One."},{"id":"same","narration":"Two."}]}'
+        with self.assertRaisesRegex(ValueError, "duplicate id"):
+            SOKHAN.extract_source_segments(storyboard, ".json")
+
 
 if __name__ == "__main__":
     unittest.main()
