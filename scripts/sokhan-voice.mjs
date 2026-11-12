@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { access, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
-import { delimiter, join, resolve, basename } from "node:path";\nimport { pathToFileURL } from "node:url";
+import { delimiter, join, resolve, basename } from "node:path";
+import { pathToFileURL } from "node:url";
 import { spawn } from "node:child_process";
 import { normalizeNarrationText } from "../src/production/narration.mjs";
 import { validateSokhanTranslationDocument } from "../src/production/sokhan-translation.mjs";
