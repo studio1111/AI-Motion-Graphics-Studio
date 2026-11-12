@@ -295,11 +295,15 @@ test("QC samples interior frames rather than exact start and midpoint cuts",()=>
   assert.deepEqual(sampleTimes(Number.NaN),[]);
 });
 
-test("WAV duration parser handles a minimal PCM header",()=>{
-  const wav=Buffer.alloc(48);
-  wav.write("RIFF",0);wav.writeUInt32LE(40,4);wav.write("WAVE",8);
-  wav.writeUInt32LE(96000,28);wav.write("data",36);wav.writeUInt32LE(48000,40);
+test("WAV duration parser validates standard PCM headers and supports stereo beds",()=>{
+  const sampleRate=48000,channels=1,bits=16,dataSize=48000,blockAlign=channels*bits/8;
+  const wav=Buffer.alloc(44+dataSize);
+  wav.write("RIFF",0);wav.writeUInt32LE(36+dataSize,4);wav.write("WAVE",8);
+  wav.write("fmt ",12);wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(channels,22);
+  wav.writeUInt32LE(sampleRate,24);wav.writeUInt32LE(sampleRate*blockAlign,28);wav.writeUInt16LE(blockAlign,32);wav.writeUInt16LE(bits,34);
+  wav.write("data",36);wav.writeUInt32LE(dataSize,40);
   assert.equal(wavDuration(wav),0.5);
+  assert.equal(wavDuration(createProceduralBedWav(5)),5);
   assert.equal(wavDuration(Buffer.from("not-wav")),null);
 });
 

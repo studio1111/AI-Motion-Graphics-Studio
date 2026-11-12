@@ -1,0 +1,199 @@
+#!/usr/bin/env node
+import { access, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { constants as fsConstants } from "node:fs";
+import { delimiter, join, resolve, basename } from "node:path";
+import { pathToFileURL } from "node:url";
+import { spawn } from "node:child_process";
+import { normalizeNarrationText } from "../src/production/narration.mjs";
+import { inspectPcmWav, wavDuration } from "../src/production/wav.mjs";
+import { validateSokhanTranslationDocument } from "../src/production/sokhan-translation.mjs";
+import { buildNarrationEnhancementFilter, getEnhancedNarrationPath } from "../src/production/voice-processing.mjs";
+
+const HELP = `Sokhan Persian voice generator
+
+Usage:
+  node scripts/sokhan-voice.mjs --input translation.json [--output-dir out/sokhan-voice]
+
+The input must be a reviewed Sokhan v1 English-to-Persian JSON translation document.
+Requires the existing Persian Speech / Mana-Persian-Piper 'speech' executable and FFmpeg.
+Environment:
+  SOKHAN_SPEECH_BIN   Override the speech executable path
+  FFMPEG_PATH         Override the FFmpeg executable path
+`;
+
+function parseArgs(argv) {
+  const options = { input: "", outputDir: "out/sokhan-voice" };
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--help" || arg === "-h") return { ...options, help: true };
+    const [flag, inline] = arg.split("=", 2);
+    if (flag !== "--input" && flag !== "--output-dir") throw new Error("Unknown option: " + arg);
+    const value = inline ?? argv[++i];
+    if (!value) throw new Error("Missing value for " + flag);
+    options[flag === "--input" ? "input" : "outputDir"] = value;
+  }
+  if (!options.input) throw new Error("--input is required.");
+  return options;
+}
+
+async function findExecutable(name, override) {
+  const candidates = override ? [override] : (process.env.PATH || "").split(delimiter).map(dir => join(dir, name));
+  for (const candidate of candidates) {
+    try {
+      await access(candidate, fsConstants.X_OK);
+      return candidate;
+    } catch {}
+  }
+  return null;
+}
+
+export function runCommand(command, args, timeoutMs = 240000) {
+  const timeout = Number(timeoutMs);
+  if (!Number.isFinite(timeout) || timeout <= 0) {
+    throw new RangeError("Subprocess timeout must be a positive finite number of milliseconds.");
+  }
+
+  return new Promise(resolvePromise => {
+    let stdout = "", stderr = "", settled = false, timedOut = false;
+    let timer = null, killTimer = null;
+    const finish = result => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      if (killTimer) clearTimeout(killTimer);
+      resolvePromise(result);
+    };
+
+    let child;
+    try {
+      child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
+    } catch (error) {
+      finish({ code: null, signal: null, stdout, stderr, error: String(error), timedOut });
+      return;
+    }
+
+    const append = (current, chunk) => (current + chunk.toString()).slice(-4000);
+    child.stdout.on("data", chunk => { stdout = append(stdout, chunk); });
+    child.stderr.on("data", chunk => { stderr = append(stderr, chunk); });
+
+    timer = setTimeout(() => {
+      timedOut = true;
+      child.kill("SIGTERM");
+      killTimer = setTimeout(() => {
+        if (!settled) child.kill("SIGKILL");
+      }, 3000);
+      killTimer.unref?.();
+    }, timeout);
+
+    child.on("error", error => {
+      finish({ code: null, signal: null, stdout, stderr, error: String(error), timedOut });
+    });
+    child.on("close", (code, signal) => {
+      finish({ code, signal, stdout, stderr, timedOut });
+    });
+  });
+}
+
+
+export { wavDuration };
+
+function safeId(value, index) {
+  const id = String(value || "segment-" + index).normalize("NFKD")
+    .replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+  return id || "segment-" + index;
+}
+
+async function main() {
+  const options = parseArgs(process.argv.slice(2));
+  if (options.help) { console.log(HELP); return; }
+  const inputPath = resolve(options.input);
+  const outputDir = resolve(options.outputDir);
+  if (inputPath === outputDir || outputDir.startsWith(inputPath + "/")) {
+    throw new Error("Output directory must not be inside the translation document path.");
+  }
+  const raw = await readFile(inputPath, "utf8");
+  if (Buffer.byteLength(raw, "utf8") > 2_000_000) throw new Error("Translation document exceeds the 2 MB safety limit.");
+  const document = validateSokhanTranslationDocument(JSON.parse(raw));
+  if (document.reviewStatus === "needs_human_review") {
+    throw new Error("Translation is still marked needs_human_review. Review it, then set reviewStatus to approved before synthesis.");
+  }
+  if (document.reviewStatus !== "approved") {
+    throw new Error("Set reviewStatus to approved only after reviewing the Persian translation.");
+  }
+
+  const speech = await findExecutable("speech", process.env.SOKHAN_SPEECH_BIN);
+  const ffmpeg = await findExecutable("ffmpeg", process.env.FFMPEG_PATH);
+  if (!speech) throw new Error("Persian Speech executable 'speech' was not found. Install the existing persian-speech package first.");
+  if (!ffmpeg) throw new Error("FFmpeg was not found. Install FFmpeg or set FFMPEG_PATH.");
+
+  await mkdir(outputDir, { recursive: true });
+  const manifest = {
+    schemaVersion: 1,
+    sourceLanguage: "en",
+    targetLanguage: "fa",
+    engine: "Persian Speech / Mana-Persian-Piper",
+    model: "runtime-managed; weights are not bundled",
+    sourceDocument: basename(inputPath),
+    createdAt: new Date().toISOString(),
+    status: "generating",
+    segments: []
+  };
+
+  for (let index = 0; index < document.segments.length; index++) {
+    const segment = document.segments[index];
+    const id = safeId(segment.id, index + 1);
+    const base = String(index + 1).padStart(4, "0") + "-" + id;
+    const rawPath = join(outputDir, base + ".source.wav");
+    const finalPath = join(outputDir, base + ".wav");
+    const text = normalizeNarrationText(segment.translation, "fa");
+    const generated = await runCommand(speech, [text, rawPath]);
+    if (generated.code !== 0) {
+      await rm(rawPath, { force: true });
+      throw new Error("Persian speech generation failed for " + segment.id + ": " + String(generated.stderr || generated.error || "unknown error").slice(-500));
+    }
+    const enhancedPath = getEnhancedNarrationPath(rawPath);
+    const enhanced = await runCommand(ffmpeg, [
+      "-y", "-hide_banner", "-loglevel", "error", "-i", rawPath,
+      "-af", buildNarrationEnhancementFilter(), "-ac", "1", "-ar", "24000",
+      "-c:a", "pcm_s16le", enhancedPath
+    ]);
+    await rm(rawPath, { force: true });
+    if (enhanced.code !== 0) {
+      await rm(enhancedPath, { force: true });
+      throw new Error("FFmpeg audio enhancement failed for " + segment.id + ": " + String(enhanced.stderr || enhanced.error || "unknown error").slice(-500));
+    }
+    const audio = await readFile(enhancedPath);
+    const audioQc = inspectPcmWav(audio);
+    const durationSeconds = audioQc?.durationSeconds;
+    if (!audioQc || !durationSeconds || !Number.isFinite(durationSeconds) || durationSeconds <= 0 || audioQc.isSilent || audioQc.isClipped) {
+      await rm(enhancedPath, { force: true });
+      const reason = !audioQc ? "invalid WAV format" : audioQc.isSilent ? "digital silence" : audioQc.isClipped ? "clipping exceeds the 0.1% threshold" : "invalid duration";
+      throw new Error("Audio QC failed for " + segment.id + ": " + reason + ".");
+    }
+    await rename(enhancedPath, finalPath);
+    manifest.segments.push({
+      id: segment.id,
+      sourceText: segment.sourceText,
+      narration: text,
+      audioFile: base + ".wav",
+      durationSeconds: Number(durationSeconds.toFixed(3)),
+      audioQc: { peakAmplitude: Number(audioQc.peakAmplitude.toFixed(5)), rmsAmplitude: Number(audioQc.rmsAmplitude.toFixed(5)), clippedSamples: audioQc.clippedSamples }
+    });
+    console.log("Generated " + segment.id + " (" + durationSeconds.toFixed(2) + " s)");
+  }
+
+  manifest.status = "generated";
+  const target = join(outputDir, "voice-manifest.json");
+  const temporary = target + ".tmp";
+  await writeFile(temporary, JSON.stringify(manifest, null, 2) + "\n", "utf8");
+  await rename(temporary, target);
+  console.log("Persian voice assets: " + outputDir);
+  console.log("Manifest: " + target);
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  main().catch(error => {
+    console.error("Sokhan voice: " + String(error?.message || error));
+    process.exitCode = 1;
+  });
+}

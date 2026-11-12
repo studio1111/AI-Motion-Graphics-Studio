@@ -128,3 +128,24 @@ npm run produce -- --topic "The future of science" --language en --duration 60 -
 ```
 
 The upstream repository declares the MIT License for its software and dataset. Keep its attribution and license notice when redistributing copied material; prompts and linked creator posts remain attributed to their respective authors. Reference-based AI storyboard generation requires explicit `--allow-paid-ai` and configured provider credentials. Without that opt-in, the normal local fallback remains active and the selected reference is recorded for traceability but not treated as implemented motion.
+
+
+## Sokhan — local English-to-Persian translation and voice
+
+The first Sokhan release adds an offline-first English-to-Persian workflow. It uses a local Ollama model or a local llama.cpp OpenAI-compatible server to create an editable Persian draft, requires human approval before speech synthesis, and reuses the existing Persian Speech / Mana-Persian-Piper runtime for WAV narration. The llama.cpp path is documented for Android/Termux.
+
+See [Sokhan v1 setup, usage and quality gates](docs/SOKHAN_V1_ENGLISH_TO_PERSIAN.md).
+
+The Studio navigation also links to `site/sokhan-review.html`, a browser-only Persian review page. It edits each segment locally, requires a review checkbox for every scene, and downloads an approved JSON with `reviewedSegmentIds`; it does not upload or persist the source text.
+
+Quick start:
+
+```sh
+ollama pull qwen3:4b
+python3 -m pip install persian-speech==1.1.3
+npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json --glossary docs/sokhan-glossary.example.json
+# Review every scene in site/sokhan-review.html and use the approved JSON download.
+npm run sokhan:voice -- --input narration-fa.json --output-dir out/sokhan-voice
+```
+
+Both translation backends are restricted to localhost. No cloud translation or paid TTS API is used. Model weights are downloaded by the local runtime and are not committed to Git. Persian quality still requires human review and listening tests; the implementation does not claim HeyGen Voice Turbo parity.

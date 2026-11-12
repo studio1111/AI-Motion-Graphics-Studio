@@ -21,3 +21,16 @@ Build a dependable AI-assisted motion-graphics toolkit for reproducible video cr
 - Each skill should state when to use it, workflow, prerequisites, constraints, examples, source URL, and license/status.
 - Keep tool-specific setup notes separate where agent compatibility differs.
 - Use descriptive commits and avoid unrelated changes.
+
+## Ponytail-compatible execution rules
+
+No official Ponytail plugin is configured for this repository. Any compatible coding agent must follow these rules alongside the instructions above:
+
+- Inspect the target module, its callers, adjacent tests, and current GitHub Actions checks before editing.
+- Prefer the smallest production-safe change and reuse existing project modules; do not add dependencies without a demonstrated need.
+- For behavior changes, add a regression test first and verify the failure before implementing the fix.
+- Preserve existing CLI contracts and unrelated language/voice modes; Sokhan v1 remains English-to-Persian only.
+- Keep secrets, source scripts, model weights, private audio, and generated media out of commits and CI artifacts unless explicitly required.
+- Never cancel in-progress workflows, force-push, weaken repository security, or bypass validation.
+- Run focused tests, the full repository validation, and the relevant Remotion render/QC workflow after changes.
+- Report exact commit, test counts, workflow result, and any blocked real-model or human listening checks; never infer voice quality from technical tests.

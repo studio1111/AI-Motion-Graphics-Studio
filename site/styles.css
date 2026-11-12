@@ -19,3 +19,5 @@ textarea:focus-visible,input:focus-visible,select:focus-visible,button:focus-vis
 .recipe-details p{font-size:11px;line-height:1.9;color:#c2cada;margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 .recipe-details .recipe-meta{color:var(--purple);font-size:10px}
 #copy-recipe{margin-top:12px}
+
+.topbar-links{display:flex;align-items:center;gap:9px}@media(max-width:540px){.topbar-links{gap:5px}.topbar-links .github{padding:6px 8px;font-size:10px}}
