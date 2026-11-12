@@ -30,6 +30,7 @@ jobs:
       - name: Validate browser studio and catalog sync syntax
         run: |
           node --check site/app.js
+          node --check site/sokhan-review.mjs
           node --check site/brief-commands.mjs
           node --check scripts/sync-site-prompt-catalog.mjs
       - name: Validate skills and production engine
