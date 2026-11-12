@@ -51,6 +51,15 @@ test("creates an approved copy without mutating the original draft", () => {
   assert.throws(() => createApprovedDraft(draft, new Set(["scene-01"])), /reviewed/);
 });
 
+
+test("allows clearing and retyping a translation without breaking the editor", () => {
+  const draft = validDraft();
+  const cleared = updateDraftTranslation(draft, "scene-01", "");
+  const retyped = updateDraftTranslation(cleared, "scene-01", "متن فارسی جدید.");
+  assert.equal(retyped.segments[0].translation, "متن فارسی جدید.");
+  assert.equal(retyped.reviewStatus, "needs_human_review");
+});
+
 test("editing a translation resets approval status", () => {
   const draft = validDraft();
   draft.reviewStatus = "approved";
