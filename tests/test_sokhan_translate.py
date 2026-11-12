@@ -25,6 +25,37 @@ class SokhanTranslationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             SOKHAN.local_endpoint("http://user:secret@localhost:11434")
 
+
+    def test_accepts_loopback_llama_cpp_openai_compatible_endpoint(self):
+        self.assertEqual(
+            SOKHAN.local_endpoint("http://127.0.0.1:8080", "llama.cpp"),
+            "http://127.0.0.1:8080/v1/chat/completions",
+        )
+
+    def test_builds_local_llama_cpp_json_chat_payload(self):
+        payload = SOKHAN.build_backend_payload(
+            "Explain machine learning.",
+            "local-model",
+            {"machine learning": "یادگیری ماشین"},
+            "llama.cpp",
+        )
+        self.assertEqual(payload["model"], "local-model")
+        self.assertEqual(payload["stream"], False)
+        self.assertEqual(payload["response_format"], {"type": "json_object"})
+        self.assertEqual(payload["messages"][0]["role"], "user")
+        self.assertIn("یادگیری ماشین", payload["messages"][0]["content"])
+
+    def test_parses_openai_compatible_translation_response(self):
+        raw = b'{"choices":[{"message":{"content":"{\\\"translation\\\":\\\"سلام\\\"}"}}]}'
+        self.assertEqual(
+            SOKHAN.parse_backend_response(raw, "llama.cpp"),
+            "سلام",
+        )
+
+    def test_rejects_remote_llama_cpp_endpoint(self):
+        with self.assertRaisesRegex(ValueError, "localhost"):
+            SOKHAN.local_endpoint("https://example.com", "llama.cpp")
+
     def test_splits_paragraphs_without_losing_source_text(self):
         source = "First sentence.\n\nSecond sentence."
         self.assertEqual(
