@@ -79,7 +79,7 @@ Do not mark it approved until a fluent Persian reviewer has checked meaning, ter
 npm run sokhan:voice -- --input narration-fa.json --output-dir out/sokhan-voice
 ```
 
-The voice command refuses documents not explicitly marked `approved`. It generates one enhanced mono 24 kHz PCM WAV per segment and writes `voice-manifest.json`. A failed segment stops the run; the tool does not silently publish a partial manifest.
+The voice command refuses documents not explicitly marked `approved`. It generates one enhanced mono 24 kHz PCM16 WAV per segment and writes `voice-manifest.json`. The shared WAV validator checks RIFF/WAVE chunk bounds, PCM format, sample rate, channel count, duration, RMS signal level and clipping ratio; digital silence and excessive clipping are hard failures. The manifest records per-segment peak/RMS and clipped-sample counts. Subprocess output is bounded, timeouts are reported, and timed-out processes receive SIGTERM followed by SIGKILL if necessary. A failed segment stops the run; the tool does not publish a successful partial manifest.
 
 For the integrated Remotion path, use the exact English storyboard from the first step and its reviewed translation document:
 
@@ -87,7 +87,7 @@ For the integrated Remotion path, use the exact English storyboard from the firs
 npm run produce -- --topic "Your topic" --language en --storyboard out/source/<run-id>/storyboard.json --translation-file narration-fa.json --voice persian-speech --output-dir out/sokhan-final
 ```
 
-The production CLI verifies every translated segment ID and its original English source text before replacing scene narration. It then generates Persian voice, captions, timing, Remotion props, video and the usual technical QC. The source storyboard must match the translated source exactly; stale or incomplete translations are rejected. This v1 integration translates narration, not the visual title/body/bullet copy.
+The production CLI verifies every translated segment ID and its original English source text before replacing scene narration. It then generates Persian voice, validates signal quality before attaching audio to a scene, derives timing from measured WAV duration, and builds captions, Remotion props, video and the usual technical QC. The source storyboard must match the translated source exactly; stale or incomplete translations are rejected. This v1 integration translates narration, not the visual title/body/bullet copy.
 
 Optional executable overrides:
 
