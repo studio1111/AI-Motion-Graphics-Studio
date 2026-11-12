@@ -141,7 +141,7 @@ Quick start:
 ```sh
 ollama pull qwen3:4b
 python3 -m pip install persian-speech==1.1.3
-npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json
+npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json --glossary docs/sokhan-glossary.example.json
 # Review the JSON translations and set reviewStatus to "approved".
 npm run sokhan:voice -- --input narration-fa.json --output-dir out/sokhan-voice
 ```
