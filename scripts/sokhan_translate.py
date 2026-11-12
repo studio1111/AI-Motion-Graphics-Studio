@@ -233,7 +233,7 @@ def write_translation_cache(cache_dir: str | Path, key: str, translation: str) -
             delete=False,
         ) as temporary:
             temporary_path = Path(temporary.name)
-            temporary.write(json.dumps(entry, ensure_ascii=False) + "\\n")
+            temporary.write(json.dumps(entry, ensure_ascii=False) + "\n")
             temporary.flush()
             os.fsync(temporary.fileno())
         os.replace(temporary_path, path)
