@@ -4,7 +4,7 @@ Sokhan v1 is a local-first translation and Persian narration path. Its only supp
 
 ## Components
 
-- **Translation draft:** `scripts/sokhan_translate.py` calls an Ollama server bound to loopback only. The default model is `qwen3:4b`; override with `SOKHAN_OLLAMA_MODEL`.
+- **Translation draft:** `scripts/sokhan_translate.py` supports local Ollama and a loopback-only llama.cpp OpenAI-compatible server. The default Ollama model is `qwen3:4b`; override with `SOKHAN_OLLAMA_MODEL`.
 - **Human review:** the generated JSON is deliberately marked `needs_human_review`. Edit the Persian `translation` strings and set `reviewStatus` to `approved` only after review.
 - **Persian speech:** `scripts/sokhan-voice.mjs` uses the repository's existing `persian-speech` / Mana-Persian-Piper `speech` executable, then applies the existing FFmpeg narration enhancement chain and verifies each WAV duration.
 - **Provenance:** voice output includes `voice-manifest.json` with segment IDs, source text, normalized Persian narration, output filenames and measured durations.
@@ -30,6 +30,40 @@ The translation model and TTS weights are downloaded by their own runtimes and a
 4. Install FFmpeg and make sure `ffmpeg` and `speech` are available on `PATH`.
 
 For a lower-memory translation model, set `SOKHAN_OLLAMA_MODEL` to a locally installed smaller Qwen3 tag. Quality may differ; evaluate before adopting it.
+
+## Android / Termux with llama.cpp
+
+The translator also supports local llama.cpp, so Android users do not need to run Ollama. The official Qwen GGUF repository provides Qwen3-4B Q4_K_M at approximately 2.5 GB under Apache-2.0. This is a large download and may be memory-intensive on a phone with 6 GB RAM; keep context modest and close other applications if Android terminates the process.
+
+Build llama.cpp in Termux using the upstream Android instructions:
+
+```bash
+pkg update && pkg upgrade
+pkg install git cmake clang libandroid-spawn
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+cmake -B build
+cmake --build build --config Release -j 4
+```
+
+Start the local server. The Hugging Face selector downloads the official Q4_K_M quantization; the server binds only to loopback and disables Qwen3 thinking for concise translation:
+
+```bash
+termux-wake-lock
+./build/bin/llama-server -hf Qwen/Qwen3-4B-GGUF:Q4_K_M \
+  --host 127.0.0.1 --port 8080 --ctx-size 4096 --reasoning off
+```
+
+In another Termux session, run:
+
+```bash
+npm run sokhan:translate -- --backend llama.cpp \
+  --endpoint http://127.0.0.1:8080 --model local-model \
+  --input narration-en.txt --output narration-fa.json \
+  --glossary docs/sokhan-glossary.example.json
+```
+
+For reproducibility, pass `--model-revision sha256:<GGUF-file-hash>` after recording the local model file hash. The selected backend, model name and optional revision are stored in the translation draft. Model weights are not committed or downloaded in CI.
 
 ## Create and review a translation
 
@@ -57,7 +91,7 @@ SOKHAN_OLLAMA_MODEL=qwen3:4b npm run sokhan:translate -- --input narration-en.tx
 SOKHAN_OLLAMA_MODEL=qwen3:4b npm run sokhan:translate -- --input narration-en.txt --output narration-fa.json --glossary docs/sokhan-glossary.example.json
 ```
 
-The endpoint defaults to `http://127.0.0.1:11434`. Remote endpoints are rejected intentionally. The script limits input to 1 MB, each segment to 4,000 characters, and the document to 500 segments. An optional JSON glossary maps English terminology to exact Persian terms, is included in the translation prompt, applies deterministic replacements for English terms left untranslated, and is recorded by SHA-256 in the draft metadata. Glossaries are limited to 500 entries and 100 KB.
+The Ollama endpoint defaults to `http://127.0.0.1:11434`; the llama.cpp endpoint defaults to `http://127.0.0.1:8080`. Both are loopback-only; remote endpoints are rejected intentionally. The script limits input to 1 MB, each segment to 4,000 characters, and the document to 500 segments. An optional JSON glossary maps English terminology to exact Persian terms, is included in the translation prompt, applies deterministic replacements for English terms left untranslated, and is recorded by SHA-256 in the draft metadata. Glossaries are limited to 500 entries and 100 KB.
 
 Open `narration-fa.json`, edit every `translation`, and change:
 
