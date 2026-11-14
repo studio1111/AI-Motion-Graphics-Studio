@@ -56,10 +56,14 @@ jobs:
         run: npm run render:demo
       - name: Render data-driven production composition
         run: npm run render:smoke
+      - name: Render smoke frames from both cinematic film compositions
+        run: |
+          npx remotion render src/index.ts AiCapabilitiesFilm out/ai-capabilities-smoke.mp4 --frames=0-30 --codec=h264
+          npx remotion render src/index.ts SkyBlueFilm out/sky-blue-smoke.mp4 --frames=0-30 --codec=h264
       - name: Verify both MP4 files
         run: |
           set -e
-          for file in out/motion-demo.mp4 out/motion-video-smoke.mp4; do
+          for file in out/motion-demo.mp4 out/motion-video-smoke.mp4 out/ai-capabilities-smoke.mp4 out/sky-blue-smoke.mp4; do
             test -s "$file"
             ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of default=noprint_wrappers=1 "$file"
             ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1 "$file"
